@@ -1,0 +1,238 @@
+gcc -c -O1 -std=c99 -Wall -Werror -fPIC -march=amdfam10 -g3 -Wno-deprecated-declarations -D_XOPEN_SOURCE=600 -nostdinc -Iinclude -msoft-float -mno-sse -mno-red-zone -fno-builtin -fno-stack-protector -o obj/sys/process.o sys/process.c
+sys/process.c: In function 'get_kva':
+sys/process.c:26:5: error: unknown type name 'physaddr_t'
+     physaddr_t ppn_addr= page2ppn(pp) << PGSHIFT;
+     ^
+sys/process.c: At top level:
+sys/process.c:33:8: error: unknown type name 'physaddr_t'
+ extern physaddr_t boot_cr3;
+        ^
+sys/process.c: In function 'malloc_pcb':
+sys/process.c:60:5: error: implicit declaration of function 'memcpy' [-Werror=implicit-function-declaration]
+     memcpy(pcb->pname,fun_ptr,strlen(fun_ptr)); 
+     ^
+sys/process.c:60:31: error: implicit declaration of function 'strlen' [-Werror=implicit-function-declaration]
+     memcpy(pcb->pname,fun_ptr,strlen(fun_ptr)); 
+                               ^
+In file included from include/sys/process.h:4:0,
+                 from sys/process.c:1:
+include/sys/pmap.h:26:6: error: statement with no effect [-Werror=unused-value]
+      __m_kva - KERNBASE;     \
+      ^
+sys/process.c:73:16: note: in expansion of macro 'PADDR'
+     pcb->cr3 = PADDR(pml4a);
+                ^
+sys/process.c:73:14: error: void value not ignored as it ought to be
+     pcb->cr3 = PADDR(pml4a);
+              ^
+sys/process.c:84:5: error: 'asm' undeclared (first use in this function)
+     asm volatile("movq %0, %%cr3":: "b"(pcb->cr3));
+     ^
+sys/process.c:84:5: note: each undeclared identifier is reported only once for each function it appears in
+sys/process.c:84:9: error: expected ';' before 'volatile'
+     asm volatile("movq %0, %%cr3":: "b"(pcb->cr3));
+         ^
+sys/process.c:85:5: error: implicit declaration of function 'print' [-Werror=implicit-function-declaration]
+     print("pcb->cr3=%x",pcb->cr3);
+     ^
+sys/process.c:113:8: error: expected ';' before 'volatile'
+    asm volatile("movq %0, %%cr3":: "b"(boot_cr3));
+        ^
+sys/process.c: In function 'schedule':
+sys/process.c:169:9: error: 'asm' undeclared (first use in this function)
+         asm volatile("movq %0, %%cr3":: "a"(next->cr3));
+         ^
+sys/process.c:169:13: error: expected ';' before 'volatile'
+         asm volatile("movq %0, %%cr3":: "a"(next->cr3));
+             ^
+sys/process.c:187:9: error: 'tss' undeclared (first use in this function)
+         tss.rsp0 =(uint64_t)(&(next->kstack[511]));    
+         ^
+sys/process.c:223:13: error: expected ';' before 'volatile'
+         asm volatile("movq %0, %%cr3":: "a"(next->cr3));
+             ^
+sys/process.c: In function 'region_alloc':
+sys/process.c:258:22: error: implicit declaration of function 'ROUNDDOWN' [-Werror=implicit-function-declaration]
+     void *va_start = ROUNDDOWN(va, PGSIZE);
+                      ^
+sys/process.c:258:22: error: initialization makes pointer from integer without a cast [-Werror=int-conversion]
+sys/process.c:259:20: error: implicit declaration of function 'ROUNDUP' [-Werror=implicit-function-declaration]
+     void *va_end = ROUNDUP((char*)va+len, PGSIZE);
+                    ^
+sys/process.c:259:20: error: initialization makes pointer from integer without a cast [-Werror=int-conversion]
+sys/process.c:267:13: error: implicit declaration of function 'panic' [-Werror=implicit-function-declaration]
+             panic("Running out of memory\n");
+             ^
+sys/process.c: In function 'load_icode':
+sys/process.c:330:23: error: implicit declaration of function 'is_file_exists' [-Werror=implicit-function-declaration]
+     uint64_t offset = is_file_exists(filename);
+                       ^
+sys/process.c:338:9: error: unknown type name 'Elf_hdr'
+         Elf_hdr *elf = (Elf_hdr *) (&_binary_tarfs_start + offset);
+         ^
+sys/process.c:338:25: error: 'Elf_hdr' undeclared (first use in this function)
+         Elf_hdr *elf = (Elf_hdr *) (&_binary_tarfs_start + offset);
+                         ^
+sys/process.c:338:34: error: expected expression before ')' token
+         Elf_hdr *elf = (Elf_hdr *) (&_binary_tarfs_start + offset);
+                                  ^
+sys/process.c:340:9: error: unknown type name 'Elf64_Phdr'
+         Elf64_Phdr *ph, *eph;
+         ^
+sys/process.c:342:15: error: 'Elf64_Phdr' undeclared (first use in this function)
+         ph = (Elf64_Phdr *) ((uint8_t *) elf + elf->e_phoff);
+               ^
+sys/process.c:342:27: error: expected expression before ')' token
+         ph = (Elf64_Phdr *) ((uint8_t *) elf + elf->e_phoff);
+                           ^
+sys/process.c:344:23: error: request for member 'e_phnum' in something not a structure or union
+         eph = ph + elf->e_phnum;
+                       ^
+sys/process.c:347:19: error: request for member 'p_type' in something not a structure or union
+             if (ph->p_type == ELF_PROG_LOAD) {
+                   ^
+sys/process.c:347:31: error: 'ELF_PROG_LOAD' undeclared (first use in this function)
+             if (ph->p_type == ELF_PROG_LOAD) {
+                               ^
+sys/process.c:352:23: error: request for member 'p_filesz' in something not a structure or union
+                 if (ph->p_filesz > ph->p_memsz)
+                       ^
+sys/process.c:352:38: error: request for member 'p_memsz' in something not a structure or union
+                 if (ph->p_filesz > ph->p_memsz)
+                                      ^
+sys/process.c:365:45: error: request for member 'p_vaddr' in something not a structure or union
+                 region_alloc(pcb, (void*) ph->p_vaddr, ph->p_memsz);
+                                             ^
+sys/process.c:365:58: error: request for member 'p_memsz' in something not a structure or union
+                 region_alloc(pcb, (void*) ph->p_vaddr, ph->p_memsz);
+                                                          ^
+sys/process.c:366:34: error: request for member 'p_vaddr' in something not a structure or union
+                 memcpy((char*) ph->p_vaddr, (void *) elf + ph->p_offset,
+                                  ^
+sys/process.c:366:62: error: request for member 'p_offset' in something not a structure or union
+                 memcpy((char*) ph->p_vaddr, (void *) elf + ph->p_offset,
+                                                              ^
+sys/process.c:367:27: error: request for member 'p_filesz' in something not a structure or union
+                         ph->p_filesz);
+                           ^
+sys/process.c:369:23: error: request for member 'p_filesz' in something not a structure or union
+                 if (ph->p_filesz < ph->p_memsz)
+                       ^
+sys/process.c:369:38: error: request for member 'p_memsz' in something not a structure or union
+                 if (ph->p_filesz < ph->p_memsz)
+                                      ^
+sys/process.c:370:21: error: implicit declaration of function 'memset' [-Werror=implicit-function-declaration]
+                     memset((char*) ph->p_vaddr + ph->p_filesz, 0, ph->p_memsz
+                     ^
+sys/process.c:370:38: error: request for member 'p_vaddr' in something not a structure or union
+                     memset((char*) ph->p_vaddr + ph->p_filesz, 0, ph->p_memsz
+                                      ^
+sys/process.c:370:52: error: request for member 'p_filesz' in something not a structure or union
+                     memset((char*) ph->p_vaddr + ph->p_filesz, 0, ph->p_memsz
+                                                    ^
+sys/process.c:370:69: error: request for member 'p_memsz' in something not a structure or union
+                     memset((char*) ph->p_vaddr + ph->p_filesz, 0, ph->p_memsz
+                                                                     ^
+sys/process.c:371:33: error: request for member 'p_filesz' in something not a structure or union
+                             - ph->p_filesz);
+                                 ^
+sys/process.c:379:34: error: request for member 'p_vaddr' in something not a structure or union
+                 vm->vm_start = ph->p_vaddr;
+                                  ^
+sys/process.c:380:47: error: request for member 'p_memsz' in something not a structure or union
+                 vm->vm_end = vm->vm_start + ph->p_memsz;
+                                               ^
+sys/process.c:381:33: error: request for member 'p_memsz' in something not a structure or union
+                 vm->vm_mmsz = ph->p_memsz;
+                                 ^
+sys/process.c:384:34: error: request for member 'p_flags' in something not a structure or union
+                 vm->vm_flags = ph->p_flags;
+                                  ^
+sys/process.c:385:35: error: request for member 'p_offset' in something not a structure or union
+                 vm->vm_offset = ph->p_offset;  
+                                   ^
+sys/process.c:394:25: error: request for member 'e_entry' in something not a structure or union
+         pcb->entry = elf->e_entry;
+                         ^
+In file included from include/sys/process.h:4:0,
+                 from sys/process.c:1:
+sys/process.c: In function 'fork_process':
+include/sys/pmap.h:26:6: error: statement with no effect [-Werror=unused-value]
+      __m_kva - KERNBASE;     \
+      ^
+sys/process.c:497:22: note: in expansion of macro 'PADDR'
+     child_pcb->cr3 = PADDR(pml4e);
+                      ^
+sys/process.c:497:20: error: void value not ignored as it ought to be
+     child_pcb->cr3 = PADDR(pml4e);
+                    ^
+sys/process.c:516:5: error: 'asm' undeclared (first use in this function)
+     asm volatile("movq %0, %%cr3":: "b"(child_pcb->cr3));
+     ^
+sys/process.c:516:9: error: expected ';' before 'volatile'
+     asm volatile("movq %0, %%cr3":: "b"(child_pcb->cr3));
+         ^
+In file included from include/sys/process.h:4:0,
+                 from sys/process.c:1:
+include/sys/pmap.h:26:6: error: statement with no effect [-Werror=unused-value]
+      __m_kva - KERNBASE;     \
+      ^
+sys/process.c:526:97: note: in expansion of macro 'PADDR'
+     boot_map_segment( (pml4e_t *)child_pcb->pml4e,(uintptr_t)child_pcb->stack, 4096, (uintptr_t)PADDR(tmp_stack),PTE_W|PTE_P|PTE_U); 
+                                                                                                 ^
+sys/process.c:526:5: error: invalid use of void expression
+     boot_map_segment( (pml4e_t *)child_pcb->pml4e,(uintptr_t)child_pcb->stack, 4096, (uintptr_t)PADDR(tmp_stack),PTE_W|PTE_P|PTE_U); 
+     ^
+sys/process.c:637:9: error: expected ';' before 'volatile'
+     asm volatile("movq %0, %%cr3":: "b"(parent_pcb->cr3));
+         ^
+sys/process.c: In function 'exit_process':
+sys/process.c:662:3: error: 'asm' undeclared (first use in this function)
+   asm volatile("movq %0, %%cr3":: "b"(boot_cr3));
+   ^
+sys/process.c:662:7: error: expected ';' before 'volatile'
+   asm volatile("movq %0, %%cr3":: "b"(boot_cr3));
+       ^
+sys/process.c:695:8: error: expected ';' before 'volatile'
+    asm volatile("pop %rbx");  // extra rbx pop 
+        ^
+sys/process.c:696:8: error: expected ';' before 'volatile'
+    asm volatile("pop %rax");  // get the isr addr
+        ^
+sys/process.c:697:8: error: expected ';' before 'volatile'
+    asm volatile("jmp *%rax"); 
+        ^
+sys/process.c: In function 'sleep_process':
+sys/process.c:718:4: error: 'asm' undeclared (first use in this function)
+    asm volatile("movq %0, %%cr3":: "b"(((struct task_struct *)ready_queue[0])->cr3));
+    ^
+sys/process.c:718:8: error: expected ';' before 'volatile'
+    asm volatile("movq %0, %%cr3":: "b"(((struct task_struct *)ready_queue[0])->cr3));
+        ^
+sys/process.c:722:8: error: expected ';' before 'volatile'
+    asm volatile("pop %rbx");  // extra reg schedule;
+        ^
+sys/process.c:723:8: error: expected ';' before 'volatile'
+    asm volatile("pop %rax");  // isr next instruction
+        ^
+sys/process.c:724:8: error: expected ';' before 'volatile'
+    asm volatile("jmp *%rax");
+        ^
+sys/process.c: In function 'execvpe':
+sys/process.c:766:5: error: implicit declaration of function 'strcpy' [-Werror=implicit-function-declaration]
+     strcpy(pathname,tmp_pathname);
+     ^
+sys/process.c: In function 'waitpid':
+sys/process.c:824:13: error: implicit declaration of function 'asm' [-Werror=implicit-function-declaration]
+             asm("int $0x81;"); //yield
+             ^
+sys/process.c: In function 'kshutdown':
+sys/process.c:879:5: error: 'asm' undeclared (first use in this function)
+     asm volatile("movq %0, %%cr3":: "b"(boot_cr3));
+     ^
+sys/process.c:879:9: error: expected ';' before 'volatile'
+     asm volatile("movq %0, %%cr3":: "b"(boot_cr3));
+         ^
+cc1: all warnings being treated as errors
+Makefile:86: recipe for target 'obj/sys/process.o' failed
+make: *** [obj/sys/process.o] Error 1
