@@ -1,6 +1,6 @@
 #include <sys/defs.h>
 #include <sys/gdt.h>
-
+#include<sys/kprintf.h>
 /* adapted from Chris Stones, shovelos */
 
 #define GDT_CS        (0x00180000000000)  /*** code segment descriptor ***/
@@ -18,23 +18,6 @@
 
 #define MAX_GDT 32
 
-struct tss_t {
-  uint32_t reserved_0;
-  void *rsp0;
-  void *rsp1;
-  void *rsp2;
-  uint64_t reserved_1;
-  void *ist1;
-  void *ist2;
-  void *ist3;
-  void *ist4;
-  void *ist5;
-  void *ist6;
-  void *ist7;
-  uint64_t reserved_2;
-  uint16_t reserved_3;
-  uint16_t iomap_base;
-}__attribute__((packed));
 
 struct sys_segment_descriptor {
   uint64_t sd_lolimit :16;/* segment extent (lsb) */
