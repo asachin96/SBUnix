@@ -2,7 +2,7 @@
 #define _ELF64_H
 
 #include <sys/defs.h>
-
+#include <sys/proc_mngr.h>
 #define Elf64_Addr uint64_t 
 #define Elf64_Off uint64_t 
 #define Elf64_Half uint16_t 

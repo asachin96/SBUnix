@@ -161,3 +161,27 @@ void kprintf(const char *fmt, ...){
    parsePrint(fmt, args);
    va_end(args);
 }
+
+int32_t puts(char* str)
+{
+int32_t i = 0;
+
+while(str[i]!='\0')
+{
+kprintf("%c",str[i]);
+i++;
+}
+return i;
+}
+
+void clear_screen()
+{
+				int i = 0;
+				temp = (char *)0xffffffff800b8000;
+				for(;i<((160*25)-1);i+=2) 
+				{ 
+						*((char *)temp + i) = 0; 
+				}
+				linePos = 0; 
+}
+

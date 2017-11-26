@@ -364,8 +364,6 @@ void schedule_process(task_struct* new_task, uint64_t entry_point, uint64_t stac
 								new_task->kernel_stack[KERNEL_STACK_SIZE-3] = 0x200202UL;
 								new_task->kernel_stack[KERNEL_STACK_SIZE-5] = entry_point;
 								new_task->rip_register = entry_point;
-								kprintf("\t DEBUG Entry Point:%p", entry_point);
-								kprintf("\tDEBUG StackTop:%p", stack_top);
 
 								// 2) Leave 9 spaces for POPA => KERNEL_STACK_SIZE-6 to KERNEL_STACK_SIZE-20
 

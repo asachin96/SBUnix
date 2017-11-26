@@ -2,6 +2,7 @@
 #include <sys/gdt.h>
 #include <sys/kprintf.h>
 #include <sys/tarfs.h>
+#include <sys/elf.h>
 #include <sys/ahci.h>
 //#include <sys/page.h>
 #include <sys/paging.h>
@@ -69,16 +70,19 @@ void start(uint32_t *modulep, void *physbase, void *physfree)
 			  			phys_init((uint64_t)phys_base, (uint64_t) physfree, phys_size); 
 					//			phys_init((uint64_t)0x100000, (uint64_t) physfree, 0x5fcb000); 
 								init_paging((uint64_t)&kernmem, (uint64_t)physbase, K_MEM_PAGES);
-								__asm__("sti;");
+								init_tarfs();
 
 								kprintf("After page init!!");
         // Reset the kernel stack
     __asm__ __volatile__("movq %0, %%rbp" : :"a"(&initial_stack[0]));
     __asm__ __volatile__("movq %0, %%rsp" : :"a"(&initial_stack[INITIAL_STACK_SIZE]));
-								//create_idle_process();
-        createKernelProcess((uint64_t)fun1);
-        createKernelProcess((uint64_t)fun2);
-        initSchedule();
+								create_idle_process();
+        create_elf_proc("rootfs/bin/hello",0);
+        create_elf_proc("rootfs/bin/test",0);
+								__asm__("sti;");
+      //  createKernelProcess((uint64_t)fun1);
+      //  createKernelProcess((uint64_t)fun2);
+      //  initSchedule();
         kprintf("\nEnd of Kernel");
 								while(1); //main should not return
 }
