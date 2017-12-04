@@ -32,7 +32,14 @@ _x86_64_asm_lgdt:
 ######
 # load a new TSS
 #  parameter 1: index of TSS in GDT
-.global _x86_64_asm_ltr
-_x86_64_asm_ltr:
-  ltr %di
-  retq
+
+#.global _x86_64_asm_ltr
+#_x86_64_asm_ltr:
+#  ltr %di
+#  retq
+
+.global load_tss
+load_tss:
+    mov $0x2b, %ax 		# Byte Offset of TSS in GDT is 0x28 (GDT[5]), plus two bits for RPL 3
+    ltr %ax
+    retq

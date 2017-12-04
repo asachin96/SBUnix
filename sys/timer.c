@@ -3,7 +3,6 @@
 #include <sys/defs.h>
 #include <sys/kprintf.h>
 extern void printString(char *); 
-int tick = 0;
 int noOfSecs = 0;
 static char *timerLocation=(char*)0xffffffff800b8000 + (160*25-14*2);
 
@@ -47,6 +46,7 @@ void initTimer(){
 }
 
 void displayTime(){
+  noOfSecs++;
 		int secs = noOfSecs%60;
 		int mins = noOfSecs/60;
 		int hrs = noOfSecs/3600;
@@ -58,14 +58,4 @@ void displayTime(){
 		timerLocation += 2;
 		printInteger(secs);    
 		timerLocation=(char*)0xffffffff800b8000 + (160*25 - 14*2);
-}
-
-void timerHandler(){
-		tick++;
-		if(tick % 20 == 0){
-				noOfSecs++;
-				displayTime();
-		} 
-		//send reset signal to master
-		outb(0x20, 0x20);
 }

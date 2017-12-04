@@ -1,6 +1,9 @@
 #include <sys/kprintf.h>
 #include <stdarg.h>
 #include <sys/defs.h>
+#include <sys/idt.h>
+#include <sys/util.h>
+
 
 #define CHECK_FOR_FLUSH(C) \
 		do \
@@ -160,4 +163,31 @@ void kprintf(const char *fmt, ...){
    va_start(args, fmt);
    parsePrint(fmt, args);
    va_end(args);
+}
+
+int32_t puts(char* str)
+{
+int32_t i = 0;
+
+while(str[i]!='\0')
+{
+kprintf("%c",str[i]);
+i++;
+}
+return i;
+}
+
+void clear_screen()
+{
+				int i = 0;
+				temp = (char *)0xffffffff800b8000;
+				for(;i<((160*25)-1);i+=2) 
+				{ 
+						*((char *)temp + i) = 0; 
+				}
+				linePos = 0; 
+}
+void commonIrqHandler(registers_t regs)
+{
+	outb(0x20, 0x20);
 }

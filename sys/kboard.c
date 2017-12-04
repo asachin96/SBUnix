@@ -3,7 +3,7 @@
 #include <sys/defs.h>
 #include <sys/kprintf.h>
 static char *keyLocation=(char*)0xffffffff800b8000 + (160*25- 2*2);
-
+//TODO backspace implementation
 struct scan_lookup 
 {
 		uint32_t scan_code;
@@ -13,7 +13,9 @@ struct scan_lookup
 int order = 0;
 int shiftcount = 0;
 int ctrlcount = 0;
-
+volatile int gets_triggered;
+int counter;
+char buf[1024];
 struct scan_lookup scan_lookup_array[] =
 {
 		{0x1E,'a','A'},
@@ -67,6 +69,7 @@ struct scan_lookup scan_lookup_array[] =
 		{0x1d,'^',0xff},
 		{0x2A,0xff,0xff},
 		{0x36,0xff,0xff},
+		{0x9c,'\n','\n'},
 		{0xff,0xff,0xff}
 };
 
@@ -100,6 +103,16 @@ void kbHandler()
 						shiftcount = 0;
 						ctrlcount = 0;
 						order = 1;
+						if(gets_triggered){
+														if(scan_lookup_array[i].value == '\n')
+														{
+																						buf[counter++] = '\0';
+																						gets_triggered = 0;
+														}
+														else
+																						buf[counter++] = scan_lookup_array[i].value;
+						}
+
 				}
 		}
 		else if(shiftcount)
@@ -116,6 +129,16 @@ void kbHandler()
 						*(keyLocation + 2) = 0;
 						shiftcount = 0;
 						order = 2;
+						if(gets_triggered){
+														if(scan_lookup_array[i].shiftValue == '\n')
+														{
+																						buf[counter++] = '\0';
+																						gets_triggered = 0;
+														}
+														else
+																						buf[counter++] = scan_lookup_array[i].shiftValue;
+						}
+
 				}
 
 		}
@@ -141,3 +164,20 @@ void kbHandler()
 		//send reset signal to master
 		outb(0x20, 0x20);
 }
+
+int gets(uint64_t var)
+{
+char * user_buff = (char*) var;
+int bytesRead = 0;
+
+gets_triggered = 1;
+__asm__("sti;");
+while(gets_triggered == 1);
+
+memcpy((void*)user_buff,(void*)buf,counter);
+bytesRead = counter;
+counter = 0;
+
+return bytesRead;
+}
+

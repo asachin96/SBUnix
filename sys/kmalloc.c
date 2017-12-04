@@ -34,7 +34,6 @@ void* kmalloc(uint32_t size)
         no_of_pages = size/(PAGESIZE + 1) + 1;     
         
         retaddr = virt_alloc_pages(no_of_pages, PAGING_PRESENT | PAGING_WRITABLE);
-         kprintf("\tkmalloc = %p", retaddr);
         if (retaddr != NULL) {
             free_mem_avail = (no_of_pages * PAGESIZE) - size;
             currptr = (uint64_t)retaddr + (uint64_t)size;

@@ -51,7 +51,6 @@ static bool is_file_elf_exec(Elf64_Ehdr* header)
 }
 
 static char args[10][100];
-
 static void copy_arg_to_stack(task_struct *task, int argc)
 {
     uint64_t cur_pml4, *user_stack, *argv[10];
@@ -185,7 +184,6 @@ static task_struct* load_elf(Elf64_Ehdr* header, task_struct *proc, char *filena
     
     // Initialize stack top to end of stack VMA
     mms->start_stack = end_vaddr - 0x8;
-    
     int argc = 0;
     kstrcpy(args[argc++], filename);
     if (argv) {
@@ -207,7 +205,10 @@ task_struct* create_elf_proc(char *filename, char *argv[])
     Elf64_Ehdr* elf_header;
 
     // lookup for the file in tarfs
-    header = (HEADER*) file_lookup(filename); 
+    header = (HEADER*) file_lookup(filename);
+    //header = (HEADER*) lookup(filename);
+			//	if(header ==    NULL)
+					///	return NULL; 
 
     elf_header = (Elf64_Ehdr *)header;
     
