@@ -1,17 +1,17 @@
 #include <sys/defs.h>
+#include <sys/common.h>
 #include <syscall.h>
-#include <sys/util.h>
 #include <sys/paging.h>
 #include <sys/proc_mngr.h>
 #include <sys/elf.h>
 #include <sys/tarfs.h>
 #include <sys/virt_mm.h>
 #include <sys/kstring.h>
-#include <sys/kprintf.h>
 #include <sys/types.h>
+#include <sys/fs.h>
 #include <dirent.h>
 #include <sys/kmalloc.h>
-#include <sys/kBoard.h>
+#include <sys/kprintf.h>
 // These will get invoked in kernel mode
 
 extern fnode_t* root_node;
@@ -137,7 +137,7 @@ int sys_closedir(uint64_t* entry)
         return -1; 
     }
 }
-/*
+
 int sys_open(char* dir_path, uint64_t flags)
 {
     fnode_t *temp_node;
@@ -328,7 +328,7 @@ void sys_close(int fd)
     
     CURRENT_TASK->file_descp[fd] = NULL;
 }
-*/
+
 int sys_read(uint64_t fd_type, uint64_t addr, uint64_t length)
 {
     uint64_t end = 0, currlength = 0;
@@ -420,7 +420,7 @@ int sys_write(uint64_t fd_type, uint64_t addr, int length)
 
     return length;
 }
-#if    0
+
 int sys_lseek(uint64_t fd_type, int offset, int whence) 
 {
     
@@ -498,7 +498,7 @@ int sys_lseek(uint64_t fd_type, int offset, int whence)
     return offset;
 
 }
-#endif
+
 pid_t sys_fork()
 {
     // Take a pointer to this process' task struct for later reference.
@@ -515,10 +515,10 @@ pid_t sys_fork()
 
     return child_task->pid;
 }
-#if 0
+
 uint64_t sys_execvpe(char *file, char *argv[], char *envp[])
 {
-    task_struct *new_task = create_elf_proc(file);
+    task_struct *new_task = create_elf_proc(file, argv);
 
     if (new_task) {
         task_struct *cur_task = CURRENT_TASK;
@@ -545,7 +545,7 @@ uint64_t sys_execvpe(char *file, char *argv[], char *envp[])
     // execvpe failed; so return -1
     return -1;
 }
-#endif
+
 uint64_t sys_wait(uint64_t status)
 {
     volatile task_struct *cur_task = CURRENT_TASK;
@@ -795,7 +795,7 @@ void* syscall_tbl[NUM_SYSCALLS] =
     sys_write,
     sys_brk,
     sys_fork,
-  //  sys_execvpe,
+    sys_execvpe,
     sys_wait,
     sys_waitpid,
     sys_exit,
@@ -808,11 +808,11 @@ void* syscall_tbl[NUM_SYSCALLS] =
     sys_opendir,
     sys_readdir,
     sys_closedir, 
-  //  sys_open,
-  //  sys_close,
+    sys_open,
+    sys_close,
     sys_sleep,
     sys_clear,
-  //  sys_lseek,
+    sys_lseek,
     sys_mkdir,
     sys_shutdown
 };
@@ -821,7 +821,6 @@ void* syscall_tbl[NUM_SYSCALLS] =
 void syscall_handler(void)
 {
     uint64_t syscallNo;
-
     __asm__ __volatile__("movq %%rax, %0;" : "=r"(syscallNo));
 
     if (syscallNo >= 0 && syscallNo < NUM_SYSCALLS) {
@@ -837,7 +836,6 @@ void syscall_handler(void)
                 : "=a" (ret) : "r" (func_ptr)
                 );
     }
-
     __asm__ __volatile__("iretq;");
 }
 

@@ -10,12 +10,13 @@
 #include <sys/virt_mm.h>
 #include <sys/kmalloc.h>
 #include <sys/proc_mngr.h>
+#include <sys/init_desc_table.h>
 
 #define INITIAL_STACK_SIZE 4096
 #include <sys/idt.h>
 #include <sys/timer.h>
 #define K_MEM_PAGES 518
-extern void installIdt();
+//extern void installIdt();
 //uint8_t initial_stack[INITIAL_STACK_SIZE]__attribute__((aligned(16)));
 uint8_t initial_stack[INITIAL_STACK_SIZE];
 uint32_t* loader_stack;
@@ -23,7 +24,8 @@ extern char kernmem, physbase;
 void *physfree_global;
 extern void initSchedule();
 extern void schedule(); 
-
+extern bool IsInitSchedule;
+//extern void initPic();
 void fun1(void){
    int i = 0;
    while(i<4){
@@ -67,22 +69,27 @@ void start(uint32_t *modulep, void *physbase, void *physfree)
 
 			 				physfree_global = physfree;
 								kprintf("physbase: %p, size: %x", phys_base, phys_size);
-			  			phys_init((uint64_t)phys_base, (uint64_t) physfree, phys_size); 
-					//			phys_init((uint64_t)0x100000, (uint64_t) physfree, 0x5fcb000); 
+			  			//phys_init((uint64_t)phys_base, (uint64_t) physfree, phys_size); 
+					 		phys_init((uint64_t)0x100000, (uint64_t) physfree, 0x5fcb000); 
 								init_paging((uint64_t)&kernmem, (uint64_t)physbase, K_MEM_PAGES);
-								init_tarfs();
 
 								kprintf("After page init!!");
         // Reset the kernel stack
     __asm__ __volatile__("movq %0, %%rbp" : :"a"(&initial_stack[0]));
     __asm__ __volatile__("movq %0, %%rsp" : :"a"(&initial_stack[INITIAL_STACK_SIZE]));
-								create_idle_process();
-        create_elf_proc("rootfs/bin/hello",0);
-        create_elf_proc("rootfs/bin/test",0);
+							init_tarfs();
+       
+							create_idle_process();
+       create_elf_proc("/rootfs/bin/hello",NULL);
+       //create_elf_proc("/rootfs/bin/fork",NULL);
+       create_elf_proc("/rootfs/bin/ps",NULL);
+       // createKernelProcess((uint64_t)fun1);
+        //createKernelProcess((uint64_t)fun2);
+       // initSchedule();
+        IsInitSchedule = FALSE;
 								__asm__("sti;");
-      //  createKernelProcess((uint64_t)fun1);
-      //  createKernelProcess((uint64_t)fun2);
-      //  initSchedule();
+        IsInitSchedule = TRUE;
+
         kprintf("\nEnd of Kernel");
 								while(1); //main should not return
 }
@@ -103,9 +110,12 @@ void boot(void)
 
         __asm__ volatile("cli");
 								init_gdt();
+  // init_tss();
+  //  init_idt();
+  // init_pic();
+
 								installIdt();
 								initTimer();
-	//							__asm__("sti;");
 								start(
 																								(uint32_t*)((char*)(uint64_t)loader_stack[3] + (uint64_t)&kernmem - (uint64_t)&physbase),
 																								&physbase,

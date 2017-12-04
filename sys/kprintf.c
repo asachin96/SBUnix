@@ -1,6 +1,9 @@
 #include <sys/kprintf.h>
 #include <stdarg.h>
 #include <sys/defs.h>
+#include <sys/idt.h>
+#include <sys/util.h>
+
 
 #define CHECK_FOR_FLUSH(C) \
 		do \
@@ -184,4 +187,7 @@ void clear_screen()
 				}
 				linePos = 0; 
 }
-
+void commonIrqHandler(registers_t regs)
+{
+	outb(0x20, 0x20);
+}

@@ -1,10 +1,9 @@
-#ifndef __IDT_H__
-#define __IDT_H__
+//
+// irq_common.h -- Interface and structures for high level interrupt service routines
+//
 
 #include <sys/defs.h>
 
-void setInteruptHandler(int intruptNo, uint64_t handler); 
-void installIdt(); 
 struct registers
 {
     uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; // Registers pushed by PUSHA
@@ -14,4 +13,6 @@ struct registers
 
 typedef struct registers registers_t;
 
-#endif
+void init_timer(uint32_t);
+void init_keyboard();
+
