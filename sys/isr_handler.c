@@ -80,7 +80,7 @@ static void page_fault_handler(registers_t regs)
         uint64_t start, end;
         while (vma_ptr != NULL) {
             start = vma_ptr->vm_start; end = vma_ptr->vm_end;
-            kprintf("\n[VMA]:%p-%p", start, end);
+            //kprintf("\n[VMA]:%p-%p", start, end);
             if (fault_addr >= start && fault_addr < end) {
                 kmmap(start, end - start, RW_USER_FLAGS);
                 break;

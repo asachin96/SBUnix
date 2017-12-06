@@ -4,7 +4,6 @@
 
 char *itoa(uint64_t val, char *str, int32_t base);
 void putchar(char mychar);
-int32_t puts(char *str);
 int gets(uint64_t addr);
 
 // By default copies 1 byte at a time

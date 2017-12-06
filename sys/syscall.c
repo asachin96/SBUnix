@@ -384,6 +384,7 @@ int sys_write(uint64_t fd_type, uint64_t addr, int length)
     if (fd_type == stdout || fd_type == stderr) {
         length = 0; 
         length = puts((char*) addr);
+        //kprintf("%s",(char*) addr);
 
     } else if (fd_type > 2) {
         vma_struct *iter; 

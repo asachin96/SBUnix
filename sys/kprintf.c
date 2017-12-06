@@ -4,7 +4,6 @@
 #include <sys/idt.h>
 #include <sys/util.h>
 
-
 #define CHECK_FOR_FLUSH(C) \
 		do \
 { \
@@ -26,7 +25,6 @@
 		}\
 }\
 while(0);\
-
 
 char *temp=(char*)0xffffffff800b8000;
 int linePos;
@@ -165,23 +163,33 @@ void kprintf(const char *fmt, ...){
    va_end(args);
 }
 
-int32_t puts(char* str)
+#pragma GCC push_options
+#pragma GCC optimize ("O0")
+int32_t puts(const char* str)
 {
-int32_t i = 0;
 
+int32_t volatile i = 0;
 while(str[i]!='\0')
 {
-kprintf("%c",str[i]);
+if(str[i]=='\n'){
+ temp+=(160-linePos);
+	linePos = 0;
+}else{
+*temp = str[i];
+temp += 2;
+linePos+=2;
+}
 i++;
 }
-return i;
+return 1;
 }
+#pragma GCC pop_options
 
 void clear_screen()
 {
 				int i = 0;
 				temp = (char *)0xffffffff800b8000;
-				for(;i<((160*25)-1);i+=2) 
+				for(;i<((160*25)-1);i++) 
 				{ 
 						*((char *)temp + i) = 0; 
 				}

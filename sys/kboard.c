@@ -2,7 +2,9 @@
 #include <sys/util.h>
 #include <sys/defs.h>
 #include <sys/kprintf.h>
-static char *keyLocation=(char*)0xffffffff800b8000 + (160*25- 2*2);
+//static char *keyLocation=(char*)0xffffffff800b8000 + (160*25- 2*2);
+extern char*temp;
+extern int linePos;
 //TODO backspace implementation
 struct scan_lookup 
 {
@@ -69,7 +71,7 @@ struct scan_lookup scan_lookup_array[] =
 		{0x1d,'^',0xff},
 		{0x2A,0xff,0xff},
 		{0x36,0xff,0xff},
-		{0x9c,'\n','\n'},
+		{0x1c,'\n','\n'},
 		{0xff,0xff,0xff}
 };
 
@@ -98,8 +100,6 @@ void kbHandler()
 				} 
 				else if(scan_lookup_array[i].scan_code !=0xff)
 				{
-						*(keyLocation) = scan_lookup_array[i].value;
-						*(keyLocation + 2) = 0;
 						shiftcount = 0;
 						ctrlcount = 0;
 						order = 1;
@@ -108,9 +108,17 @@ void kbHandler()
 														{
 																						buf[counter++] = '\0';
 																						gets_triggered = 0;
+                      temp+=(160-linePos);
+                      linePos=0;
+                      CHECK_FOR_FLUSH1();
 														}
-														else
+														else{
 																						buf[counter++] = scan_lookup_array[i].value;
+						                *(temp) = scan_lookup_array[i].value;
+                      temp+=2;
+                      linePos+=2;
+                      CHECK_FOR_FLUSH1();
+              }
 						}
 
 				}
@@ -125,8 +133,6 @@ void kbHandler()
 				}
 				if(scan_lookup_array[i].scan_code !=0xff && (scan_lookup_array[i].scan_code != 0x2A && scan_lookup_array[i].scan_code != 0x36))
 				{
-						*(keyLocation) = scan_lookup_array[i].shiftValue;
-						*(keyLocation + 2) = 0;
 						shiftcount = 0;
 						order = 2;
 						if(gets_triggered){
@@ -134,9 +140,17 @@ void kbHandler()
 														{
 																						buf[counter++] = '\0';
 																						gets_triggered = 0;
+                      temp+=(160-linePos);
+                      linePos = 0;
+                      CHECK_FOR_FLUSH1();
 														}
-														else
+														else{
 																						buf[counter++] = scan_lookup_array[i].shiftValue;
+						                *(temp) = scan_lookup_array[i].shiftValue;
+                      temp+=2;
+                      linePos+=2;
+                      CHECK_FOR_FLUSH1();
+              }
 						}
 
 				}
@@ -152,10 +166,12 @@ void kbHandler()
 				}
 				if(scan_lookup_array[i].scan_code !=0xff && (scan_lookup_array[i].value != '^'))
 				{
-						*(keyLocation) = '^';
-						*(keyLocation + 2) = scan_lookup_array[i].shiftValue;
+						*(temp) = scan_lookup_array[i].shiftValue;
+       temp+=2;
+       linePos+=2;
 						ctrlcount = 0;
 						order = 2;
+                      CHECK_FOR_FLUSH1();
 				}
 		}
 		else

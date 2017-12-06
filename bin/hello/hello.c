@@ -1,7 +1,4 @@
-#include <sys/defs.h>
 #include <stdlib.h>
-
-char hello[10] = "HELLO";
 
 int main(int argc, char* argv[])
 {
@@ -17,9 +14,7 @@ int main(int argc, char* argv[])
     scanf("%s %d %c",a,&c,&d);
     printf("a = %s, c = %d, d  = %c", a,c,d);*/
     
-  //  printf("\nProcess %d (parent %d) says %s", getpid(), getppid(), hello);
-    printf("\nProcess parent says %s", hello);
-    
+    printf("hello"); 
     while(1);
     return 0;
 }

@@ -48,8 +48,8 @@ void fun2(void){
 
 void start(uint32_t *modulep, void *physbase, void *physfree)
 {
-								uint64_t phys_size = 0;
-								uint64_t phys_base = 0;
+							//	uint64_t phys_size = 0;
+							//	uint64_t phys_base = 0;
 
 								struct smap_t {
 																uint64_t base, length;
@@ -58,9 +58,9 @@ void start(uint32_t *modulep, void *physbase, void *physfree)
 								while(modulep[0] != 0x9001) modulep += modulep[1]+2;
 								for(smap = (struct smap_t*)(modulep+2); smap < (struct smap_t*)((char*)modulep+modulep[1]+2*4); ++smap) {
 																if (smap->type == 1 /* memory */ && smap->length > 0x3000) {
-																								kprintf("Available Physical Memory [%p-%p]\n", smap->base, smap->base + smap->length);
-																								phys_base = smap->base;
-																								phys_size = smap->length;
+																								//kprintf("Available Physical Memory [%p-%p]\n", smap->base, smap->base + smap->length);
+																								//phys_base = smap->base;
+																								//phys_size = smap->length;
 
 																}
 								}
@@ -68,21 +68,20 @@ void start(uint32_t *modulep, void *physbase, void *physfree)
 								//kprintf("tarfs in [%p:%p] \n%d", &_binary_tarfs_start, &_binary_tarfs_end);
 
 			 				physfree_global = physfree;
-								kprintf("physbase: %p, size: %x", phys_base, phys_size);
+								//kprintf("physbase: %p, size: %x", phys_base, phys_size);
 			  			//phys_init((uint64_t)phys_base, (uint64_t) physfree, phys_size); 
 					 		phys_init((uint64_t)0x100000, (uint64_t) physfree, 0x5fcb000); 
 								init_paging((uint64_t)&kernmem, (uint64_t)physbase, K_MEM_PAGES);
 
-								kprintf("After page init!!");
         // Reset the kernel stack
     __asm__ __volatile__("movq %0, %%rbp" : :"a"(&initial_stack[0]));
     __asm__ __volatile__("movq %0, %%rsp" : :"a"(&initial_stack[INITIAL_STACK_SIZE]));
 							init_tarfs();
        
 							create_idle_process();
-       create_elf_proc("/rootfs/bin/hello",NULL);
+       create_elf_proc("/rootfs/bin/init",NULL);
        //create_elf_proc("/rootfs/bin/fork",NULL);
-       create_elf_proc("/rootfs/bin/ps",NULL);
+       //create_elf_proc("/rootfs/bin/ps",NULL);
        // createKernelProcess((uint64_t)fun1);
         //createKernelProcess((uint64_t)fun2);
        // initSchedule();
@@ -90,16 +89,13 @@ void start(uint32_t *modulep, void *physbase, void *physfree)
 								__asm__("sti;");
         IsInitSchedule = TRUE;
 
-        kprintf("\nEnd of Kernel");
 								while(1); //main should not return
 }
 
 void boot(void)
 {
 								// note: function changes rsp, local stack variables can't be practically used
-								register char *temp1, *temp2;
 
-								for(temp2 = (char*)0xb8001; temp2 < (char*)0xb8000+160*25; temp2 += 2) *temp2 = 7 /* white */;
 								__asm__ volatile (
 					//																			"cli;"
 																								"movq %%rsp, %0;"
@@ -116,15 +112,11 @@ void boot(void)
 
 								installIdt();
 								initTimer();
+         clear_screen(); 
 								start(
 																								(uint32_t*)((char*)(uint64_t)loader_stack[3] + (uint64_t)&kernmem - (uint64_t)&physbase),
 																								&physbase,
 																								(void*)(uint64_t)loader_stack[4]
 													);
-								for(
-																								temp1 = "!!!!! start() returned !!!!!", temp2 = (char*)0xb8000;
-																								*temp1;
-																								temp1 += 1, temp2 += 2
-											) *temp2 = *temp1;
 								while(1) __asm__ volatile ("hlt");
 }

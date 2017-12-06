@@ -49,6 +49,7 @@ extern int phys_get_block_ref(uint64_t paddr);
 extern uint64_t phys_alloc_block();
 extern void phys_dec_block_ref(uint64_t paddr);
 
+#if 0
 static void divide_by_zero_handler(registers_t regs)
 {
     kprintf("Divide by Zero!");
@@ -114,6 +115,7 @@ static void page_fault_handler(registers_t regs)
         // Else kill the process and raise an SEGFAULT
         vma_struct* vma_ptr = CURRENT_TASK->mm->vma_list;
         uint64_t start, end;
+        kprintf("1\n");
         while (vma_ptr != NULL) {
             start = vma_ptr->vm_start; end = vma_ptr->vm_end;
             kprintf("\n[VMA]:%p-%p", start, end);
@@ -123,13 +125,14 @@ static void page_fault_handler(registers_t regs)
             }
             vma_ptr = vma_ptr->vm_next;
         }
+        kprintf("2\n");
         if (vma_ptr == NULL) {
             IsFault = TRUE;
         }
     }
 
     if (IsFault) {
-        kprintf("\nSegmentation Fault %p (%p) - Process Terminated", fault_addr, err_code);
+        kprintf("\n1Segmentation Fault %p (%p) - Process Terminated", fault_addr, err_code);
         sys_exit();
     }
 }
@@ -154,7 +157,7 @@ void commonHandler(registers_t regs){
     }
    kprintf("Interrup received\n");
 }
-
+#endif
 //port 0 of Pic is connected to PIT channel 0 IRQ line
 //On interrupt it has to write IRQ no 32 on data bus to be recd by processor
 void initPic(){

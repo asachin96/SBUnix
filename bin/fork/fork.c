@@ -6,14 +6,14 @@ char buf[10] = "FORK";
 int main(int argc, char* argv[])
 {
     pid_t pid;
-    printf("\nProcess %d (parent %d) says %s", getpid(), getppid(), buf);
+    printf("\nProcess");
 
 //    pid = fork();
 //    printf("\nFork return: %d Process %d (parent %d)", pid, getpid(), getppid());
     if ((pid = fork()) == 0) {
-        printf("\nFork return: %d Process %d (parent %d): child", pid, getpid(), getppid());
+        printf("child");
     } else {
-        printf("\nFork return: %d Process %d (parent %d): parent", pid, getpid(), getppid());
+        printf("parent");
     }
 
     while(1);

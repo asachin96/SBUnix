@@ -388,8 +388,7 @@ task_struct* copy_task_struct(task_struct* parent_task)
 								vma_struct *child_vma_l  = NULL;
 
 								// Copy contains of parent mm_struct, except pml4_t and vma_list
-								// memcpy((void*)child_task->mm, (void*)parent_task->mm, sizeof(mm_struct));
-								copyHelper( (void*)parent_task->mm,(void*)child_task->mm,0, sizeof(mm_struct));
+								memcpy((void*)child_task->mm, (void*)parent_task->mm, sizeof(mm_struct));
 
 								child_task->mm->pml4_t   = child_pml4_t;
 								child_task->mm->vma_list = NULL; 
@@ -406,7 +405,7 @@ task_struct* copy_task_struct(task_struct* parent_task)
 								child_task->ppid   = parent_task->pid;
 								child_task->parent = parent_task;
 								// cStrcpy(child_task->comm, parent_task->comm);
-								copyHelper( parent_task->comm,child_task->comm,0,cStrlen(parent_task->comm));
+							kstrcpy((void*)child_task->comm, (void*)parent_task->comm);
 
 								add_child_to_parent(child_task);
 
@@ -446,8 +445,7 @@ task_struct* copy_task_struct(task_struct* parent_task)
 
 																																//kprintf("\nStack v:%p p:%p", vaddr, paddr);
 																																// Copy parent page in kernel space
-																																//  memcpy((void*)k_vaddr, (void*)vaddr, PAGESIZE);
-																																copyHelper( (void*)vaddr,(void*)k_vaddr,0, PAGESIZE);
+																																memcpy((void*)k_vaddr, (void*)vaddr, PAGESIZE);
 
 																																// Map paddr with child vaddr
 																																LOAD_CR3(child_pml4_t);
@@ -590,9 +588,7 @@ if (IsInitSchedule) {
                     set_tss_rsp((uint64_t)&next->kernel_stack[KERNEL_STACK_SIZE-1]);
                     switch_to_ring3;
                 }
-#if DEBUG_SCHEDULING
-                kprintf(" %d[%d]", next->pid, next->task_state);
-#endif
+                //kprintf(" %d[%d]", next->pid, next->task_state);
             }
         }
     }
