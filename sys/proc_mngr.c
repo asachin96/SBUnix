@@ -74,6 +74,7 @@ void create_idle_process()
 								idle_task = alloc_new_task(FALSE);
 								idle_task->task_state = IDLE_STATE;
 								kstrcpy(idle_task->comm, "IDLE Process");
+								kstrcpy(idle_task->cwd, "/");
 								schedule_process(idle_task, (uint64_t)idle_process, (uint64_t)&idle_task->kernel_stack[KERNEL_STACK_SIZE-1]);
 }
 
@@ -134,80 +135,6 @@ static task_struct* get_next_ready_task()
 								return next;
 }
 
-#if 0
-void yield(){
-								//switch to next ready task
-
-#if  0
-								uint64_t cur_rsp;
-								__asm__ __volatile__("movq %%rsp, %[cur_rsp]": [cur_rsp] "=r"(cur_rsp));
-
-								prev = CURRENT_TASK;
-								prev->rsp_register = cur_rsp;
-
-								// Add prev to the end of the next_task_list for states other than EXIT
-								add_to_task_list(prev);
-
-								// Schedule next READY process
-								next = get_next_ready_task();
-
-								// Context Switch only if next process is different than current process
-								if (prev != next) {
-
-																LOAD_CR3(next->mm->pml4_t);
-
-																__asm__ __volatile__("movq %[next_rsp], %%rsp" : : [next_rsp] "m" (next->rsp_register));
-
-																/*if (next->IsUserProcess) {
-																								set_tss_rsp0((uint64_t)&next->kernel_stack[KERNEL_STACK_SIZE-1]);
-																								switch_to_ring3;
-																}*/
-								}
-#endif
-																if (CURRENT_TASK == NULL) {
-																								next = get_next_ready_task();
-
-																								LOAD_CR3(next->mm->pml4_t);
-
-																								// Switch the kernel stack to that of the first process
-																								__asm__ __volatile__("movq %[next_rsp], %%rsp" : : [next_rsp] "m" (next->rsp_register));
-
-
-#if DEBUG_SCHEDULING
-																								kprintf("\nScheduler Initiated with PID: %d[%d]", next->pid, next->task_state);
-#endif
-
-																} else {
-																								uint64_t cur_rsp;
-																								__asm__ __volatile__("movq %%rsp, %[cur_rsp]": [cur_rsp] "=r"(cur_rsp));
-
-																								prev = CURRENT_TASK;
-																								prev->rsp_register = cur_rsp;
-
-																								// Add prev to the end of the next_task_list for states other than EXIT
-																								add_to_task_list(prev);
-
-																								// Schedule next READY process
-																								next = get_next_ready_task();
-
-																								// Context Switch only if next process is different than current process
-																								if (prev != next) {
-
-																																LOAD_CR3(next->mm->pml4_t);
-					//																										switch_to(prev,next);
-																																__asm__ __volatile__("movq %[next_rsp], %%rsp" : : [next_rsp] "m" (next->rsp_register));
-
-#if DEBUG_SCHEDULING
-																																kprintf(" %d[%d]", next->pid, next->task_state);
-#endif
-																								}
-																}
-								__asm__ __volatile__("mov $0x20, %al;" "out %al, $0x20");
-}
-#endif
-
-
-#if 0
 // Keeps track of the sleep time for the sleeping processes
 static void sleep_time_check()
 {
@@ -215,6 +142,7 @@ static void sleep_time_check()
 
 								while (timer_list_ptr != NULL) {
 																if (timer_list_ptr->task_state == SLEEP_STATE) {
+                        //kprintf("%d", timer_list_ptr->sleep_time);
 																								if (timer_list_ptr->sleep_time == 0) {
 																																timer_list_ptr->task_state = READY_STATE;
 																								} else {
@@ -224,63 +152,7 @@ static void sleep_time_check()
 																timer_list_ptr = timer_list_ptr->next;
 								}
 }
-#endif
-/* tick: counts the PC timer ticks at the rate of 1.18 MHz.
-	* sec : counter for counting number of seconds completed. 1 sec = 100 ticks.
-	* min : counter for counting number of minutes completed. 1 min = 60 seconds.
-	* hr  : counter for counting number of hours completed.
-	*/
-//static uint32_t sec, min, hr, tick;
-#if 0
 
-void init_timer(uint32_t freq)
-{
-								uint32_t divisor = 1193180 / freq;
-								uint8_t lower, upper;
-
-								// Send the command byte.
-								outb(0x43, 0x36);
-
-								// Split into upper/lower bytes
-								lower = (uint8_t)(divisor & 0xFF);
-								upper = (uint8_t)((divisor >> 8) & 0xFF);
-
-								// Send the frequency divisor
-								outb(0x40, lower);
-								outb(0x40, upper);
-
-								// Initialize timer to 0
-								sec = min = hr = tick = 0;
-}
-void print_timer()
-{
-								uint64_t cur_video_addr;
-
-								// Save current video address
-								cur_video_addr = get_video_addr();
-
-								sec++;
-								if (sec == 60) {
-																min++;
-																sec = 0;
-																if (min == 60) {
-																								hr++;
-																								min = 0;
-																								if (hr == 24) {
-																																hr = 0;
-																								}
-																}
-								}
-
-								set_cursor_pos(24, 55);
-								kprintf("         ");
-								set_cursor_pos(24, 55);
-								kprintf("%d:%d:%d", hr, min, sec);
-
-								// Restore video address
-								set_video_addr(cur_video_addr);
-}
-#endif
 #define switch_to_ring3 \
 								__asm__ __volatile__(\
 																								"movq $0x23, %rax;"\
@@ -288,68 +160,6 @@ void print_timer()
 																								"movq %rax,  %es;"\
 																								"movq %rax,  %fs;"\
 																								"movq %rax,  %gs;")
-#if 0
-void timer_handler()
-{
-								tick++;
-								if (tick == 100) {
-																tick = 0;
-																print_timer();
-								}
-
-								if (InitScheduling) {
-																sleep_time_check();
-
-																if (CURRENT_TASK == NULL) {
-																								next = get_next_ready_task();
-
-																								LOAD_CR3(next->mm->pml4_t);
-
-																								// Switch the kernel stack to that of the first process
-																								__asm__ __volatile__("movq %[next_rsp], %%rsp" : : [next_rsp] "m" (next->rsp_register));
-
-																								if (next->IsUserProcess) {
-																																set_tss_rsp0((uint64_t)&next->kernel_stack[KERNEL_STACK_SIZE-1]);
-																																switch_to_ring3;
-																								}
-
-#if DEBUG_SCHEDULING
-																								kprintf("\nScheduler Initiated with PID: %d[%d]", next->pid, next->task_state);
-#endif
-
-																} else {
-																								uint64_t cur_rsp;
-																								__asm__ __volatile__("movq %%rsp, %[cur_rsp]": [cur_rsp] "=r"(cur_rsp));
-
-																								prev = CURRENT_TASK;
-																								prev->rsp_register = cur_rsp;
-
-																								// Add prev to the end of the next_task_list for states other than EXIT
-																								add_to_task_list(prev);
-
-																								// Schedule next READY process
-																								next = get_next_ready_task();
-
-																								// Context Switch only if next process is different than current process
-																								if (prev != next) {
-
-																																LOAD_CR3(next->mm->pml4_t);
-
-																																__asm__ __volatile__("movq %[next_rsp], %%rsp" : : [next_rsp] "m" (next->rsp_register));
-
-																																if (next->IsUserProcess) {
-																																								set_tss_rsp0((uint64_t)&next->kernel_stack[KERNEL_STACK_SIZE-1]);
-																																								switch_to_ring3;
-																																}
-#if DEBUG_SCHEDULING
-																																kprintf(" %d[%d]", next->pid, next->task_state);
-#endif
-																								}
-																}
-								}
-								__asm__ __volatile__("mov $0x20, %al;" "out %al, $0x20");
-}
-#endif
 extern void irq0();
 
 void schedule_process(task_struct* new_task, uint64_t entry_point, uint64_t stack_top)
@@ -404,8 +214,8 @@ task_struct* copy_task_struct(task_struct* parent_task)
 
 								child_task->ppid   = parent_task->pid;
 								child_task->parent = parent_task;
-								// cStrcpy(child_task->comm, parent_task->comm);
 							kstrcpy((void*)child_task->comm, (void*)parent_task->comm);
+							kstrcpy((void*)child_task->cwd, (void*)parent_task->cwd);
 
 								add_child_to_parent(child_task);
 
@@ -532,6 +342,7 @@ void createKernelProcess(uint64_t funcAddr){
 								task_struct* new_task = alloc_new_task(FALSE);
 								new_task->task_state = RUNNING_STATE;
 								kstrcpy(new_task->comm, "test");
+								kstrcpy(new_task->cwd, "/");
 int stackind = KERNEL_STACK_SIZE-1;
 new_task->rsp_register = (uint64_t)&new_task->kernel_stack[stackind];
 new_task->rip_register = funcAddr;
@@ -543,10 +354,10 @@ new_task->rip_register = funcAddr;
 }
 void timerHandler(){
     tick++;
-    if(tick%20 == 0) displayTime();
+    if(tick%100 == 0) displayTime();
 
 if (IsInitSchedule) {
-        //sleep_time_check();
+        sleep_time_check();
 
         if (CURRENT_TASK == NULL) {
             next = get_next_ready_task();

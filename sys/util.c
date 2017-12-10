@@ -2,6 +2,12 @@
 #include<sys/defs.h>
 #include<sys/kprintf.h>
 
+void outw (uint16_t port, uint16_t data)
+{
+  __asm__ volatile ("outw %w0, %w1" : : "a" (data), "Nd" (port));
+}
+
+
 void outb (unsigned short port, unsigned char data){
 	__asm__ __volatile__ ("outb %1, %0" : : "dN" (port), "a" (data));
 }
@@ -53,6 +59,7 @@ int read(int fd, void *buf, int count){
     return n;
 }
 
+#if 0
 int32_t atoi(char * ptr)
 {
 int x = 0;
@@ -68,6 +75,28 @@ x+=(ptr[i] - '0');
 
 return x*sign;
 }
+#endif
+
+int32_t atoi(char *str){
+    int res = 0;  
+    int sign = 1; 
+    int i = 0;  
+      
+    // If number is negative, then update sign
+    if (str[0] == '-')
+    {
+        sign = -1;  
+        i++; 
+    }
+      
+    // Iterate through all digits and update the result
+    for (; str[i] != '\0'; ++i)
+        res = res*10 + str[i] - '0';
+    
+    // Return result with sign
+    return sign*res;
+}
+
 
 
 int32_t oct_to_dec(int n) {

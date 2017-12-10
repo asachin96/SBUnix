@@ -1,60 +1,5 @@
 #include <stdlib.h>
 
-static char * strtok_r(char *s, const char *delim, char **last)
-{
-    char *spanp;
-    int c, sc;
-    char *tok;
-
-
-    if (s == NULL && (s = *last) == NULL)
-        return (NULL);
-
-    /*
-     *   * Skip (span) leading delimiters (s += strspn(s, delim), sort of).
-     *       */
-cont:
-    c = *s++;
-    for (spanp = (char *)delim; (sc = *spanp++) != 0;) {
-        if (c == sc)
-            goto cont;
-    }
-
-    if (c == 0) {       /* no non-delimiter characters */
-        *last = NULL;
-        return (NULL);
-    }
-    tok = s - 1;
-
-    /*
-     *   * Scan token (scan for delimiters: s += strcspn(s, delim), sort of).
-     *       * Note that delim must have one NUL; we stop if we see that, too.
-     *           */
-    for (;;) {
-        c = *s++;
-        spanp = (char *)delim;
-        do {
-            if ((sc = *spanp++) == c) {
-                if (c == 0)
-                    s = NULL;
-                else
-                    s[-1] = 0;
-                *last = s;
-                return (tok);
-            }
-        } while (sc != 0);
-    }
-    /* NOTREACHED */
-}
-
-
-char * strtok(char *s, const char *delim)
-{
-    static char *last;
-
-    return strtok_r(s, delim, &last);
-}
-
 void *memset(void *ptr, uint8_t value, uint64_t num)
 {
     uint8_t *temp = (uint8_t *)ptr;
@@ -65,6 +10,7 @@ void *memset(void *ptr, uint8_t value, uint64_t num)
     return ptr;
 }
 
+#if 0
 int strcmp(const char *s1, const char *s2)
 {
     while (*s1 == *s2++)
@@ -73,6 +19,24 @@ int strcmp(const char *s1, const char *s2)
 
     return (*(const unsigned char *)s1 - *(const unsigned char *)(s2 - 1));
 }
+#endif
+
+int strcmp(const char *s1, const char *s2)
+{
+								int i = 0;
+								for(;s1[i]!='\0'&&s2[i]!='\0';i++)
+								{
+																if(s1[i]!=s2[i])
+																								return (s2[i]>s1[i])?-1:1;
+								}
+								if(s1[i]==s2[i])
+																return 0;
+								else if(s1[i] == '\0')
+																return -1;
+								else 
+																return 1;
+}
+
 
 int strlen(const char *str)
 {
@@ -130,6 +94,27 @@ int32_t pow(int base, int power)
     return product;
 }
 
+int32_t atoi(char *str){
+    int res = 0;  
+    int sign = 1; 
+    int i = 0;  
+      
+    // If number is negative, then update sign
+    if (str[0] == '-')
+    {
+        sign = -1;  
+        i++; 
+    }
+      
+    // Iterate through all digits and update the result
+    for (; str[i] != '\0'; ++i)
+        res = res*10 + str[i] - '0';
+    
+    // Return result with sign
+    return sign*res;
+}
+
+#if 0
 int32_t atoi(char *p)
 {
     int k = 0, sign =1;
@@ -142,7 +127,7 @@ int32_t atoi(char *p)
         p++;
     }
     while (*p) {
-        if ( (int)(*p) >= 48 && (int)(*p) <= 57) {
+        if ( (int)(*p) >= 0x30 && (int)(*p) <= 0x39) {
             k = (k<<3)+(k<<1)+(*p)-'0';
             p++;
         } else {
@@ -153,15 +138,15 @@ int32_t atoi(char *p)
 
     return k*sign;
 }
+#endif
 
 int32_t oct_to_dec(int n) {
     int dec = 0, i = 0, rem; 
  
-    while (n != 0) { 
+    for(;n!=0;i++){ 
         rem = n % 10; 
         n /= 10; 
         dec += rem * pow(8, i);
-        ++i;
     }
     return dec;
 }
@@ -169,6 +154,7 @@ int32_t oct_to_dec(int n) {
 char *itoa(uint64_t val, char *str, int32_t base)
 {
     *str = '\0'; // Currently pointing to the end of string
+				const char*  hexString ="0123456789abcdef";
     if (val == 0) {
         *--str = '0';
         return str;
@@ -177,7 +163,7 @@ char *itoa(uint64_t val, char *str, int32_t base)
         return str;
     }
     while (val) {
-        *--str = "0123456789abcdef"[val%base];
+        *--str = hexString[val%base];
         val = val/base;
     }
     return str;

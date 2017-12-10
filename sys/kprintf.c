@@ -34,6 +34,7 @@ void printChar(char c){
      temp += 2;
 	linePos+=2;
 CHECK_FOR_FLUSH(c);
+update_cursor();
 }
 
 void printString(char *s){
@@ -42,6 +43,7 @@ void printString(char *s){
         temp += 2;
 		linePos+=2;
 CHECK_FOR_FLUSH(*s);
+update_cursor();
         s++;
     }
 }
@@ -61,6 +63,7 @@ void printInt(int n){
         temp += 2;
 	    linePos+=2;
 CHECK_FOR_FLUSH(c);
+update_cursor();
     }
 }
 
@@ -84,6 +87,7 @@ void printHex(int n){
        temp += 2;
 	   linePos+=2;
 CHECK_FOR_FLUSH(c);
+update_cursor();
     }
 }
 
@@ -109,6 +113,7 @@ void printPtr(uint64_t n){
        temp += 2;
 	   linePos+=2;
 CHECK_FOR_FLUSH(c);
+update_cursor();
     }
 }
 
@@ -142,16 +147,19 @@ void parsePrint(const char *fmt, va_list args){
 				
 	           linePos = 0;
 CHECK_FOR_FLUSH(0);
+update_cursor();
 		  }else if(*t == '\r'){
 //			*temp = 0xD;
 	         temp-=(linePos);
 	         linePos = 0;
 CHECK_FOR_FLUSH(0);
+update_cursor();
 		  }else{
              *temp = *t;
              temp += 2;
 	         linePos+=2;
 CHECK_FOR_FLUSH(*t);
+update_cursor();
          }
    }
 }
@@ -181,6 +189,7 @@ linePos+=2;
 }
 i++;
 }
+update_cursor();
 return 1;
 }
 #pragma GCC pop_options
@@ -194,8 +203,36 @@ void clear_screen()
 						*((char *)temp + i) = 0; 
 				}
 				linePos = 0; 
+				update_cursor();
 }
 void commonIrqHandler(registers_t regs)
 {
 	outb(0x20, 0x20);
 }
+
+void enable_cursor(uint8_t cursor_start, uint8_t cursor_end)
+{
+	outb(0x3D4, 0x0A);
+	outb(0x3D5, (inb(0x3D5) & 0xC0) | cursor_start);
+ 
+	outb(0x3D4, 0x0B);
+	outb(0x3D5, (inb(0x3E0) & 0xE0) | cursor_end);
+}
+
+void disable_cursor()
+{
+	outb(0x3D4, 0x0A);
+	outb(0x3D5, 0x20);
+}
+
+void update_cursor()
+{
+  uint16_t cp = (uint16_t)((char*)temp-(char*)0xffffffff800b8000)/2;
+  outw (0x3d4, 0x0e | (cp & 0xff00));
+  outw (0x3d4, 0x0f | (cp << 8)); 
+	//outb(0x3D4, 0x0F);
+	//outb(0x3D5, *pos);
+	//outb(0x3D4, 0x0E);
+	//outb(0x3D5, *(pos+1));
+}
+

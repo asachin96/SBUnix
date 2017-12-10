@@ -5,7 +5,6 @@
 //static char *keyLocation=(char*)0xffffffff800b8000 + (160*25- 2*2);
 extern char*temp;
 extern int linePos;
-//TODO backspace implementation
 struct scan_lookup 
 {
 		uint32_t scan_code;
@@ -72,13 +71,16 @@ struct scan_lookup scan_lookup_array[] =
 		{0x2A,0xff,0xff},
 		{0x36,0xff,0xff},
 		{0x1c,'\n','\n'},
+		{0xe,'\b','\b'},
 		{0xff,0xff,0xff}
 };
 
 void kbHandler()
 {
+
 		unsigned char scancode;
 		scancode = inb(0x60);
+	//	kprintf("%x ",scancode);
 		if(!order )
 		{
 				int i =0;
@@ -112,6 +114,16 @@ void kbHandler()
                       linePos=0;
                       CHECK_FOR_FLUSH1();
 														}
+														else if(scan_lookup_array[i].value == '\b')
+														{
+																						if(counter -1  >=0)
+																						{
+																						counter --;
+																						temp-=2;
+                      linePos-=2;
+																						*temp = ' '; 
+																						}
+														}
 														else{
 																						buf[counter++] = scan_lookup_array[i].value;
 						                *(temp) = scan_lookup_array[i].value;
@@ -143,6 +155,16 @@ void kbHandler()
                       temp+=(160-linePos);
                       linePos = 0;
                       CHECK_FOR_FLUSH1();
+														}
+														else if(scan_lookup_array[i].value == '\b')
+														{
+																						if(counter -1  >=0)
+																					{
+																						counter --;
+																						temp-=2;
+                      linePos-=2;
+																						*temp = ' '; 
+																					}
 														}
 														else{
 																						buf[counter++] = scan_lookup_array[i].shiftValue;

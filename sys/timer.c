@@ -35,7 +35,7 @@ void printStr(char *s){
 }
 
 void initTimer(){
-		uint32_t divisor =  59659;
+		uint32_t divisor = 1193180;
 
 		//send the command byte
 		outb(0x43, 0x36);

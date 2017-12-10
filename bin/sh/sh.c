@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <unistd.h>
 #include <sys/defs.h>
 #include <dirent.h>
 
@@ -97,8 +98,9 @@ static void fork_and_execvpe()
     if (pid != 0) {
         if (bg_flag != '&') {
             waitpid(pid, NULL, 0);
+												printf("\n");
         } else {
-            printf("Added [%d] to BG", pid);
+            printf("Added [%d] to BG\n", pid);
         }
 
     } else {
@@ -113,13 +115,13 @@ int main(int argc, char **argv)
     int i, j=0, k=0, file_descp, ptr_length, lendir = 0, str_length;
     char* exec_path;
 
-    printf("\n\t\t\t\t*******NEW SHELL*******");
+    printf("\n\t\t\t\t*******NEW SHELL*******\n");
     //By default current directory stream will be pointing to DIR stream of '/'
     curr_dir_ptr = opendir("/");
     while(1) {
         j = 0, k = 0;
 
-        printf("\n[user@SBUnix ~%s]$", currdir);
+        printf("[user@SBUnix ~%s]$", currdir);
 
         scanf("%s", ptr);
         ptr_length = strlen(ptr);
@@ -130,7 +132,7 @@ int main(int argc, char **argv)
         if (ptr_length == 0) {
             continue;
         } else if (strcmp(ptr, "echo $PATH")==0) {
-            printf("PATH: %s", path);
+            printf("PATH: %s\n", path);
             continue;
         }
         /*****1) To check if process is to be run in background ****/
@@ -157,7 +159,28 @@ int main(int argc, char **argv)
         memset(help_ptr, 0, 2048);
         memset(help_str, 0, 2048);
 
-        if (strcmp(args[0], "ulimit") == 0) {
+        if (strcmp(args[0], "echo") == 0) {
+            int l = 1;
+            for(;l<=j;l++){
+                printf("%s ", args[l]);
+            }
+											printf("\n");
+        }
+        else if (strcmp(args[0], "kill") == 0) {
+            int l = 1;
+           // for(;l<=j;l++){
+             //   printf("%s ", args[l]);
+           // }
+											if(j>=2 && strcmp(args[1],"-9")==0)
+													{
+													for(l=2;l<=j;l++)
+													{
+													pid_t pid = atoi(args[l]);
+													kill(pid);
+													}
+													}
+        }
+								else if (strcmp(args[0], "ulimit") == 0) {
 
             char *new_pointer; 
             file_descp  = open("/rootfs/etc/ulimit", 0);
@@ -195,7 +218,12 @@ int main(int argc, char **argv)
         } else if (strcmp(args[0], "cat") == 0) {
 
             char *new_pointer; 
-            file_descp  = open(args[1], 0);
+            char temp[256];
+            strcpy(temp, currdir);
+            strcat(temp,"/");
+            strcat(temp,args[1]);
+            file_descp  = open(temp, 0);
+            //file_descp  = open(args[1], 0);
             if (file_descp != -1) {
                 read(file_descp, help_ptr, 2048); 
                 close(file_descp);
@@ -203,12 +231,12 @@ int main(int argc, char **argv)
                 while (*new_pointer != '\0') {
 
                     new_pointer = getLine(new_pointer, help_str, 2047);
-                    printf("\n%s", help_str);
+                    printf("%s\n", help_str);
                 }
 
-                printf("\n");
+              //  printf("\n");
             } else { 
-                printf("\nInvalid Path : Please enter absolute path of the file.\nRefer to help.");
+                printf("Invalid Path : Please enter absolute path of the file.\nRefer to help.\n");
             }
 
         } else if (strcmp(args[0], "shutdown") == 0) {
@@ -222,9 +250,9 @@ int main(int argc, char **argv)
         } else if (strcmp(args[0], "pwd") == 0) {
             /****3) To handle PWD command ****/
             if (strlen(currdir) == 0)
-                printf("/");
+                printf("/\n");
             else
-                printf("%s", currdir);
+                printf("%s\n", currdir);
         } else if (strcmp(args[0], "cd") == 0) {
             /****4) To handle CD command ****/
             lendir  = strlen(currdir);
@@ -236,7 +264,7 @@ int main(int argc, char **argv)
 
                 if (curr_dir_ptr == NULL) {
 
-                    printf("%s: No such directory.\nRefer to help.", args[1]); 
+                    printf("%s: No such directory.\nRefer to help.\n", args[1]); 
                     currdir[lendir] = '\0';
                     curr_dir_ptr    = opendir(currdir); 
 
@@ -258,7 +286,7 @@ int main(int argc, char **argv)
 
                 if (curr_dir_ptr == NULL) {
 
-                    printf("%s: No such directory.\nRefer to help.", currdir); 
+                    printf("%s: No such directory.\nRefer to help.\n", currdir); 
                     currdir[lendir] = '\0';
                     curr_dir_ptr    = opendir(currdir); 
 
@@ -268,6 +296,7 @@ int main(int argc, char **argv)
                     modify_string(currdir);
                 }
             } 
+            chdir(currdir);
 
         } else if (strcmp(args[0], "/rootfs/bin/ls") == 0 || strcmp(args[0], "ls") == 0) {
             /****5) To handle LS command ****/
@@ -301,7 +330,7 @@ int main(int argc, char **argv)
             if (Is_file_exist()) {
                 fork_and_execvpe();
             } else {
-                printf("CMD does not exist.\nRefer to help.");
+                printf("CMD does not exist.\nRefer to help.\n");
             }
 
         } else if (ptr[0] == 's' && ptr[1] == 'h' && ptr[2] == ' ' && ptr_length > 3)  {              /****6) To check for executable ****/
@@ -352,19 +381,19 @@ int main(int argc, char **argv)
                         if (Is_file_exist()) {
                             copy_args_to_execargs();
                             fork_and_execvpe();
-                            yield();
+                            //yield();
                         } else { 
-                            printf("CMD does not exist.\nRefer to help.");
+                            printf("CMD does not exist.\nRefer to help.\n");
                         }
                         newstr = getLine(newstr, str, 1023);
                     }
 
                 } else {
-                    printf("File not an executable.\nRefer to help.");
+                    printf("File not an executable.\nRefer to help.\n");
                 }
 
             } else {
-                printf("File does not exist.\nRefer to help.");
+                printf("File does not exist.\nRefer to help.\n");
             }
 
         } else {
@@ -385,7 +414,7 @@ int main(int argc, char **argv)
                 copy_args_to_execargs();
                 fork_and_execvpe();
             } else { 
-                printf("CMD does not exist.\nRefer to help.");
+                printf("CMD does not exist.\nRefer to help.\n");
             }
         }
         *ptr = NULL;

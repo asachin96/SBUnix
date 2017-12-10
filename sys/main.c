@@ -11,6 +11,7 @@
 #include <sys/kmalloc.h>
 #include <sys/proc_mngr.h>
 #include <sys/init_desc_table.h>
+#include <sys/fs.h>
 
 #define INITIAL_STACK_SIZE 4096
 #include <sys/idt.h>
@@ -25,6 +26,7 @@ void *physfree_global;
 extern void initSchedule();
 extern void schedule(); 
 extern bool IsInitSchedule;
+extern void test_read();
 //extern void initPic();
 void fun1(void){
    int i = 0;
@@ -77,7 +79,9 @@ void start(uint32_t *modulep, void *physbase, void *physfree)
     __asm__ __volatile__("movq %0, %%rbp" : :"a"(&initial_stack[0]));
     __asm__ __volatile__("movq %0, %%rsp" : :"a"(&initial_stack[INITIAL_STACK_SIZE]));
 							init_tarfs();
-       
+//       init_disk(FALSE);      
+ 
+//       test_read();
 							create_idle_process();
        create_elf_proc("/rootfs/bin/init",NULL);
        //create_elf_proc("/rootfs/bin/fork",NULL);
@@ -112,6 +116,7 @@ void boot(void)
 
 								installIdt();
 								initTimer();
+									enable_cursor(0,15);	
          clear_screen(); 
 								start(
 																								(uint32_t*)((char*)(uint64_t)loader_stack[3] + (uint64_t)&kernmem - (uint64_t)&physbase),

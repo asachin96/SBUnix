@@ -5,9 +5,9 @@
 #define TRUE  1
 #define FALSE 0
 
-#define stdin 0
-#define stdout 1
-#define stderr 2
+#define STDIN 0
+#define STDOUT 1
+#define STDERR 2
 
 typedef int size_t;
 
@@ -37,6 +37,22 @@ typedef __int8_t        int8_t;
 typedef __uint8_t       bool;
 typedef __int8_t        pid_t;
 typedef __uint8_t       BYTE; 
+
+typedef unsigned long  uint64_t;
+typedef          long   int64_t;
+typedef unsigned int   uint32_t;
+typedef          int    int32_t;
+typedef unsigned short uint16_t;
+typedef          short  int16_t;
+typedef unsigned char   uint8_t;
+typedef          char    int8_t;
+
+typedef int64_t ssize_t;
+
+typedef uint64_t off_t;
+
+typedef uint8_t       bool;
+
 
 #define ROUNDDOWN(a,n,b)\
 do\

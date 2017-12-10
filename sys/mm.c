@@ -85,7 +85,6 @@ task_struct* alloc_new_task(bool IsUserProcess)
     new_task->ppid          = 0;
     new_task->IsUserProcess = IsUserProcess;
     new_task->task_state    = READY_STATE;
-
 #if DEBUG_SCHEDULING
     kprintf("\nPID:%d\tCR3: %p", new_task->pid, new_task->mm->pml4_t);
 #endif

@@ -77,6 +77,7 @@ struct task_struct {
     uint64_t task_state;            // Saves the current state of task
     mm_struct* mm; 
     char comm[30];                  // Name of task
+    char cwd[250];                   // Current working directory
     uint32_t sleep_time;            // Number of centiseconds to sleep
     task_struct* next;              // The next process in the process list
     task_struct* last;              // The process that ran last

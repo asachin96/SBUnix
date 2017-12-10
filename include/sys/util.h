@@ -3,6 +3,7 @@
 #define  NULL 0
 #include<sys/defs.h>
 void outb (unsigned short port, unsigned char data);
+void outw (uint16_t port, uint16_t data);
 unsigned char inb (unsigned short port);
 void copyHelper(char* src, char*dest, int offset, int len);
 int cStrlen(char *str);

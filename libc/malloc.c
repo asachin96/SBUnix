@@ -25,6 +25,18 @@ void make_head(char *addr, int size)
     head->size         = size;
 }
 
+void handleHeapEndCase(char *add,uint64_t no_of_pages)
+{
+    if (heap_end == 0) {
+        mem_start_p   = add;
+        mcb_count     = 0;
+        allocated_mem = 0;
+        heap_end = add; 
+    }
+    
+    heap_end = (char*)((uint64_t)add + (uint64_t)(PAGESIZE * no_of_pages));
+}
+
 void *alloc_new(int aligned_size)
 {
     char *add;
@@ -34,15 +46,9 @@ void *alloc_new(int aligned_size)
     sz          = sizeof(MCB_t);
     no_of_pages = (aligned_size + sz) /(PAGESIZE + 1) + 1;
     add = (char*) __syscall1(BRK, (uint64_t)no_of_pages);    
+				
+				handleHeapEndCase(add,no_of_pages);
 
-    if (heap_end == 0) {
-        mem_start_p   = add;
-        mcb_count     = 0;
-        allocated_mem = 0;
-        heap_end = add; 
-    }
-    
-    heap_end = (char*)((uint64_t)add + (uint64_t)(PAGESIZE * no_of_pages));
     max_mem += PAGESIZE * no_of_pages; 
     
     p_mcb               = (MCB_P)add; 

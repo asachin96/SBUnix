@@ -2,15 +2,15 @@
 #define _STDLIB_H
 
 #include <sys/defs.h>
+#include <unistd.h>
 
 //int main(int argc, char *argv[], char *envp[]);
 int main(int argc, char *argv[]);
 void exit(int status);
-int sleep(int seconds);
 int printf(const char *format, ...);
 void scanf(const char *format, ...);
 int cls();
-
+int kill(pid_t pid);
 void *malloc(int size);
 void free(void *ptr);
 void shutdown();
@@ -18,12 +18,7 @@ void shutdown();
 void* mmap(void* addr, uint64_t nbytes, uint64_t flags);
 int munmap(uint64_t* addr, uint64_t size);
 
-int open(char *path, int flags);
-uint64_t read(uint64_t fd, void *buf, uint64_t nbytes);
-int write(int n, char *str, int len);
 int seek(uint64_t file_d, int offset, int whence);
-void close(int file_d);
-int mkdir(char *path);
 
 pid_t getpid();
 pid_t getppid();
@@ -31,8 +26,6 @@ void listprocess();
 
 pid_t fork();
 int execvpe(const char *file, char *const argv[], char *const envp[]);
-pid_t wait(uint64_t *status);
-pid_t waitpid(pid_t pid, uint64_t *status, int options);
 void yield();
 
 void *memcpy(void *destination, void *source, uint64_t num);

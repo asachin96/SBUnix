@@ -1,0 +1,13 @@
+echo  done
+sleep looking done
+kill-9 looking done
+putchar done
+background test done
+Enter getting printed after command done
+check ruuning shell problem done
+test read/seek/ on readonly done
+getcwd,chdir looking done
+check malloc and free done
+move cursor locatio -> partial looking done
+
+Entire FS validation-> unlink,delete
