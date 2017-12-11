@@ -16,7 +16,6 @@ void free(void *ptr);
 void shutdown();
 
 void* mmap(void* addr, uint64_t nbytes, uint64_t flags);
-int munmap(uint64_t* addr, uint64_t size);
 
 int seek(uint64_t file_d, int offset, int whence);
 

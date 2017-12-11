@@ -14,6 +14,7 @@
 int tick=0;
 extern void displayTime();
 extern void set_tss_rsp();
+extern void sys_listprocess();
 #define switch_to(prev, next) \
     __asm__ __volatile__(\
         /* Push all Registers into Stack */\
@@ -65,7 +66,7 @@ void read_ip()
 // Idle kernel task
 static void idle_process(void)
 {
-								kprintf("\nInside Idle Process ");
+								//kprintf("\nInside Idle Process ");
 								while(1);
 }
 

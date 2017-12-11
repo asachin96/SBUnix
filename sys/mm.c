@@ -168,53 +168,6 @@ void add_child_to_parent(task_struct *child_task)
     parent_task->no_children++;
 }
 
-void remove_parent_from_child(task_struct *parent_task)
-{
-    task_struct *child_next = parent_task->childhead;
-    task_struct *child_cur = NULL;
-
-    while (child_next) {
-        child_cur = child_next;
-        child_cur->task_state = ZOMBIE_STATE;
-        child_next = child_next->siblings;
-        child_cur->siblings = NULL;
-    }
-}
-
-void remove_child_from_parent(task_struct *child_task)
-{
-    task_struct *parent_task = child_task->parent;
-    task_struct *sibling_l, *last_sibling;
-
-    // Find the child_task in childlist
-    sibling_l = parent_task->childhead;
-    last_sibling = NULL;
-    while (sibling_l) {
-        if (sibling_l == child_task) {
-            break;
-        }
-        last_sibling = sibling_l;
-        sibling_l = sibling_l->siblings;
-    }
-
-    if (!sibling_l) return; 
-
-    // Remove from sibling list
-    if (last_sibling) {
-        last_sibling->siblings = sibling_l->siblings;    
-    } else {
-        parent_task->childhead = sibling_l->siblings;
-    }
-
-    parent_task->no_children--;
-    if (parent_task->task_state == WAIT_STATE) {
-        if (!parent_task->wait_on_child_pid || parent_task->wait_on_child_pid == child_task->pid) {
-            parent_task->wait_on_child_pid = child_task->pid;
-            parent_task->task_state = READY_STATE;
-        }
-    }
-}
-
 void replace_child_task(task_struct *old_task, task_struct *new_task)
 {
     task_struct *parent_task = old_task->parent;

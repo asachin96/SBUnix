@@ -228,11 +228,7 @@ void disable_cursor()
 void update_cursor()
 {
   uint16_t cp = (uint16_t)((char*)temp-(char*)0xffffffff800b8000)/2;
-  outw (0x3d4, 0x0e | (cp & 0xff00));
-  outw (0x3d4, 0x0f | (cp << 8)); 
-	//outb(0x3D4, 0x0F);
-	//outb(0x3D5, *pos);
-	//outb(0x3D4, 0x0E);
-	//outb(0x3D5, *(pos+1));
+  outw(0x3d4, 0x0e | (cp & 0xff00));
+  outw(0x3d4, 0x0f | (cp << 8)); 
 }
 

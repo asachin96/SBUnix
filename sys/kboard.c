@@ -80,7 +80,6 @@ void kbHandler()
 
 		unsigned char scancode;
 		scancode = inb(0x60);
-	//	kprintf("%x ",scancode);
 		if(!order )
 		{
 				int i =0;
@@ -131,6 +130,7 @@ void kbHandler()
                       linePos+=2;
                       CHECK_FOR_FLUSH1();
               }
+              update_cursor();
 						}
 
 				}

@@ -30,10 +30,17 @@ int main(int argc, char* argv[])
    chdir("/rootfs");
    printf("\n%s",getcwd(buf, 300));
    */
-   char *c = (char*)malloc(20);
+   /*char *c = (char*)malloc(20);
    strcpy(c, "hello");
    free(c);
    printf("%s", c);
+   */
+//    int i=0;
+
+//   for(;i<4;i++){
+     //listprocess();
+     exit(0);
+  // }
    // while(1);
     return 0;
 }

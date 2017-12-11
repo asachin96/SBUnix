@@ -50,7 +50,7 @@ static void export_to_path()
         }
         path_str = args[1];
         path_str += 5;
-        memset(path, 0, sizeof(path));
+        memcpy(path, 0, sizeof(path));
         strcpy(path, path_str);
     }
 }
@@ -128,10 +128,12 @@ void collect_args(char*ptr,int* ptr_length)
 
 int main(int argc, char **argv)
 {
+    while(1);
     char str[1024], *newstr, ptr[1024], path_cmd[1024];
     int i, j=0, k=0, file_descp, ptr_length, lendir = 0, str_length;
     char* exec_path;
 
+    printf("\n\t\t\t\t*******NEW SHELL*******\n");
     //By default current directory stream will be pointing to DIR stream of '/'
     curr_dir_ptr = opendir("/");
     while(1) {

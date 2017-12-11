@@ -12,7 +12,6 @@
 #include <dirent.h>
 #include <sys/kmalloc.h>
 #include <sys/kprintf.h>
-// These will get invoked in kernel mode
 
 extern fnode_t* root_node;
 
@@ -27,8 +26,8 @@ DIR* sys_opendir(uint64_t* entry, uint64_t* directory)
 
 								kstrcpy(path, dir_path); 
 								temp = kstrtok(path, "/");  
-
-								while (temp != NULL) {
+								int j=0;
+								for (;temp != NULL;j++) {
 																auxnode = currnode;
 
 																if (kstrcmp(temp, ".") == 0) {
@@ -38,12 +37,13 @@ DIR* sys_opendir(uint64_t* entry, uint64_t* directory)
 																								currnode = (fnode_t *)currnode->f_child[1];
 
 																} else {
-
-																								for (i = 2; i < currnode->end; ++i){
+																									i=2;
+																								while (i < currnode->end){
 																																if (kstrcmp(temp, currnode->f_child[i]->f_name) == 0) {
 																																								currnode = (fnode_t *)currnode->f_child[i];
 																																								break;       
 																																}        
+																								i++;
 																								}
 																								if (i == auxnode->end) {
 																																dir->curr     = NULL;
@@ -63,7 +63,14 @@ DIR* sys_opendir(uint64_t* entry, uint64_t* directory)
 								}
 								return dir;
 }
+void createNode(fnode_t* temp_node,DIR* tempdir,char*path,int*end)
+{
+																temp_node = (fnode_t *)kmalloc(sizeof(fnode_t));                
 
+																make_node(temp_node, tempdir->filenode, path + *end + 1, 0, 2, DIRECTORY, 0);  
+																tempdir->filenode->f_child[tempdir->filenode->end] = temp_node;
+																tempdir->filenode->end += 1;
+}
 
 int sys_mkdir( uint64_t dir)
 {
@@ -75,10 +82,9 @@ int sys_mkdir( uint64_t dir)
 								fnode_t *temp_node;
 								tempdir = sys_opendir((uint64_t *)dirpath,(uint64_t *) tempdir);
 
-								if (tempdir->filenode != NULL) {
-																//kprintf("\n directory already exists"); 
+								if (tempdir->filenode != NULL) 
 																return -1;
-								}
+								
 
 								path = (char *)kmalloc(sizeof(char) * dirlength);
 								kstrcpy(path, dirpath);
@@ -92,25 +98,20 @@ int sys_mkdir( uint64_t dir)
 								else
 																end = dirlength - 1;
 
-								while (dirpath[end] != '/'){
+								while (dirpath[end] != '/')
 																--end; 
 
-								}
+								
 
 								path[end] = '\0'; 
 								tempdir = sys_opendir((uint64_t *)path, (uint64_t*)tempdir); 
-
+								temp_node = NULL;
 								if (tempdir != NULL) {
-																temp_node = (fnode_t *)kmalloc(sizeof(fnode_t));                
-
-																make_node(temp_node, tempdir->filenode, path + end + 1, 0, 2, DIRECTORY, 0);  
-																tempdir->filenode->f_child[tempdir->filenode->end] = temp_node;
-																tempdir->filenode->end += 1;
+																createNode(temp_node,tempdir,path,&end);
 																return 0; 
-								} else {
-																//kprintf("\n %s Directory doesnot exists", path);
+								} else 
 																return -1; 
-								}
+								
 }
 
 struct dirent* sys_readdir(uint64_t* entry)
@@ -137,24 +138,74 @@ int sys_closedir(uint64_t* entry)
 																return -1; 
 								}
 }
+void handleNonRootCase(char tmp[256],char path[256],char *dir_path)
+{
+																kstrcpy(tmp, CURRENT_TASK->cwd);
+																kstrcat(tmp,"/");
+																kstrcat(tmp,dir_path);
+																kstrcpy(path, tmp); 
+}
 
+int insertFDEntry(FD* file_d )
+{
+int i;
+																for (i = 3; i < MAXFD; ++i) {
+																								if (CURRENT_TASK->file_descp[i] == NULL) {
+																																CURRENT_TASK->file_descp[i] = (uint64_t *)file_d;
+																																return i;        
+																								}
+																}
+return 0;
+}
+int createNewFile(fnode_t* temp_node,int* inode_no,ext_inode* inode_entry,char* dir_path,FD* file_d,fnode_t*currnode,uint64_t addr,uint64_t flags,char*temp)
+{
+																								temp_node = (fnode_t *)kmalloc(sizeof(fnode_t));                
+
+																								*inode_no = alloc_new_inode();
+
+																								if (*inode_no == -1) {
+																																return -1;
+																								}
+																								kstrcpyn(inode_entry->i_name, (char*)dir_path, sizeof(inode_entry->i_name)-1);
+																								inode_entry->i_size = 0;
+																								inode_entry->i_block_count = 0;
+																								write_inode(inode_entry, *inode_no);
+
+																								file_d->inode_struct = (uint64_t) inode_entry;
+
+																								//add as child of currnode 
+																								make_node(temp_node, currnode, temp, 0, 0, FILE, *inode_no);  
+
+																								currnode->f_child[currnode->end] = temp_node;
+																								currnode->end += 1; 
+
+																								file_d->filenode = temp_node;
+																								file_d->curr     = addr;
+																								file_d->f_perm   = flags;
+
+																								//traverse file descriptor array and insert this entry
+																								int i;
+																								for (i = 3; i < MAXFD; ++i) {
+																																if (CURRENT_TASK->file_descp[i] == NULL) {
+																																								CURRENT_TASK->file_descp[i] = (uint64_t *)file_d;
+																																								vmalogic(addr, 0, RW, FILETYPE, i);
+																																								return i;        
+																																}
+																								}
+return -1;
+}
 int sys_open(char* dir_path, uint64_t flags)
 {
 								fnode_t *temp_node;
-								// allocate new filedescriptor
 								FD* file_d = (FD *)kmalloc(sizeof(FD));
 								fnode_t *aux_node = NULL, *currnode = root_node;
-        char tmp[256];
+								char tmp[256];
 								char *path = (char *)kmalloc(256);
-        if(dir_path[0]!='/'){
-            //not absloute path, so append cwd
-            kstrcpy(tmp, CURRENT_TASK->cwd);
-            kstrcat(tmp,"/");
-            kstrcat(tmp,dir_path);
-								    kstrcpy(path, tmp); 
-        }else{
-								    kstrcpy(path, dir_path); 
-        }
+								if(dir_path[0]!='/'){
+													handleNonRootCase(tmp,path,dir_path);
+								}else{
+																kstrcpy(path, dir_path); 
+								}
 								vma_struct *iter;
 								uint64_t addr;
 								char *temp = NULL; 
@@ -165,16 +216,17 @@ int sys_open(char* dir_path, uint64_t flags)
 								if (temp == NULL) return -1;
 
 								if (kstrcmp(temp, "rootfs") == 0) {
-
-																while (temp != NULL) {
+																	int j=0;
+																for (;temp != NULL;j++) {
 																								aux_node = currnode;
 
-
-																								for (i = 2; i < currnode->end; ++i) {
+																								i=2;
+																								while(i < currnode->end) {
 																																if (kstrcmp(temp, currnode->f_child[i]->f_name) == 0) {
 																																								currnode = (fnode_t *)currnode->f_child[i];
 																																								break;       
-																																}        
+																																}  
+																														i++;      
 																								}
 
 																								if (i == aux_node->end) {
@@ -186,7 +238,6 @@ int sys_open(char* dir_path, uint64_t flags)
 
 																if (currnode->f_type == DIRECTORY) {
 
-																								//kprintf("\n Invalid open operation on directory");
 																								return -1;
 
 																}
@@ -195,25 +246,23 @@ int sys_open(char* dir_path, uint64_t flags)
 																file_d->curr     = currnode->start;
 																file_d->f_perm   = flags;
 
-																//traverse file descriptor array and insert this entry
-																for (i = 3; i < MAXFD; ++i) {
-																								if (CURRENT_TASK->file_descp[i] == NULL) {
-																																CURRENT_TASK->file_descp[i] = (uint64_t *)file_d;
-																																return i;        
-																								}
-																}
+																int ret =insertFDEntry(file_d);
+																if(ret)
+																								return ret;
 
 																return -1;
 
-								} else if ( kstrcmp(temp, "Disk") == 0) {
-
-																while (temp != NULL) {
+																} else if ( kstrcmp(temp, "Disk") == 0) {
+																	int j =0;
+															for (;temp != NULL;j++) {
 																								aux_node = currnode;
-																								for (i = 2; i < currnode->end; ++i) {
+																								i=2;
+																								while ( i < currnode->end) {
 																																if (kstrcmp(temp, currnode->f_child[i]->f_name) == 0) {
 																																								currnode = (fnode_t *)currnode->f_child[i];
 																																								break;       
 																																}        
+																										i++;
 																								}
 
 																								if (i == aux_node->end && flags == O_CREAT) {
@@ -221,60 +270,24 @@ int sys_open(char* dir_path, uint64_t flags)
 																																break; 
 																								} else if (i == aux_node->end && flags != O_CREAT) {
 
-																																//kprintf("\nFile doesnot exist"); 
 																																return -1;
 																								}
 
 																								temp = kstrtok(NULL, "/");          
 																}
 
-																// find address for allocating new vma
 																for (iter = CURRENT_TASK->mm->vma_list; iter->vm_next != NULL; iter = iter->vm_next);
-																// page aligning the addr
 																addr = (uint64_t)((((iter->vm_end - 1) >> 12) + 1) << 12);
 
 																ext_inode* inode_entry = kmalloc(sizeof(ext_inode));                
-
 																if (creat_flag == 1) { 
-																								//if file is opened for first time, creat flag will be set to 1         
-																								//go to disk, create new file of default minimum size
-																								//return inode number
+																							temp_node = NULL;
+																			int ret=createNewFile(temp_node,&inode_no,inode_entry,dir_path,file_d,currnode,addr,flags,temp);
+   
+																			if(ret!=-1)
+																			return ret;
 
-																								temp_node = (fnode_t *)kmalloc(sizeof(fnode_t));                
-
-																								inode_no = alloc_new_inode();
-
-																								if (inode_no == -1) {
-																																return -1;
-																								}
-																								kstrcpyn(inode_entry->i_name, (char*)dir_path, sizeof(inode_entry->i_name)-1);
-																								inode_entry->i_size = 0;
-																								inode_entry->i_block_count = 0;
-																								write_inode(inode_entry, inode_no);
-
-																								file_d->inode_struct = (uint64_t) inode_entry;
-
-																								//add as child of currnode 
-																								make_node(temp_node, currnode, temp, 0, 0, FILE, inode_no);  
-
-																								currnode->f_child[currnode->end] = temp_node;
-																								currnode->end += 1; 
-
-																								file_d->filenode = temp_node;
-																								file_d->curr     = addr;
-																								file_d->f_perm   = flags;
-
-																								//traverse file descriptor array and insert this entry
-																								for (i = 3; i < MAXFD; ++i) {
-																																if (CURRENT_TASK->file_descp[i] == NULL) {
-																																								CURRENT_TASK->file_descp[i] = (uint64_t *)file_d;
-																																								vmalogic(addr, 0, RW, FILETYPE, i);
-																																								return i;        
-																																}
-																								}
 																} else if (aux_node != currnode) {
-																								//if the file is open for appending then in above loop
-																								//currnode will not be equal to aux node
 
 																								read_inode(inode_entry, currnode->f_inode_no);
 
@@ -287,7 +300,6 @@ int sys_open(char* dir_path, uint64_t flags)
 																								file_d->filenode = currnode;
 																								file_d->f_perm   = flags;
 
-																								//traverse file descriptor array and insert this entry
 																								for (i = 3; i < MAXFD; ++i) {
 																																if (CURRENT_TASK->file_descp[i] == NULL) {
 																																								CURRENT_TASK->file_descp[i] = (uint64_t *)file_d;
@@ -295,11 +307,9 @@ int sys_open(char* dir_path, uint64_t flags)
 																																								vma_struct *new_vma = vmalogic(addr, inode_entry->i_size, RW, FILETYPE, i);
 																																								kmmap(new_vma->vm_start, new_vma->vm_end - new_vma->vm_start, RW_USER_FLAGS);
 																																								copy_blocks_to_vma(inode_entry, new_vma->vm_start);
-																																								//kprintf("\n[OPEN] %p start %s, addr %s, end %p, length %p", new_vma, new_vma->vm_start, addr, new_vma->vm_end, inode_entry->i_size);
 
 																																								if (flags == O_APPEND) {
 																																																file_d->curr     = addr + inode_entry->i_size;
-																																																//kprintf("\nSEEK[%d]%p", i, file_d->curr);
 																																								} else {
 																																																file_d->curr     = addr;
 																																								}
@@ -322,12 +332,13 @@ void sys_close(int fd)
 																vma_struct *vma_l = CURRENT_TASK->mm->vma_list;
 																vma_struct *last_vma_l = NULL;
 
-																for (;vma_l != NULL; vma_l = vma_l->vm_next) {
+																while (vma_l != NULL) {
 																								if (vma_l->vm_file_descp == fd) {
 																																break;
 																								}
 																								last_vma_l = vma_l;
-																}
+																 vma_l = vma_l->vm_next;
+																		}
 																copy_vma_to_blocks(inode_t, inode_no, vma_l->vm_start, vma_l->vm_end - vma_l->vm_start);
 
 																last_vma_l->vm_next = vma_l->vm_next; 
@@ -340,32 +351,22 @@ void sys_close(int fd)
 int sys_read(uint64_t fd_type, uint64_t addr, uint64_t length)
 {
 								uint64_t end = 0, currlength = 0;
-
 								if (fd_type == STDIN) {
 																length = gets(addr);
-
 								} else if(fd_type > 2) {
-
-																if ((CURRENT_TASK->file_descp[fd_type]) == NULL) {
+																if ((CURRENT_TASK->file_descp[fd_type]) == NULL)
 																								length = -1;
-
-																} else if(((FD *)CURRENT_TASK->file_descp[fd_type])->f_perm == O_WRONLY ){
-																								//kprintf("\n Not valid permissions"); 
-																								length = -1; 
-
-																} else if(((FD *)CURRENT_TASK->file_descp[fd_type])->filenode->f_inode_no != 0) { 
-																								//This file descriptor is associated with file on disk 
-
+															 else if(((FD *)CURRENT_TASK->file_descp[fd_type])->f_perm == O_WRONLY )																								length = -1; 
+																else if(((FD *)CURRENT_TASK->file_descp[fd_type])->filenode->f_inode_no != 0) { 
 																								vma_struct *iter; 
-
 																								currlength = (uint64_t)((FD *)(CURRENT_TASK->file_descp[fd_type]))->curr;
-
-																								// get start and end of vma 
-																								for (iter = CURRENT_TASK->mm->vma_list; iter != NULL; iter = iter->vm_next) {
+																							iter = CURRENT_TASK->mm->vma_list;
+																								while (iter != NULL ) {
 																																if(iter->vm_file_descp == fd_type){
 																																								end   = iter->vm_end;
 																																								break; 
 																																}
+																										iter = iter->vm_next;
 																								}
 
 																} else {
@@ -374,15 +375,10 @@ int sys_read(uint64_t fd_type, uint64_t addr, uint64_t length)
 																								end        = ((FD *)(CURRENT_TASK->file_descp[fd_type]))->filenode->end;
 																}
 
-																if ((end - currlength) < length) {
-																								length = (end - currlength);
-																}
-
+																if ((end - currlength) < length) length = (end - currlength);
 																memcpy((void *)addr, (void *)currlength, length);
-
 																((FD *)(CURRENT_TASK->file_descp[fd_type]))->curr += length;
 								}
-
 								return length;
 }
 
@@ -392,41 +388,36 @@ int sys_write(uint64_t fd_type, uint64_t addr, int length)
 								if (fd_type == STDOUT || fd_type ==STDERR) {
 																length = 0; 
 																length = puts((char*) addr);
-																//kprintf("%s",(char*) addr);
 
 								} else if (fd_type > 2) {
 																vma_struct *iter; 
 
-																if ((CURRENT_TASK->file_descp[fd_type]) == NULL) {
+																if ((CURRENT_TASK->file_descp[fd_type]) == NULL)
 																								length = -1;
-																} else if(((FD *)CURRENT_TASK->file_descp[fd_type])->f_perm == O_RDONLY ){
-																								//kprintf("\n Not valid permissions"); 
-																								length = -1; 
-																} else {
+																else if(((FD *)CURRENT_TASK->file_descp[fd_type])->f_perm == O_RDONLY )																								length = -1; 
+																else {
 																								uint64_t end = 0, currlength = 0;
 
 																								currlength = ((FD *)(CURRENT_TASK->file_descp[fd_type]))->curr;
-																								//get end of vma 
-																								for (iter = CURRENT_TASK->mm->vma_list; iter != NULL; iter = iter->vm_next) {
+																							iter = CURRENT_TASK->mm->vma_list;
+																								while (iter != NULL ) {
+																						//		for (iter = CURRENT_TASK->mm->vma_list; iter != NULL; iter = iter->vm_next) {
 																																if(iter->vm_file_descp == fd_type){
 																																								end = iter->vm_end;
 																																								break; 
 																																}
+																										iter = iter->vm_next;
 																								}
 
-																								// adjust the end of vma if required
 																								if (currlength + length > end) {
 																																kmmap(iter->vm_end, (currlength + length) - iter->vm_end, RW_USER_FLAGS);
 																																iter->vm_end = currlength + length;
 																								}
 
-																								//kprintf("\n[WRITE]curr %p, string %p %s, end %p %p, length %p", currlength, iter, iter->vm_start, iter->vm_end, end, length);
 																								memcpy((void *)currlength, (void *)addr, length);
-
 																								((FD *)(CURRENT_TASK->file_descp[fd_type]))->curr += length;
 																} 
 								}
-
 								return length;
 }
 
@@ -437,47 +428,34 @@ int sys_lseek(uint64_t fd_type, int offset, int whence)
 								vma_struct* iter;
 								ext_inode *inode_t = (ext_inode*) ((FD*) CURRENT_TASK->file_descp[fd_type])->inode_struct;
 								uint64_t start = 0, end = 0;    
-
-								//kprintf("\n inode value %p", inode_t);
-
 								if (((FD*) CURRENT_TASK->file_descp[fd_type])->filenode->f_type == DIRECTORY) {
-																//kprintf("\n Invalid operation on directory");
 																offset = -1;
 
 								} else {
 																if (inode_t == NULL) {
-																								//file descriptor belongs to tarfs 
-																								// ((FD *)(CURRENT_TASK->file_descp[fd_type]))->curr = 0;
-																								// kprintf("\n cannot do lseek");
-																								// return -1;
 																								start = ((FD*) CURRENT_TASK->file_descp[fd_type])->filenode->start;
 																								end   = ((FD*) CURRENT_TASK->file_descp[fd_type])->filenode->end;
 
 
 																} else {
+																							iter = CURRENT_TASK->mm->vma_list;
+																								while (iter != NULL ) {
 
-																								for (iter = CURRENT_TASK->mm->vma_list; iter != NULL; iter = iter->vm_next) {
-																																if(iter->vm_file_descp == fd_type){
-																																								//start = iter->vm_start;
+																							//	for (iter = CURRENT_TASK->mm->vma_list; iter != NULL; iter = iter->vm_next) {
+																																if(iter->vm_file_descp == fd_type)
 																																								break; 
-																																}
-
+																										iter=iter->vm_next;
 																								}
 
 																								start = iter->vm_start; 
 																								end   = iter->vm_end; 
 
-																								//kprintf("\n start %p end %p", start, end);
-
 																}
-																//kprintf("\n seek offset: %p start %p", offset, iter->vm_start);
-
 
 																if(whence == SEEK_SET) {
 																								if (offset < 0)
 																																offset = 0;
 
-																								//((FD *)(CURRENT_TASK->file_descp[fd_type]))->curr = iter->vm_start + offset;
 																								((FD *)(CURRENT_TASK->file_descp[fd_type]))->curr = start + offset;
 
 																} else if(whence == SEEK_CUR) {
@@ -498,30 +476,19 @@ int sys_lseek(uint64_t fd_type, int offset, int whence)
 																								((FD *)(CURRENT_TASK->file_descp[fd_type]))->curr = end + offset;
 
 
-																}else{
+																}else
 																								offset = -1;
-																}
-
 								} 
-								//kprintf("\n curr inside seek %p",((FD *)(CURRENT_TASK->file_descp[fd_type]))->curr);
 								return offset;
 
 }
 
 pid_t sys_fork()
 {
-								// Take a pointer to this process' task struct for later reference.
 								task_struct *parent_task = CURRENT_TASK; 
-
-								// Create a new process.
 								task_struct* child_task = copy_task_struct(parent_task); 
-
-								// Add it to the end of the ready queue
 								schedule_process(child_task, parent_task->kernel_stack[KERNEL_STACK_SIZE-6], parent_task->kernel_stack[KERNEL_STACK_SIZE-3]);
-
-								// Set return (rax) for child process to be 0
 								child_task->kernel_stack[KERNEL_STACK_SIZE-7] = 0UL;
-
 								return child_task->pid;
 }
 
@@ -558,6 +525,7 @@ int sys_killProcess(pid_t pid)
 								{
 																//								empty_task_struct(cur_task);
 																cur_task->task_state = EXIT_STATE;
+																int ppid = cur_task->ppid;
 																if(cur_task->no_children != 0)
 																{
 																								task_struct* child=cur_task->childhead;
@@ -569,6 +537,15 @@ int sys_killProcess(pid_t pid)
 																																child->parent=init_task;
 																																child=child->next;      
 																								}
+																}
+																//TODO look at this again
+																task_struct *t = CURRENT_TASK;
+																while(t){
+																								if(t->pid == ppid){
+																																t->task_state = READY_STATE;
+																																break;
+																								}
+																								t=t->next;
 																}
 																return 0;
 								}
@@ -589,13 +566,13 @@ char* sys_getcwd(char *buf, int size){
 }
 
 int sys_chdir(const char *path){
-        if(kstrlen(path) >= 256){
+								if(kstrlen(path) >= 256){
 																kprintf("Size of path is greater than max size(256) allowd\n");
 																return -1;
 								}
 								if(path ==NULL){
 																kprintf("Path is empty");
-                return -1;
+																return -1;
 								}
 								kstrcpy(CURRENT_TASK->cwd, path);
 								return 0;
@@ -605,31 +582,19 @@ int sys_chdir(const char *path){
 uint64_t sys_execvpe(char *file, char *argv[], char *envp[])
 {
 								task_struct *new_task = create_elf_proc(file, argv);
-
 								if (new_task) {
 																task_struct *cur_task = CURRENT_TASK;
-
-																// Exec process has same pid, ppid and parent
 																set_next_pid(new_task->pid);
 																new_task->pid  = cur_task->pid;
 																new_task->ppid = cur_task->ppid;
 																new_task->parent = cur_task->parent;
-                kstrcpy(new_task->cwd, cur_task->cwd);
+																kstrcpy(new_task->cwd, cur_task->cwd);
 																memcpy((void*)new_task->file_descp, (void*)cur_task->file_descp, MAXFD*8);
-
-																// Replace current child with new exec process
 																replace_child_task(cur_task, new_task);
-
-																// Exit from the current process
 																empty_task_struct(cur_task);
 																cur_task->task_state = EXIT_STATE;
-
-																// Enable interrupt for scheduling next process
 																__asm__ __volatile__ ("int $32");
-
-																kprintf("EXECVPE terminated incorrectly");
 								}
-								// execvpe failed; so return -1
 								return -1;
 }
 
@@ -643,11 +608,9 @@ uint64_t sys_wait(uint64_t status)
 																return -1;
 								}
 
-								// Reset last child exit
 								cur_task->wait_on_child_pid = 0;
 								cur_task->task_state = WAIT_STATE;
 
-								// Enable interrupt for scheduling next process
 								__asm__ __volatile__ ("int $32");
 
 								if (status_p) *status_p = 0;
@@ -665,16 +628,13 @@ uint64_t sys_waitpid(uint64_t fpid, uint64_t fstatus, uint64_t foptions)
 																return -1;
 								}
 
-								if (pid > 0) {
-																// If pid > 0, wait for the child with 'pid' to exit
+								if (pid > 0)
 																cur_task->wait_on_child_pid = pid;
-								} else {
-																// If pid <= 0, wait for any one of the children to exit
+								else
 																cur_task->wait_on_child_pid = 0;
-								}
+								
 								cur_task->task_state = WAIT_STATE;
 
-								// Enable interrupt for scheduling next process
 								__asm__ __volatile__ ("int $32");
 
 								if (status_p) *status_p = 0;
@@ -685,32 +645,60 @@ void sys_exit()
 {
 								task_struct *cur_task = CURRENT_TASK;
 
-								// Remove the task from parent's child list
-								if (cur_task->parent) {
-																remove_child_from_parent(cur_task);
+								if (cur_task->parent){
+																task_struct *parent_task = cur_task->parent;
+																task_struct *sibling_l, *last_sibling;
+
+																sibling_l = parent_task->childhead;
+																last_sibling = NULL;
+																while (sibling_l) {
+																								if (sibling_l == cur_task) {
+																																break;
+																								}
+																								last_sibling = sibling_l;
+																								sibling_l = sibling_l->siblings;
+																}
+
+																if (!sibling_l) return; 
+
+																if (last_sibling) {
+																								last_sibling->siblings = sibling_l->siblings;    
+																} else {
+																								parent_task->childhead = sibling_l->siblings;
+																}
+
+																parent_task->no_children--;
+																if (parent_task->task_state == WAIT_STATE) {
+																								if (!parent_task->wait_on_child_pid || parent_task->wait_on_child_pid == cur_task->pid) {
+																																parent_task->wait_on_child_pid = cur_task->pid;
+																																parent_task->task_state = READY_STATE;
+																								}
+																}
+
 								}
 
-								// Assign all the child processes as ZOMBIE 
-								if (cur_task->childhead) {
-																remove_parent_from_child(cur_task);
+								if (cur_task->childhead){
+																task_struct *child_next = cur_task->childhead;
+																task_struct *child_cur = NULL;
+
+																while (child_next) {
+																								child_cur = child_next;
+																								child_cur->task_state = ZOMBIE_STATE;
+																								child_next = child_next->siblings;
+																								child_cur->siblings = NULL;
+																}
 								}
 
-								// Empty current task
 								empty_task_struct(cur_task);
 								cur_task->task_state = EXIT_STATE;
-								//kprintf("\n[E]%s", cur_task->comm);
 
-								// Enable interrupt for scheduling next process
 								__asm__ __volatile__ ("int $32");
-
-								kprintf("EXIT terminated incorrectly");
 }
 
 int sys_sleep(int msec)
 {
 								task_struct *task = CURRENT_TASK;
 
-								// Convert into centiseconds, as our timer runs per 1 centisec
 								task->sleep_time = msec/10;
 								task->task_state = SLEEP_STATE;
 								__asm__ __volatile__("int $32;");
@@ -722,7 +710,6 @@ uint64_t sys_brk(uint64_t no_of_pages)
 {
 								uint64_t new_vaddr = CURRENT_TASK->mm->end_brk;
 
-								//kprintf("\n New Heap Page Alloc:%p", new_vaddr);
 								increment_brk(CURRENT_TASK, PAGESIZE * no_of_pages);
 
 								return new_vaddr;
@@ -733,90 +720,16 @@ uint64_t sys_mmap(uint64_t addr, uint64_t nbytes, uint64_t flags)
 								vma_struct *iter;    
 
 								if (addr == 0x0) {
-																// if address is not specified by the user then 
-																// allocate new address above the vm_end of last vma
 																for (iter = CURRENT_TASK->mm->vma_list; iter->vm_next != NULL; iter = iter->vm_next);
 
-																// page aligning the addr
 																addr = (uint64_t)((((iter->vm_end - 1) >> 12) + 1) << 12);
 
-								} else {
-																// check if allocating new page does not conflicts with memory mapped by other VMAs
-																if (verify_addr(CURRENT_TASK, addr, addr + nbytes) == 0) {
-																								return NULL;
-																}
+								} else if (verify_addr(CURRENT_TASK, addr, addr + nbytes) == 0) {
+																return NULL;
 								} 
 
-								//node = alloc_new_vma((uint64_t)addr, (uint64_t)((void *)addr + nbytes), RW, ANON);
 								vmalogic(addr, nbytes, RW, ANON, 0);
 								return addr;
-}
-
-int sys_munmap(uint64_t* addr, uint64_t length)
-{
-								vma_struct *iter, *temp = NULL;
-								uint64_t end_addr, no_of_pages, i;
-								bool myflag = 0, retflag = 0; 
-
-								// check if address is 4k aligned
-								if (((uint64_t )addr & 0xfff) != 0)
-																return -1;
-
-								end_addr = (uint64_t)((void *)addr + length);
-								end_addr = ((((end_addr - 1) >> 12) + 1) << 12);
-
-								iter = CURRENT_TASK->mm->vma_list;
-
-								// iterate through vma list and free all anon-type vma
-								// check if there are any other vmas mappped on this page
-								// if not then free the page
-
-								for (iter = CURRENT_TASK->mm->vma_list; iter->vm_next != NULL; ) {
-																temp = iter;
-																iter = iter->vm_next;
-
-																if (iter->vm_start >= (uint64_t)addr || iter->vm_end > (uint64_t)addr)
-																								break;
-								}    
-
-								//kprintf("\n address of this vma %p address of temp %p end addr %p\n", iter->vm_start, temp->vm_start, end_addr);
-
-								while (iter != NULL) { 
-
-																if (iter->vm_start < end_addr && iter->vm_type == ANON) {
-																								// delete this vma 
-																								temp->vm_next = iter->vm_next; 
-																								add_to_vma_free_list(iter);
-																								iter          = iter->vm_next; 
-																								retflag       = 1;
-
-																} else if(iter->vm_type != ANON) {
-																								myflag = 1; 
-																								temp   = iter;
-																								iter   = iter->vm_next;
-																} else {
-																								break; 
-																}
-
-																if (iter ==  NULL || iter->vm_end > end_addr)       
-																								break;
-								}
-
-								if (myflag == 0) {
-																no_of_pages = (end_addr - (uint64_t )addr) / PAGESIZE;
-
-																for (i = 0; i < no_of_pages; ++i) {
-																								// free this page 
-																								free_virt_page(addr);
-																								addr = (void *)addr + PAGESIZE; 
-																}
-								}
-
-								if (retflag == 1) {
-																return 0;
-								} else {
-																return -1;
-								}
 }
 
 pid_t sys_getpid()
@@ -837,7 +750,6 @@ int sys_clear()
 
 void sys_yield()
 {
-								// Enable interrupt for scheduling next process
 								__asm__ __volatile__ ("int $32");
 }
 
@@ -848,7 +760,7 @@ void sys_listprocess()
 								int i = 0;
 								task_struct *cur = CURRENT_TASK;
 
-								kprintf("\n ===== LIST OF CURRENT PROCESSES ====== "
+								kprintf("\n ===== PROCESSES LIST ====== "
 																								"\n  #  |  PID  |  PPID  |   State   |  Process Name "
 																								"\n ----| ----- | ------ | --------- | --------------- ");
 
@@ -868,14 +780,10 @@ void sys_shutdown()
 								}
 
 								sys_clear();
-								kprintf("\n\n\n\n\n\n\n\n\n\n\n\n");
-								kprintf("\n==========================================================================");
-								kprintf("\n============ SBU Unix is now shutting down.  Thank You !!! ===============");
-								kprintf("\n==========================================================================");
+								kprintf("\n=========== System  is shuting down!!!!!!!!!!!===============");
 								while(1);    
 }
 
-// Set up the system call table
 void* syscall_tbl[NUM_SYSCALLS] = 
 {
 								sys_read,
@@ -888,7 +796,6 @@ void* syscall_tbl[NUM_SYSCALLS] =
 								sys_exit,
 								sys_yield,
 								sys_mmap,
-								sys_munmap,
 								sys_getpid,
 								sys_getppid,
 								sys_listprocess,

@@ -65,6 +65,26 @@ void *alloc_new(int aligned_size)
     return ((void *) p_mcb + sz);
 }
 
+void * checkNoMCBCase(int *flag,MCB_P p_mcb,int* aligned_size, int*sz,int*temp)
+{
+        if (*flag != NO_MCB) {
+            p_mcb->is_available = IN_USE;
+
+            if (*flag == REUSE_MCB) {
+                if (p_mcb->size > *aligned_size + *sz) {
+                    *temp        = p_mcb->size; 
+                    p_mcb->size = *aligned_size + *sz;
+
+                    make_head(((char *)p_mcb + *aligned_size + *sz),(*temp - *aligned_size - *sz));
+                }        
+                mcb_count++;
+            }
+            allocated_mem += *aligned_size;
+            return ((char *) p_mcb + *sz);
+        }
+return NULL;
+}
+
 void* malloc(int elem_size)
 {
     MCB_P p_mcb;
@@ -92,23 +112,11 @@ void* malloc(int elem_size)
             }
             p_mcb = (MCB_P) ((char *)p_mcb + p_mcb->size);
         }
+						char* ret = checkNoMCBCase(&flag,p_mcb,&aligned_size, &sz,&temp);
+						if(!ret)
+						return ret;
 
-        if (flag != NO_MCB) {
-            p_mcb->is_available = IN_USE;
-
-            if (flag == REUSE_MCB) {
-                if (p_mcb->size > aligned_size + sz) {
-                    temp        = p_mcb->size; 
-                    p_mcb->size = aligned_size + sz;
-
-                    make_head(((char *)p_mcb + aligned_size + sz),(temp - aligned_size - sz));
-                }        
-                mcb_count++;
-            }
-            allocated_mem += aligned_size;
-            return ((char *) p_mcb + sz);
-        }
-
+						
         /*when no hole is found to match the request*/
         return alloc_new(aligned_size); 
     }

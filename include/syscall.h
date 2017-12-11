@@ -91,7 +91,6 @@ enum syscall_num {
     EXIT,
     YIELD,
     MMAP,
-    MUNMAP, 
     GETPID,
     GETPPID,
     LISTPROCESS,
