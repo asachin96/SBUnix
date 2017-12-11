@@ -66,7 +66,6 @@ void read_ip()
 // Idle kernel task
 static void idle_process(void)
 {
-								//kprintf("\nInside Idle Process ");
 								while(1);
 }
 
@@ -178,30 +177,48 @@ void schedule_process(task_struct* new_task, uint64_t entry_point, uint64_t stac
 								new_task->kernel_stack[KERNEL_STACK_SIZE-5] = entry_point;
 								new_task->rip_register = entry_point;
 
-								// 2) Leave 9 spaces for POPA => KERNEL_STACK_SIZE-6 to KERNEL_STACK_SIZE-20
-
-								// 3) Set return address to POPA in irq0()
 								new_task->kernel_stack[KERNEL_STACK_SIZE-21] = (uint64_t)irq0 + 0x20;
-
-								// 4) Set rsp to KERNEL_STACK_SIZE-16
 								new_task->rsp_register = (uint64_t)&new_task->kernel_stack[KERNEL_STACK_SIZE-22];
-
-								// 5) Add to the next_task_list 
 								add_to_task_list(new_task);
 }
-
-task_struct* copy_task_struct(task_struct* parent_task)
+void copyStackVMA(uint64_t*parent_pml4_t,uint64_t*pte_entry,uint64_t*vaddr,uint64_t*end,uint64_t*start,uint64_t*paddr,uint64_t*child_pml4_t)
 {
-								task_struct* child_task  = alloc_new_task(TRUE);
-								uint64_t parent_pml4_t   = parent_task->mm->pml4_t;
-								uint64_t child_pml4_t    = child_task->mm->pml4_t;
-								vma_struct *parent_vma_l = parent_task->mm->vma_list;
-								vma_struct *child_vma_l  = NULL;
+																								uint64_t k_vaddr = get_top_virtaddr();
+																								uint64_t *k_pte_entry;
 
-								// Copy contains of parent mm_struct, except pml4_t and vma_list
+																								*vaddr = PAGE_ALIGN(*end) - 0x1000;
+																								while (*vaddr >=* start) {
+																																LOAD_CR3(*parent_pml4_t);
+
+																																pte_entry = get_pte_entry(*vaddr);
+																																if (!IS_PRESENT_PAGE(*pte_entry))
+																																								break;
+
+																																// Allocate a new page in kernel
+																																*paddr = phys_alloc_block();
+																																map_virt_phys_addr(k_vaddr, *paddr, RW_USER_FLAGS);
+
+																																//kprintf("\nStack v:%p p:%p", vaddr, paddr);
+																																// Copy parent page in kernel space
+																																memcpy((void*)k_vaddr, (void*)(*vaddr), PAGESIZE);
+
+																																// Map paddr with child vaddr
+																																LOAD_CR3(*child_pml4_t);
+																																//kprintf("\nStack v:%p p:%p", vaddr, paddr);
+																																map_virt_phys_addr(*vaddr, *paddr, RW_USER_FLAGS);
+
+																																// Unmap k_vaddr
+																																k_pte_entry  = get_pte_entry(k_vaddr);
+																																*k_pte_entry = 0UL;
+
+																																*vaddr = *vaddr - PAGESIZE;
+																								}
+}
+void copyContentsOfParent(task_struct*child_task,task_struct*parent_task,uint64_t*child_pml4_t)
+{
 								memcpy((void*)child_task->mm, (void*)parent_task->mm, sizeof(mm_struct));
 
-								child_task->mm->pml4_t   = child_pml4_t;
+								child_task->mm->pml4_t   = *child_pml4_t;
 								child_task->mm->vma_list = NULL; 
 
 								for (int i = 0; i < MAXFD; ++i) {
@@ -217,8 +234,27 @@ task_struct* copy_task_struct(task_struct* parent_task)
 								child_task->parent = parent_task;
 							kstrcpy((void*)child_task->comm, (void*)parent_task->comm);
 							kstrcpy((void*)child_task->cwd, (void*)parent_task->cwd);
+}
 
-								add_child_to_parent(child_task);
+task_struct* copy_task_struct(task_struct* parent_task)
+{
+								task_struct* child_task  = alloc_new_task(TRUE);
+								uint64_t parent_pml4_t   = parent_task->mm->pml4_t;
+								uint64_t child_pml4_t    = child_task->mm->pml4_t;
+								vma_struct *parent_vma_l = parent_task->mm->vma_list;
+								vma_struct *child_vma_l  = NULL;
+
+								// Copy contains of parent mm_struct, except pml4_t and vma_list
+								copyContentsOfParent(child_task,parent_task,&child_pml4_t);
+
+			task_struct *p_task = child_task->parent;
+
+    if (p_task->childhead) {
+        child_task->siblings   = p_task->childhead;
+    }
+    p_task->childhead = child_task;
+    p_task->no_children++;
+
 
 								while (parent_vma_l) {
 																uint64_t start, end;
@@ -238,37 +274,8 @@ task_struct* copy_task_struct(task_struct* parent_task)
 
 																// Deep Copy allocation for stack VMA only
 																if (parent_vma_l->vm_type == STACK) {
-
-																								uint64_t k_vaddr = get_top_virtaddr();
-																								uint64_t *k_pte_entry;
-
-																								vaddr = PAGE_ALIGN(end) - 0x1000;
-																								while (vaddr >= start) {
-																																LOAD_CR3(parent_pml4_t);
-
-																																pte_entry = get_pte_entry(vaddr);
-																																if (!IS_PRESENT_PAGE(*pte_entry))
-																																								break;
-
-																																// Allocate a new page in kernel
-																																paddr = phys_alloc_block();
-																																map_virt_phys_addr(k_vaddr, paddr, RW_USER_FLAGS);
-
-																																//kprintf("\nStack v:%p p:%p", vaddr, paddr);
-																																// Copy parent page in kernel space
-																																memcpy((void*)k_vaddr, (void*)vaddr, PAGESIZE);
-
-																																// Map paddr with child vaddr
-																																LOAD_CR3(child_pml4_t);
-																																//kprintf("\nStack v:%p p:%p", vaddr, paddr);
-																																map_virt_phys_addr(vaddr, paddr, RW_USER_FLAGS);
-
-																																// Unmap k_vaddr
-																																k_pte_entry  = get_pte_entry(k_vaddr);
-																																*k_pte_entry = 0UL;
-
-																																vaddr = vaddr - PAGESIZE;
-																								}
+																									pte_entry=NULL;
+																								copyStackVMA(&parent_pml4_t,pte_entry,&vaddr,&end,&start,&paddr,&child_pml4_t);
 
 																} else {
 																								// Share same physical pages by setting COW and READONLY bits
@@ -353,6 +360,14 @@ new_task->rip_register = funcAddr;
     // Add to the ready list 
     add_to_task_list(new_task);
 }
+
+void setupUserProcess(task_struct* next)
+{
+            if (next->IsUserProcess) {
+                set_tss_rsp((uint64_t)&next->kernel_stack[KERNEL_STACK_SIZE-1]);
+                switch_to_ring3;
+            }
+}
 void timerHandler(){
     tick++;
     if(tick%100 == 0) displayTime();
@@ -365,17 +380,10 @@ if (IsInitSchedule) {
 
             LOAD_CR3(next->mm->pml4_t);
 
-            // Switch the kernel stack to that of the first process
             __asm__ __volatile__("movq %[next_rsp], %%rsp" : : [next_rsp] "m" (next->rsp_register));
+											 setupUserProcess(next);
 
-            if (next->IsUserProcess) {
-                set_tss_rsp((uint64_t)&next->kernel_stack[KERNEL_STACK_SIZE-1]);
-                switch_to_ring3;
-            }
 
-#if DEBUG_SCHEDULING
-            kprintf("\nScheduler Initiated with PID: %d[%d]", next->pid, next->task_state);
-#endif
 
         } else {
             uint64_t cur_rsp;
@@ -384,23 +392,16 @@ if (IsInitSchedule) {
             prev = CURRENT_TASK;
             prev->rsp_register = cur_rsp;
 
-            // Add prev to the end of the next_task_list for states other than EXIT
             add_to_task_list(prev);
 
-            // Schedule next READY process
             next = get_next_ready_task();
 
-            // Context Switch only if next process is different than current process
             if (prev != next) {
 
                 LOAD_CR3(next->mm->pml4_t);
                 __asm__ __volatile__("movq %[next_rsp], %%rsp" : : [next_rsp] "m" (next->rsp_register));
+											 setupUserProcess(next);
 
-                if (next->IsUserProcess) {
-                    set_tss_rsp((uint64_t)&next->kernel_stack[KERNEL_STACK_SIZE-1]);
-                    switch_to_ring3;
-                }
-                //kprintf(" %d[%d]", next->pid, next->task_state);
             }
         }
     }

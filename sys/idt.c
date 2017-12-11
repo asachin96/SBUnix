@@ -49,115 +49,6 @@ extern int phys_get_block_ref(uint64_t paddr);
 extern uint64_t phys_alloc_block();
 extern void phys_dec_block_ref(uint64_t paddr);
 
-#if 0
-static void divide_by_zero_handler(registers_t regs)
-{
-    kprintf("Divide by Zero!");
-    sys_exit();
-}
-
-/* Invalid TSS exception handler */
-static void tss_fault_handler(registers_t regs)
-{
-    kprintf("Invalid TSS Exception!");
-}
-
-/* General Protection fault handler */
-static void gpf_handler(registers_t regs)
-{
-    kprintf("General Protection Fault!");
-}
-
-/* Page Fault handler */
-static void page_fault_handler(registers_t regs)
-{
-    uint64_t err_code = regs.err_no;
-    uint64_t fault_addr;
-    bool IsFault = FALSE;
-
-    READ_CR2(fault_addr);
-    //kprintf("\nFault Addr:%p Error Code:%p", fault_addr, err_code);
-
-    if (fault_addr >= KERNEL_START_VADDR) {
-        // Page fault in kernel
-        //kprintf("\nFault Addr:%p Error Code:%p", fault_addr, err_code);
-        kprintf("Page fault in kernel!");
-    } else if (err_code & 0x1) {
-        // Page is PRESENT
-        // Get the PTE entry for the fault address
-        uint64_t *pte_entry = get_pte_entry(fault_addr); 
-        uint64_t paddr = *pte_entry & PAGING_ADDR;
-
-        //kprintf("\npte_entry = %p\n", *pte_entry);
-
-        if (!IS_WRITABLE_PAGE(*pte_entry) && IS_COW_PAGE(*pte_entry)) {
-            // Check if the physical page is referred by more than virtual pages.
-            // If YES, allocate a new page, copy the contents and set writable permissions.
-            // If NO, use the same physical page, but remove the COW and READONLY bits
-            if (phys_get_block_ref(paddr) > 1) {
-                uint64_t new_paddr = phys_alloc_block();
-                uint64_t tvaddr = get_temp_vaddr(new_paddr);
-                memcpy((void*)tvaddr, (void*)PAGE_ALIGN(fault_addr), PAGESIZE);
-                *pte_entry = new_paddr | RW_USER_FLAGS;
-                free_temp_vaddr(tvaddr);
-                phys_dec_block_ref(paddr);
-            } else {
-                unset_cow_bit(pte_entry);
-                set_writable_bit(pte_entry);
-            }
-        } else {
-            IsFault = TRUE;
-        }
-
-    } else {
-        // Page is not PRESENT and thus was not allocated earlier.
-        // If fault addr is within VMA area, mmap the VMA area,
-        // Else kill the process and raise an SEGFAULT
-        vma_struct* vma_ptr = CURRENT_TASK->mm->vma_list;
-        uint64_t start, end;
-        kprintf("1\n");
-        while (vma_ptr != NULL) {
-            start = vma_ptr->vm_start; end = vma_ptr->vm_end;
-            kprintf("\n[VMA]:%p-%p", start, end);
-            if (fault_addr >= start && fault_addr < end) {
-                kmmap(start, end - start, RW_USER_FLAGS);
-                break;
-            }
-            vma_ptr = vma_ptr->vm_next;
-        }
-        kprintf("2\n");
-        if (vma_ptr == NULL) {
-            IsFault = TRUE;
-        }
-    }
-
-    if (IsFault) {
-        kprintf("\n1Segmentation Fault %p (%p) - Process Terminated", fault_addr, err_code);
-        sys_exit();
-    }
-}
-
-void commonHandler(registers_t regs){
-
-    switch (regs.int_no) {
-        case 0:
-            divide_by_zero_handler(regs);
-            break;
-        case 10:
-            tss_fault_handler(regs);
-            break;
-        case 13:
-            gpf_handler(regs);
-            break;
-        case 14:
-            page_fault_handler(regs);
-            break;
-        default:
-            break;
-    }
-   kprintf("Interrup received\n");
-}
-#endif
 //port 0 of Pic is connected to PIT channel 0 IRQ line
 //On interrupt it has to write IRQ no 32 on data bus to be recd by processor
 void initPic(){
@@ -186,21 +77,7 @@ void setInteruptHandler(int interruptNo, uint64_t handler){
 		interruptArray[interruptNo].zero = 0;
 		interruptArray[interruptNo].p = 1;
 }
-#if 0
-void setInteruptSystemHandler(int interruptNo, uint64_t handler){
-		interruptArray[interruptNo].offset_low = handler & 0XFFFF;
-		interruptArray[interruptNo].offset_middle= handler >> 16 & 0XFFFF;
-		interruptArray[interruptNo].offset_high = handler >> 32 &0XFFFFFFFF;
-		interruptArray[interruptNo].selector = 8;
-		interruptArray[interruptNo].dpl = 0;
-		interruptArray[interruptNo].ist= 0;
-		interruptArray[interruptNo].type = 0xee; //check with 8e
-		interruptArray[interruptNo].reserved0 =0;
-		interruptArray[interruptNo].reserved1 =0;
-		interruptArray[interruptNo].zero = 0;
-		interruptArray[interruptNo].p = 1;
-}
-#endif
+
 void installIdt(){
 		initPic();
 		idtPtr.size = sizeof(struct IdtTable)*256 -1;

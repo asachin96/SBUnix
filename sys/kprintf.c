@@ -188,6 +188,7 @@ temp += 2;
 linePos+=2;
 }
 i++;
+CHECK_FOR_FLUSH1();
 }
 update_cursor();
 return 1;

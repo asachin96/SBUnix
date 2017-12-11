@@ -42,7 +42,6 @@ char* strcat(char *str1, const char *str2)
 								uint64_t len2 = strlen(str2);
 								uint64_t i = 0;
 
-								//  for(i = 0; i < len2 ; i++)
 								while(i<len2)
 								{
 																str1[len1 + i] = str2[i];

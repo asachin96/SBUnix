@@ -30,37 +30,17 @@ static void gpf_handler(registers_t regs)
 {
     kprintf("General Protection Fault!");
 }
-
-/* Page Fault handler */
-static void page_fault_handler(registers_t regs)
+static void handleErrorCode1(uint64_t* fault_addr, bool * isFault)
 {
-    uint64_t err_code = regs.err_no;
-    uint64_t fault_addr;
-    bool IsFault = FALSE;
-
-    READ_CR2(fault_addr);
-    //kprintf("\nFault Addr:%p Error Code:%p", fault_addr, err_code);
-
-    if (fault_addr >= KERNEL_START_VADDR) {
-        // Page fault in kernel
-        //kprintf("\nFault Addr:%p Error Code:%p", fault_addr, err_code);
-        kprintf("Page fault in kernel!");
-    } else if (err_code & 0x1) {
-        // Page is PRESENT
-        // Get the PTE entry for the fault address
-        uint64_t *pte_entry = get_pte_entry(fault_addr); 
+        uint64_t *pte_entry = get_pte_entry(*fault_addr); 
         uint64_t paddr = *pte_entry & PAGING_ADDR;
 
-        //kprintf("\npte_entry = %p\n", *pte_entry);
 
         if (!IS_WRITABLE_PAGE(*pte_entry) && IS_COW_PAGE(*pte_entry)) {
-            // Check if the physical page is referred by more than virtual pages.
-            // If YES, allocate a new page, copy the contents and set writable permissions.
-            // If NO, use the same physical page, but remove the COW and READONLY bits
             if (phys_get_block_ref(paddr) > 1) {
                 uint64_t new_paddr = phys_alloc_block();
-                uint64_t tvaddr = get_temp_vaddr(new_paddr);
-                memcpy((void*)tvaddr, (void*)PAGE_ALIGN(fault_addr), PAGESIZE);
+                uint64_t tvaddr = get_vaddr(new_paddr);
+                memcpy((void*)tvaddr, (void*)PAGE_ALIGN(*fault_addr), PAGESIZE);
                 *pte_entry = new_paddr | RW_USER_FLAGS;
                 free_temp_vaddr(tvaddr);
                 phys_dec_block_ref(paddr);
@@ -69,13 +49,25 @@ static void page_fault_handler(registers_t regs)
                 set_writable_bit(pte_entry);
             }
         } else {
-            IsFault = TRUE;
+            *isFault = TRUE;
         }
 
+}
+/* Page Fault handler */
+static void page_fault_handler(registers_t regs)
+{
+    uint64_t err_code = regs.err_no;
+    uint64_t fault_addr;
+    bool IsFault = FALSE;
+
+    READ_CR2(fault_addr);
+
+    if (fault_addr >= KERNEL_START_VADDR) {
+        kprintf("Page fault in kernel!");
+    } else if (err_code & 0x1) {
+							handleErrorCode1(&fault_addr,&IsFault);
+
     } else {
-        // Page is not PRESENT and thus was not allocated earlier.
-        // If fault addr is within VMA area, mmap the VMA area,
-        // Else kill the process and raise an SEGFAULT
         vma_struct* vma_ptr = CURRENT_TASK->mm->vma_list;
         uint64_t start, end;
         while (vma_ptr != NULL) {

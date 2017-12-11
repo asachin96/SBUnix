@@ -525,7 +525,7 @@ int sys_killProcess(pid_t pid)
 								{
 																//								empty_task_struct(cur_task);
 																cur_task->task_state = EXIT_STATE;
-																int ppid = cur_task->ppid;
+																//int ppid = cur_task->ppid;
 																if(cur_task->no_children != 0)
 																{
 																								task_struct* child=cur_task->childhead;
@@ -539,14 +539,14 @@ int sys_killProcess(pid_t pid)
 																								}
 																}
 																//TODO look at this again
-																task_struct *t = CURRENT_TASK;
+																/*task_struct *t = CURRENT_TASK;
 																while(t){
 																								if(t->pid == ppid){
 																																t->task_state = READY_STATE;
 																																break;
 																								}
 																								t=t->next;
-																}
+																}*/
 																return 0;
 								}
 								return -1;
@@ -724,7 +724,7 @@ uint64_t sys_mmap(uint64_t addr, uint64_t nbytes, uint64_t flags)
 
 																addr = (uint64_t)((((iter->vm_end - 1) >> 12) + 1) << 12);
 
-								} else if (verify_addr(CURRENT_TASK, addr, addr + nbytes) == 0) {
+								} else if (is_addr_valid(CURRENT_TASK, addr, addr + nbytes) == 0) {
 																return NULL;
 								} 
 
@@ -765,6 +765,7 @@ void sys_listprocess()
 																								"\n ----| ----- | ------ | --------- | --------------- ");
 
 								while (cur) {
+                //if(cur->task_state == 5) continue;
 																kprintf("\n  %d  |   %d   |   %d    |  %s  |  %s  ",
 																																++i, cur->pid, cur->ppid, t_state[cur->task_state], cur->comm);
 																cur = cur->next;

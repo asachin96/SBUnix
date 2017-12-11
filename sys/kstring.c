@@ -3,11 +3,19 @@
 
 int kstrcmp(const char *s1, const char *s2)
 {
-    while (*s1 == *s2++)
-        if (*s1++ == 0)
-            return (0);
+int i = 0;
+								for(;s1[i]!='\0'&&s2[i]!='\0';i++)
+								{
+																if(s1[i]!=s2[i])
+																								return (s2[i]>s1[i])?-1:1;
+								}
+								if(s1[i]==s2[i])
+																return 0;
+								else if(s1[i] == '\0')
+																return -1;
+								else 
+																return 1;
 
-    return (*(const unsigned char *)s1 - *(const unsigned char *)(s2 - 1));
 }
 
 
@@ -59,37 +67,31 @@ char * kstrcpyn(char *destination, const char *source, uint64_t n)
     return str;
 }
 
-static char * strtok_r(char *s, const char *delim, char **last)
+char * kstrtok(char *s, const char *delim)
 {
+    static char *last=NULL;
     char *spanp;
     int c, sc;
     char *tok;
 
 
-    if (s == NULL && (s = *last) == NULL)
+    if (s == NULL && (s = last) == NULL)
         return (NULL);
 
-    /*
-     *   * Skip (span) leading delimiters (s += strspn(s, delim), sort of).
-     *       */
-cont:
+t:
     c = *s++;
     for (spanp = (char *)delim; (sc = *spanp++) != 0;) {
         if (c == sc)
-            goto cont;
+            goto t;
     }
 
-    if (c == 0) {       /* no non-delimiter characters */
-        *last = NULL;
+    if (c == 0) {      
+        last = NULL;
         return (NULL);
     }
     tok = s - 1;
 
-    /*
-     *   * Scan token (scan for delimiters: s += strcspn(s, delim), sort of).
-     *       * Note that delim must have one NUL; we stop if we see that, too.
-     *           */
-    for (;;) {
+    while (1) {
         c = *s++;
         spanp = (char *)delim;
         do {
@@ -98,20 +100,10 @@ cont:
                     s = NULL;
                 else
                     s[-1] = 0;
-                *last = s;
+                last = s;
                 return (tok);
             }
         } while (sc != 0);
     }
-    /* NOTREACHED */
 }
-
-
-char * kstrtok(char *s, const char *delim)
-{
-    static char *last;
-
-    return strtok_r(s, delim, &last);
-}
-
 

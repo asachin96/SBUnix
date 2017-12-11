@@ -49,19 +49,3 @@ void* kmalloc(uint32_t size)
 }
 
 
-// Test Cases for testing kmalloc
-#if 0
-    char *ptr = (char*) kmalloc(4096);
-    *ptr = 'S';
-    *(ptr+1) = '\0';
-    kprintf("\tmain1 %p\t%s", ptr, ptr);
-    free_virt_page(ptr);
-    ptr = (char*) kmalloc(8006);
-    *ptr = 'A';
-    *(ptr+1) = '\0';
-    kprintf("\tmain2 %p\t%s", ptr, ptr);
-    ptr = (char*) kmalloc(4096);
-    *ptr = 'H';
-    *(ptr+1) = '\0';
-    kprintf("\tmain3 %p\t%s", ptr, ptr);
-#endif

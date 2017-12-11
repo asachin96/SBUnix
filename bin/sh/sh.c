@@ -109,20 +109,20 @@ static void fork_and_execvpe()
     }
 }
 
-void collect_args(char*ptr,int* ptr_length)
+void collect_args(char*ptr,int* ptr_length, int *j)
 {
-								int i=0,j=0,k=0;
+								int i=0,k=0;
 								while( i < *ptr_length) {
 																if(ptr[i] == ' ') {
-																								args[j][k]= '\0';
-																								j++;
+																								args[*j][k]= '\0';
+																								(*j)++;
 																								k=0;
 																} else {
-																								args[j][k++] = ptr[i];
+																								args[*j][k++] = ptr[i];
 																}
 																i++;
 								}
-								args[j][k]='\0';
+								args[*j][k]='\0';
 
 }
 
@@ -160,7 +160,7 @@ int main(int argc, char **argv)
                 continue;
         }
         //collect the arguments entered by user in 2D array args
-							collect_args(ptr,&ptr_length);
+							collect_args(ptr,&ptr_length,&j);
         char help_str[2048], help_ptr[2048];
         memset(help_ptr, 0, 2048);
         memset(help_str, 0, 2048);

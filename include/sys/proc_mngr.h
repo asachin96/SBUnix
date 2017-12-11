@@ -97,11 +97,8 @@ void* kmmap(uint64_t start_addr, int bytes, uint64_t flags);
 void schedule_process(task_struct* new_task, uint64_t entry_point, uint64_t stack_top);
 void set_tss_rsp0(uint64_t rsp);
 void set_next_pid(pid_t fnext_pid);
-void add_child_to_parent(task_struct *child_task);
-void remove_parent_from_child(task_struct *parent_task);
-void remove_child_from_parent(task_struct *child_task);
 void replace_child_task(task_struct *old_task, task_struct *new_task);
-bool verify_addr(task_struct *proc, uint64_t addr, uint64_t size);
+bool is_addr_valid(task_struct *proc, uint64_t addr, uint64_t size);
 void increment_brk(task_struct *proc, uint64_t bytes);
 
 task_struct* alloc_new_task(bool IsUserProcess);

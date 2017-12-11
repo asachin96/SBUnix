@@ -1,5 +1,4 @@
 #include <sys/defs.h>
-//#include <sys/common.h>
 #include <sys/types.h>
 #include <sys/paging.h>
 #include <sys/phys_mm.h>
@@ -7,18 +6,13 @@
 #include <sys/kmalloc.h>
 #include <sys/proc_mngr.h>
 
-#define ENTRIES_PER_PTE  512
-#define ENTRIES_PER_PDE  512
-#define ENTRIES_PER_PDPE 512
-#define ENTRIES_PER_PML4 512
+#define NO_OF_ENTRIES  512
 
 #define PTE_SELF_REF  0xFFFFFF0000000000UL
 #define PDE_SELF_REF  0xFFFFFF7F80000000UL
 #define PDPE_SELF_REF 0xFFFFFF7FBFC00000UL
 #define PML4_SELF_REF 0xFFFFFF7FBFDFE000UL
 
-// For accessing Page table addresses, we need to first convert PhyADDR to VirADDR
-// So need to add below kernel base address
 #define VADDR(PADDR) ((KERNEL_START_VADDR) + PAGE_ALIGN(PADDR))
 #define PADDR(VADDR) (PAGE_ALIGN(VADDR) - (KERNEL_START_VADDR))
 
@@ -88,7 +82,7 @@ static void init_map_virt_phys_addr(uint64_t vaddr, uint64_t paddr, uint64_t no_
 
     phys_addr = paddr;  
 
-    if (no_of_pages + pte_off <= ENTRIES_PER_PTE) {
+    if (no_of_pages + pte_off <= NO_OF_ENTRIES) {
         for (i = pte_off; i < (pte_off + no_of_pages); i++) {
             pte_table[i] = phys_addr | RW_KERNEL_FLAGS; 
             phys_addr += PAGESIZE;
@@ -96,22 +90,21 @@ static void init_map_virt_phys_addr(uint64_t vaddr, uint64_t paddr, uint64_t no_
     } else {
         int lno_of_pages = no_of_pages, no_of_pte_t;
 
-        for ( i = pte_off ; i < ENTRIES_PER_PTE; i++) {
+        for ( i = pte_off ; i < NO_OF_ENTRIES; i++) {
             pte_table[i] = phys_addr | RW_KERNEL_FLAGS;
             phys_addr += PAGESIZE;
         }
-																//TODO 
-        lno_of_pages = lno_of_pages - (ENTRIES_PER_PTE - pte_off);
-        no_of_pte_t = lno_of_pages/ENTRIES_PER_PTE;
+        lno_of_pages = lno_of_pages - (NO_OF_ENTRIES - pte_off);
+        no_of_pte_t = lno_of_pages/NO_OF_ENTRIES;
 
         for (j = 1; j <= no_of_pte_t; j++) {   
             pte_table = alloc_pte(pde_table, pde_off+j);
-            for(k = 0; k < ENTRIES_PER_PTE; k++ ) { 
+            for(k = 0; k < NO_OF_ENTRIES; k++ ) { 
                 pte_table[k] = phys_addr | RW_KERNEL_FLAGS;
                 phys_addr += PAGESIZE;
             }
         }
-        lno_of_pages = lno_of_pages - (ENTRIES_PER_PTE * pte_off);
+        lno_of_pages = lno_of_pages - (NO_OF_ENTRIES * pte_off);
         pte_table = alloc_pte(pde_table, pde_off+j);
         
         for(k = 0; k < lno_of_pages; k++ ) { 
@@ -243,17 +236,17 @@ void empty_page_tables(uint64_t pml4_t)
     uint64_t pml4, pdpe, pde, pte;
     uint64_t *pml4_e, *pdpe_e, *pde_e, *pte_e;
 
-    for (pml4 = 0; pml4 < ENTRIES_PER_PML4-2; pml4++) {
+    for (pml4 = 0; pml4 < NO_OF_ENTRIES-2; pml4++) {
         pml4_e = (uint64_t*) (PML4_SELF_REF | (pml4 << 3));
         if (IS_PRESENT_PAGE(*pml4_e)) {
-            for (pdpe = 0; pdpe < ENTRIES_PER_PDPE; pdpe++) {
+            for (pdpe = 0; pdpe < NO_OF_ENTRIES; pdpe++) {
                 pdpe_e = (uint64_t*) (PDPE_SELF_REF | (pml4 << 12) | (pdpe << 3));
                 if (IS_PRESENT_PAGE(*pdpe_e)) {
 
-                    for (pde = 0; pde < ENTRIES_PER_PDE; pde++) {
+                    for (pde = 0; pde < NO_OF_ENTRIES; pde++) {
                         pde_e = (uint64_t*) (PDE_SELF_REF | (pml4 << 21) | (pdpe << 12) | (pde << 3));
                         if (IS_PRESENT_PAGE(*pde_e)) {
-                            for (pte = 0; pte < ENTRIES_PER_PTE; pte++) {
+                            for (pte = 0; pte < NO_OF_ENTRIES; pte++) {
                                 pte_e = (uint64_t*) (PTE_SELF_REF | (pml4 << 30) | (pdpe << 21) | (pde << 12) | (pte << 3));
                                 if (IS_PRESENT_PAGE(*pte_e)) {
                                     set_top_virtaddr(get_top_virtaddr() + 0x1000);
