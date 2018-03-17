@@ -1,0 +1,24 @@
+echo  done
+sleep looking done
+kill-9 looking done
+putchar done
+background test done
+Enter getting printed after command done
+check ruuning shell problem done
+test read/seek/ on readonly done
+getcwd,chdir looking done
+check malloc and free done
+move cursor locatio -> partial looking done
+
+CODE CHANGES:
+LIBC:
+	printf.c done
+	fs.c not to be done
+	putchar.c done	
+	scanf.c done
+	string.c done
+	malloc.c done
+
+Entire FS validation-> unlink,delete
+multiple forks 
+waitpid 

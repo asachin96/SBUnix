@@ -1,0 +1,1052 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+-exclude	Makefile	/^	tar -czvf $(USER).tgz --exclude=.gitkeep --exclude=.*.sw? --exclude=*~ --ignore-failed-read LICENSE README Makefile Makefile.config sys bin crt libc include $(ROOTFS) $(USER)-data.img$/;"	m
+AHCI_BASE	include/sys/ahci.h	26;"	d
+AHCI_DEV_NULL	include/sys/ahci.h	18;"	d
+AHCI_DEV_PM	include/sys/ahci.h	22;"	d
+AHCI_DEV_SATA	include/sys/ahci.h	19;"	d
+AHCI_DEV_SATAPI	include/sys/ahci.h	20;"	d
+AHCI_DEV_SEMB	include/sys/ahci.h	21;"	d
+AHCI_KERN_BASE	include/sys/fs.h	3;"	d
+AHCI_PHYS_BASE	include/sys/fs.h	4;"	d
+AHCI_VIRT_BASE	include/sys/fs.h	5;"	d
+ANON	include/sys/proc_mngr.h	/^    ANON,$/;"	e	enum:vmatype
+AR	Makefile	/^AR=ar$/;"	m
+ATA_CMD_READ_DMA_EXT	include/sys/ahci.h	10;"	d
+ATA_CMD_WRITE_DMA_EXT	include/sys/ahci.h	11;"	d
+ATA_DEV_BUSY	include/sys/ahci.h	34;"	d
+ATA_DEV_BUSY	include/sys/ahci.h	4;"	d
+ATA_DEV_BUSY	include/sys/ahci.h	7;"	d
+ATA_DEV_DRQ	include/sys/ahci.h	35;"	d
+ATA_DEV_DRQ	include/sys/ahci.h	5;"	d
+ATA_DEV_DRQ	include/sys/ahci.h	8;"	d
+BINS	Makefile	/^BINS:=$(addprefix $(ROOTFS)\/,$(wildcard bin\/*))$/;"	m
+BIN_SRCS	Makefile	/^BIN_SRCS:=$(wildcard bin\/*\/*.c)$/;"	m
+BLOCK_ADDR_SIZE	sys/fs/file_ops.c	10;"	d	file:
+BLOCK_ALIGN	sys/kmalloc.c	9;"	d	file:
+BLOCK_BMAP_START_SECTOR	include/sys/fs.h	18;"	d
+BLOCK_DATA_START_SECTOR	include/sys/fs.h	19;"	d
+BRK	include/syscall.h	/^    BRK, $/;"	e	enum:syscall_num
+BYTE	include/sys/ahci.h	/^typedef uint8_t BYTE;$/;"	t
+BYTE	include/sys/defs.h	/^typedef __uint8_t       BYTE; $/;"	t
+C	sys/gdt.c	9;"	d	file:
+CC	Makefile	/^CC=gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS=-O1 -std=c99 -Wall -Werror -fPIC -march=amdfam10 -g3 -Wno-deprecated-declarations -D_XOPEN_SOURCE=600$/;"	m
+CFLAGS_FULL	Makefile	/^CFLAGS_FULL=-nostdinc -Iinclude -msoft-float -mno-sse -mno-red-zone -fno-builtin -fno-stack-protector$/;"	m
+CHECK_FOR_FLUSH	sys/kprintf.c	7;"	d	file:
+CHECK_FOR_FLUSH1	include/sys/kprintf.h	7;"	d
+CLEAR	include/syscall.h	/^    CLEAR,$/;"	e	enum:syscall_num
+CLOSE	include/syscall.h	/^    CLOSE,$/;"	e	enum:syscall_num
+CLOSEDIR	include/syscall.h	/^    CLOSEDIR, $/;"	e	enum:syscall_num
+CURRENT_TASK	sys/proc_mngr.c	/^task_struct* CURRENT_TASK = NULL;$/;"	v
+D	sys/gdt.c	16;"	d	file:
+DATA	include/sys/proc_mngr.h	/^    DATA,$/;"	e	enum:vmatype
+DEBUG_SCHEDULING	include/sys/proc_mngr.h	9;"	d
+DIR	include/dirent.h	/^typedef struct file_dir DIR;$/;"	t	typeref:struct:file_dir
+DIRECTORY	include/dirent.h	/^enum ftype {DIRECTORY, FILE};$/;"	e	enum:ftype
+DMAbufOffset	include/sys/ahci.h	/^    DWORD   DMAbufOffset;   \/\/Byte offset into buffer. First 2 bits must be 0$/;"	m	struct:tagFIS_DMA_SETUP
+DMAbufferID	include/sys/ahci.h	/^    QWORD   DMAbufferID;    \/\/ DMA Buffer Identifier. Used to Identify DMA buffer in host memory. SATA Spec says host specific and not in Spec. Trying AHCI spec might work.$/;"	m	struct:tagFIS_DMA_SETUP
+DPL0	sys/gdt.c	10;"	d	file:
+DPL1	sys/gdt.c	11;"	d	file:
+DPL2	sys/gdt.c	12;"	d	file:
+DPL3	sys/gdt.c	13;"	d	file:
+DWORD	include/sys/ahci.h	/^typedef uint32_t DWORD;$/;"	t
+ENTRIES_PER_PDE	sys/page.c	11;"	d	file:
+ENTRIES_PER_PDPE	sys/page.c	12;"	d	file:
+ENTRIES_PER_PML4	sys/page.c	13;"	d	file:
+ENTRIES_PER_PTE	sys/page.c	10;"	d	file:
+EOF	include/stdio.h	/^static const int EOF = -1;$/;"	v
+EXECVPE	include/syscall.h	/^    EXECVPE,$/;"	e	enum:syscall_num
+EXIT	include/syscall.h	/^    EXIT,$/;"	e	enum:syscall_num
+EXIT_STATE	include/sys/proc_mngr.h	/^    EXIT_STATE,$/;"	e	enum:task_states
+Elf64_Addr	include/sys/elf.h	6;"	d
+Elf64_Ehdr	include/sys/elf.h	/^} Elf64_Ehdr;$/;"	t	typeref:struct:elf64_ehdr
+Elf64_Half	include/sys/elf.h	8;"	d
+Elf64_Off	include/sys/elf.h	7;"	d
+Elf64_Phdr	include/sys/elf.h	/^} Elf64_Phdr;$/;"	t	typeref:struct:elf64_phdr
+Elf64_Shdr	include/sys/elf.h	/^} Elf64_Shdr;$/;"	t	typeref:struct:elf64_shdr
+Elf64_Word	include/sys/elf.h	9;"	d
+Elf64_Xword	include/sys/elf.h	10;"	d
+FALSE	include/sys/defs.h	6;"	d
+FD	include/dirent.h	/^typedef struct file_descp FD;$/;"	t	typeref:struct:file_descp
+FILE	include/dirent.h	/^enum ftype {DIRECTORY, FILE};$/;"	e	enum:ftype
+FILETYPE	include/sys/proc_mngr.h	/^    FILETYPE,$/;"	e	enum:vmatype
+FIS_DATA	include/sys/ahci.h	/^} FIS_DATA;$/;"	t	typeref:struct:tagFIS_DATA
+FIS_DMA_SETUP	include/sys/ahci.h	/^} FIS_DMA_SETUP;$/;"	t	typeref:struct:tagFIS_DMA_SETUP
+FIS_PIO_SETUP	include/sys/ahci.h	/^} FIS_PIO_SETUP;$/;"	t	typeref:struct:tagFIS_PIO_SETUP
+FIS_REG_D2H	include/sys/ahci.h	/^} FIS_REG_D2H;$/;"	t	typeref:struct:tagFIS_REG_D2H
+FIS_REG_H2D	include/sys/ahci.h	/^} FIS_REG_H2D;$/;"	t	typeref:struct:tagFIS_REG_H2D
+FIS_TYPE	include/sys/ahci.h	/^} FIS_TYPE;$/;"	t	typeref:enum:__anon1
+FIS_TYPE_BIST	include/sys/ahci.h	/^    FIS_TYPE_BIST       = 0x58, \/\/ BIST activate FIS - bidirectional$/;"	e	enum:__anon1
+FIS_TYPE_DATA	include/sys/ahci.h	/^    FIS_TYPE_DATA       = 0x46, \/\/ Data FIS - bidirectional$/;"	e	enum:__anon1
+FIS_TYPE_DEV_BITS	include/sys/ahci.h	/^    FIS_TYPE_DEV_BITS   = 0xA1, \/\/ Set device bits FIS - device to host$/;"	e	enum:__anon1
+FIS_TYPE_DMA_ACT	include/sys/ahci.h	/^    FIS_TYPE_DMA_ACT    = 0x39, \/\/ DMA activate FIS - device to host$/;"	e	enum:__anon1
+FIS_TYPE_DMA_SETUP	include/sys/ahci.h	/^    FIS_TYPE_DMA_SETUP  = 0x41, \/\/ DMA setup FIS - bidirectional$/;"	e	enum:__anon1
+FIS_TYPE_PIO_SETUP	include/sys/ahci.h	/^    FIS_TYPE_PIO_SETUP  = 0x5F, \/\/ PIO setup FIS - device to host$/;"	e	enum:__anon1
+FIS_TYPE_REG_D2H	include/sys/ahci.h	/^    FIS_TYPE_REG_D2H    = 0x34, \/\/ Register FIS - device to host$/;"	e	enum:__anon1
+FIS_TYPE_REG_H2D	include/sys/ahci.h	/^    FIS_TYPE_REG_H2D    = 0x27, \/\/ Register FIS - host to device$/;"	e	enum:__anon1
+FORK	include/syscall.h	/^    FORK,$/;"	e	enum:syscall_num
+FREE	libc/malloc.c	/^enum {FREE, IN_USE};$/;"	e	enum:__anon3	file:
+GDT_CS	sys/gdt.c	6;"	d	file:
+GDT_DS	sys/gdt.c	7;"	d	file:
+GETPID	include/syscall.h	/^    GETPID,$/;"	e	enum:syscall_num
+GETPPID	include/syscall.h	/^    GETPPID,$/;"	e	enum:syscall_num
+HBA_CMD_HEADER	include/sys/ahci.h	/^} HBA_CMD_HEADER;$/;"	t	typeref:struct:tagHBA_CMD_HEADER
+HBA_CMD_TBL	include/sys/ahci.h	/^} HBA_CMD_TBL;$/;"	t	typeref:struct:tagHBA_CMD_TBL
+HBA_MEM	include/sys/ahci.h	/^} HBA_MEM;$/;"	t	typeref:struct:tagHBA_MEM
+HBA_PORT	include/sys/ahci.h	/^} HBA_PORT;$/;"	t	typeref:struct:tagHBA_PORT
+HBA_PORT_DET_PRESENT	include/sys/ahci.h	24;"	d
+HBA_PORT_IPM_ACTIVE	include/sys/ahci.h	25;"	d
+HBA_PRDT_ENTRY	include/sys/ahci.h	/^} HBA_PRDT_ENTRY;$/;"	t	typeref:struct:tagHBA_PRDT_ENTRY
+HBA_PxCMD_CR	include/sys/ahci.h	28;"	d
+HBA_PxCMD_FR	include/sys/ahci.h	29;"	d
+HBA_PxCMD_FRE	include/sys/ahci.h	30;"	d
+HBA_PxCMD_ST	include/sys/ahci.h	32;"	d
+HBA_PxCMD_SUD	include/sys/ahci.h	31;"	d
+HBA_PxIS_TFES	include/sys/ahci.h	9;"	d
+HEADER	include/sys/tarfs.h	/^typedef struct posix_header_ustar HEADER; $/;"	t	typeref:struct:posix_header_ustar
+HEAP	include/sys/proc_mngr.h	/^    HEAP,$/;"	e	enum:vmatype
+IDLE_STATE	include/sys/proc_mngr.h	/^    IDLE_STATE,$/;"	e	enum:task_states
+INITIAL_STACK_SIZE	sys/main.c	15;"	d	file:
+INODES_PER_BLOCK	include/sys/fs.h	14;"	d
+INODE_START_SECTOR	include/sys/fs.h	16;"	d
+IN_USE	libc/malloc.c	/^enum {FREE, IN_USE};$/;"	e	enum:__anon3	file:
+IS_ACCESSED_PAGE	include/sys/paging.h	30;"	d
+IS_COW_PAGE	include/sys/paging.h	33;"	d
+IS_IGN_PAGE	include/sys/paging.h	31;"	d
+IS_NX_PAGE	include/sys/paging.h	34;"	d
+IS_PCD_PAGE	include/sys/paging.h	29;"	d
+IS_PRESENT_PAGE	include/sys/paging.h	25;"	d
+IS_PWT_PAGE	include/sys/paging.h	28;"	d
+IS_USER_PAGE	include/sys/paging.h	27;"	d
+IS_WRITABLE_PAGE	include/sys/paging.h	26;"	d
+IS_ZERO_PAGE	include/sys/paging.h	32;"	d
+IdtPtr	sys/idt.c	/^struct IdtPtr {$/;"	s	file:
+IdtTable	sys/idt.c	/^struct IdtTable{$/;"	s	file:
+IsInitSchedule	sys/proc_mngr.c	/^bool IsInitSchedule;$/;"	v
+IsUserProcess	include/sys/proc_mngr.h	/^    bool IsUserProcess;$/;"	m	struct:task_struct
+Is_file_exist	bin/sh/sh.c	/^static bool Is_file_exist()$/;"	f	file:
+KERNEL_STACK_SIZE	include/sys/proc_mngr.h	8;"	d
+KERNEL_START_VADDR	include/sys/virt_mm.h	3;"	d
+KERN_SRCS	Makefile	/^KERN_SRCS:=$(wildcard sys\/*.c sys\/*.s sys\/*\/*.c sys\/*\/*.s)$/;"	m
+K_MEM_PAGES	sys/main.c	18;"	d	file:
+L	sys/gdt.c	15;"	d	file:
+LD	Makefile	/^LD=ld$/;"	m
+LDLAGS	Makefile	/^LDLAGS=-nostdlib$/;"	m
+LD_SRCS	Makefile	/^LD_SRCS:=$(wildcard ld\/*.c)$/;"	m
+LIBC_SRCS	Makefile	/^LIBC_SRCS:=$(wildcard libc\/*.c libc\/*.s libc\/*\/*.c libc\/*\/*.s)$/;"	m
+LISTPROCESS	include/syscall.h	/^    LISTPROCESS,$/;"	e	enum:syscall_num
+LOAD_CR3	include/sys/types.h	12;"	d
+MAXCHILD	include/dirent.h	7;"	d
+MAXFD	include/sys/proc_mngr.h	10;"	d
+MAXLEN	include/dirent.h	6;"	d
+MAX_FILE_SIZE	include/sys/fs.h	12;"	d
+MAX_GDT	sys/gdt.c	19;"	d	file:
+MAX_NUM_BLOCKS	include/sys/fs.h	13;"	d
+MAX_NUM_INODES	include/sys/fs.h	10;"	d
+MCB_P	libc/malloc.c	/^} MCB_t, *MCB_P;$/;"	t	typeref:struct:MCB_header_t	file:
+MCB_header_t	libc/malloc.c	/^typedef struct MCB_header_t {$/;"	s	file:
+MCB_t	libc/malloc.c	/^} MCB_t, *MCB_P;$/;"	t	typeref:struct:MCB_header_t	file:
+MKDIR	include/syscall.h	/^    MKDIR, $/;"	e	enum:syscall_num
+MMAP	include/syscall.h	/^    MMAP,$/;"	e	enum:syscall_num
+MUNMAP	include/syscall.h	/^    MUNMAP, $/;"	e	enum:syscall_num
+NAME_MAX	include/dirent.h	5;"	d
+NEW_MCB	libc/malloc.c	/^enum {NEW_MCB, NO_MCB, REUSE_MCB};$/;"	e	enum:__anon2	file:
+NONE	include/sys/proc_mngr.h	/^    NONE,  \/\/no permission$/;"	e	enum:vmaflag
+NOTYPE	include/sys/proc_mngr.h	/^    NOTYPE$/;"	e	enum:vmatype
+NO_MCB	libc/malloc.c	/^enum {NEW_MCB, NO_MCB, REUSE_MCB};$/;"	e	enum:__anon2	file:
+NULL	include/sys/defs.h	4;"	d
+NULL	include/sys/defs_bkp.h	4;"	d
+NULL	include/sys/util.h	3;"	d
+NUM_BMAP_SECTORS	include/sys/fs.h	17;"	d
+NUM_DIRECT_BLOCKS	include/sys/fs.h	11;"	d
+NUM_SYSCALLS	include/syscall.h	/^    NUM_SYSCALLS$/;"	e	enum:syscall_num
+NUM_TASK_STATES	include/sys/proc_mngr.h	/^    NUM_TASK_STATES$/;"	e	enum:task_states
+OPEN	include/syscall.h	/^    OPEN, $/;"	e	enum:syscall_num
+OPENDIR	include/syscall.h	/^    OPENDIR,$/;"	e	enum:syscall_num
+O_APPEND	include/dirent.h	/^enum perm {O_RDONLY, O_WRONLY, O_RDWR, O_APPEND, O_CREAT, O_TRUNC};$/;"	e	enum:perm
+O_CREAT	include/dirent.h	/^enum perm {O_RDONLY, O_WRONLY, O_RDWR, O_APPEND, O_CREAT, O_TRUNC};$/;"	e	enum:perm
+O_RDONLY	include/dirent.h	/^enum perm {O_RDONLY, O_WRONLY, O_RDWR, O_APPEND, O_CREAT, O_TRUNC};$/;"	e	enum:perm
+O_RDWR	include/dirent.h	/^enum perm {O_RDONLY, O_WRONLY, O_RDWR, O_APPEND, O_CREAT, O_TRUNC};$/;"	e	enum:perm
+O_TRUNC	include/dirent.h	/^enum perm {O_RDONLY, O_WRONLY, O_RDWR, O_APPEND, O_CREAT, O_TRUNC};$/;"	e	enum:perm
+O_WRONLY	include/dirent.h	/^enum perm {O_RDONLY, O_WRONLY, O_RDWR, O_APPEND, O_CREAT, O_TRUNC};$/;"	e	enum:perm
+P	sys/gdt.c	14;"	d	file:
+PADDR	sys/page.c	23;"	d	file:
+PAGESIZE	include/sys/types.h	7;"	d
+PAGESIZE	libc/malloc.c	5;"	d	file:
+PAGE_2ALIGN	include/sys/types.h	8;"	d
+PAGE_ALIGN	include/sys/types.h	9;"	d
+PAGE_FLAGS	include/sys/paging.h	/^enum PAGE_FLAGS {$/;"	g
+PAGING_ACCESSED	include/sys/paging.h	/^    PAGING_ACCESSED        =   0x20UL,                             \/\/00000000000000000000000000000000 00000000000000000000000000100000$/;"	e	enum:PAGE_FLAGS
+PAGING_ADDR	include/sys/paging.h	/^    PAGING_ADDR            =   0x000FFFFFFFFFF000UL,               \/\/00000000000011111111111111111111 11111111111111111111000000000000$/;"	e	enum:PAGE_FLAGS
+PAGING_AVAILABLE	include/sys/paging.h	/^    PAGING_AVAILABLE       =   0x3FF0000000000000UL,               \/\/00111111111100000000000000000000 00000000000000000000000000000000$/;"	e	enum:PAGE_FLAGS
+PAGING_AVL	include/sys/paging.h	/^    PAGING_AVL             =   0xD00UL,                            \/\/00000000000000000000000000000000 00000000000000000000111000000000$/;"	e	enum:PAGE_FLAGS
+PAGING_COW	include/sys/paging.h	/^    PAGING_COW             =   0x4000000000000000UL,               \/\/01000000000000000000000000000000 00000000000000000000000000000000$/;"	e	enum:PAGE_FLAGS
+PAGING_FLAGS	include/sys/paging.h	/^    PAGING_FLAGS           =   0xFFF0000000000FFFUL                \/\/11111111111100000000000000000000 00000000000000000000111111111111$/;"	e	enum:PAGE_FLAGS
+PAGING_IGN	include/sys/paging.h	/^    PAGING_IGN             =   0x40UL,                             \/\/00000000000000000000000000000000 00000000000000000000000001000000$/;"	e	enum:PAGE_FLAGS
+PAGING_ING2	include/sys/paging.h	/^    PAGING_ING2            =   0x100UL,                            \/\/00000000000000000000000000000000 00000000000000000000000100000000$/;"	e	enum:PAGE_FLAGS
+PAGING_MBZ_PML4	include/sys/paging.h	/^    PAGING_MBZ_PML4        =   0x180UL,                            \/\/00000000000000000000000000000000 00000000000000000000000110000000$/;"	e	enum:PAGE_FLAGS
+PAGING_NX	include/sys/paging.h	/^    PAGING_NX              =   0x8000000000000000UL,               \/\/10000000000000000000000000000000 00000000000000000000000000000000$/;"	e	enum:PAGE_FLAGS
+PAGING_PCD	include/sys/paging.h	/^    PAGING_PCD             =   0x10UL,                             \/\/00000000000000000000000000000000 00000000000000000000000000010000$/;"	e	enum:PAGE_FLAGS
+PAGING_PRESENT	include/sys/paging.h	/^    PAGING_PRESENT         =   1UL,                                \/\/00000000000000000000000000000000 00000000000000000000000000000001$/;"	e	enum:PAGE_FLAGS
+PAGING_PWT	include/sys/paging.h	/^    PAGING_PWT             =   8UL,                                \/\/00000000000000000000000000000000 00000000000000000000000000001000$/;"	e	enum:PAGE_FLAGS
+PAGING_USER	include/sys/paging.h	/^    PAGING_USER            =   4UL,                                \/\/00000000000000000000000000000000 00000000000000000000000000000100$/;"	e	enum:PAGE_FLAGS
+PAGING_WRITABLE	include/sys/paging.h	/^    PAGING_WRITABLE        =   2UL,                                \/\/00000000000000000000000000000000 00000000000000000000000000000010$/;"	e	enum:PAGE_FLAGS
+PAGING_ZERO	include/sys/paging.h	/^    PAGING_ZERO            =   0UL,                                \/\/00000000000000000000000000000000 00000000000000000000000000000000$/;"	e	enum:PAGE_FLAGS
+PDE_SELF_REF	sys/page.c	16;"	d	file:
+PDPE_SELF_REF	sys/page.c	17;"	d	file:
+PHYS_PAGE	include/sys/fs.h	6;"	d
+PML4_SELF_REF	sys/page.c	18;"	d	file:
+POWER2_ALIGN	sys/kmalloc.c	10;"	d	file:
+PTE_SELF_REF	sys/page.c	15;"	d	file:
+QWORD	include/sys/ahci.h	/^typedef uint64_t QWORD;$/;"	t
+R	include/sys/proc_mngr.h	/^    R,     \/\/read only$/;"	e	enum:vmaflag
+READ	include/syscall.h	/^    READ,$/;"	e	enum:syscall_num
+READDIR	include/syscall.h	/^    READDIR,$/;"	e	enum:syscall_num
+READY_STATE	include/sys/proc_mngr.h	/^    READY_STATE,$/;"	e	enum:task_states
+READ_CR2	include/sys/types.h	11;"	d
+READ_CR3	include/sys/types.h	13;"	d
+REUSE_MCB	libc/malloc.c	/^enum {NEW_MCB, NO_MCB, REUSE_MCB};$/;"	e	enum:__anon2	file:
+ROOTBIN	Makefile	/^ROOTBIN=$(ROOTFS)\/bin$/;"	m
+ROOTBOOT	Makefile	/^ROOTBOOT=$(ROOTFS)\/boot$/;"	m
+ROOTFS	Makefile	/^ROOTFS=rootfs$/;"	m
+ROOTLIB	Makefile	/^ROOTLIB=$(ROOTFS)\/lib$/;"	m
+ROUNDDOWN	include/sys/defs.h	41;"	d
+ROUNDUP	include/sys/defs.h	48;"	d
+RUNNING_STATE	include/sys/proc_mngr.h	/^    RUNNING_STATE,$/;"	e	enum:task_states
+RW	include/sys/proc_mngr.h	/^    RW,    \/\/read write$/;"	e	enum:vmaflag
+RWX	include/sys/proc_mngr.h	/^    RWX    \/\/read write execute$/;"	e	enum:vmaflag
+RW_KERNEL_FLAGS	include/sys/paging.h	21;"	d
+RW_USER_FLAGS	include/sys/paging.h	23;"	d
+RX	include/sys/proc_mngr.h	/^    RX,    \/\/read execute$/;"	e	enum:vmaflag
+RX_USER_FLAGS	include/sys/paging.h	22;"	d
+SATA_SIG_ATA	include/sys/ahci.h	13;"	d
+SATA_SIG_ATAPI	include/sys/ahci.h	14;"	d
+SATA_SIG_PM	include/sys/ahci.h	16;"	d
+SATA_SIG_SEMB	include/sys/ahci.h	15;"	d
+SECTOR_SIZE	sys/fs/file_ops.c	9;"	d	file:
+SEEK	include/syscall.h	/^    SEEK, $/;"	e	enum:syscall_num
+SEEK_CUR	include/dirent.h	/^enum seekop {SEEK_SET, SEEK_CUR, SEEK_END};$/;"	e	enum:seekop
+SEEK_END	include/dirent.h	/^enum seekop {SEEK_SET, SEEK_CUR, SEEK_END};$/;"	e	enum:seekop
+SEEK_SET	include/dirent.h	/^enum seekop {SEEK_SET, SEEK_CUR, SEEK_END};$/;"	e	enum:seekop
+SHUTDOWN	include/syscall.h	/^    SHUTDOWN,$/;"	e	enum:syscall_num
+SIZE_OF_SECTOR	include/sys/fs.h	9;"	d
+SLEEP	include/syscall.h	/^    SLEEP,$/;"	e	enum:syscall_num
+SLEEP_STATE	include/sys/proc_mngr.h	/^    SLEEP_STATE,$/;"	e	enum:task_states
+STACK	include/sys/proc_mngr.h	/^    STACK,$/;"	e	enum:vmatype
+SUBMITTO	Makefile	/^SUBMITTO=\/submit$/;"	m
+SUPER_BLOCK_MAGIC	include/sys/fs.h	20;"	d
+SUPER_BLOCK_SECTOR	include/sys/fs.h	15;"	d
+SYSCALL_PROTO	include/syscall.h	6;"	d
+TEXT	include/sys/proc_mngr.h	/^    TEXT,$/;"	e	enum:vmatype
+TRUE	include/sys/defs.h	5;"	d
+TransferCount	include/sys/ahci.h	/^    DWORD   TransferCount;  \/\/Number of bytes to transfer. Bit 0 must be 0$/;"	m	struct:tagFIS_DMA_SETUP
+USER_STACK_SIZE	include/sys/proc_mngr.h	7;"	d
+USER_STACK_TOP	include/sys/proc_mngr.h	6;"	d
+VADDR	sys/page.c	22;"	d	file:
+VIRT_PAGE	include/sys/fs.h	7;"	d
+W	include/sys/proc_mngr.h	/^    W,     \/\/write only$/;"	e	enum:vmaflag
+W	sys/gdt.c	17;"	d	file:
+WAIT	include/syscall.h	/^    WAIT,$/;"	e	enum:syscall_num
+WAITPID	include/syscall.h	/^    WAITPID,$/;"	e	enum:syscall_num
+WAIT_STATE	include/sys/proc_mngr.h	/^    WAIT_STATE,$/;"	e	enum:task_states
+WORD	include/sys/ahci.h	/^typedef uint16_t WORD;$/;"	t
+WRITE	include/syscall.h	/^    WRITE,$/;"	e	enum:syscall_num
+WX	include/sys/proc_mngr.h	/^    WX,    \/\/write execute$/;"	e	enum:vmaflag
+X	include/sys/proc_mngr.h	/^    X,     \/\/execute only$/;"	e	enum:vmaflag
+YIELD	include/syscall.h	/^    YIELD,$/;"	e	enum:syscall_num
+ZOMBIE_STATE	include/sys/proc_mngr.h	/^    ZOMBIE_STATE,$/;"	e	enum:task_states
+_COMMON_H	include/sys/common.h	2;"	d
+_DEFS_H	include/sys/defs.h	2;"	d
+_DEFS_H	include/sys/defs_bkp.h	2;"	d
+_DIRENT_H	include/dirent.h	2;"	d
+_ELF64_H	include/sys/elf.h	2;"	d
+_GDT_H	include/sys/gdt.h	2;"	d
+_LINUX_TYPES_H	include/sys/types.h	2;"	d
+_PROC_MNGR_H	include/sys/proc_mngr.h	2;"	d
+_SIGNAL_H	include/signal.h	2;"	d
+_STDARG_H	include/stdarg.h	2;"	d
+_STDIO_H	include/stdio.h	2;"	d
+_STDLIB_H	include/stdlib.h	2;"	d
+_STRING_H	include/sys/kstring.h	2;"	d
+_SYSCALL_H	include/syscall.h	2;"	d
+_TARFS_H	include/sys/tarfs.h	2;"	d
+_UNISTD_H	include/unistd.h	2;"	d
+__IDT_H__	include/sys/idt.h	2;"	d
+__KB_H__	include/sys/kBoard.h	2;"	d
+__KPRINTF_H	include/sys/kprintf.h	2;"	d
+__NR_open	sys/util.c	15;"	d	file:
+__NR_read	sys/util.c	14;"	d	file:
+__TIMER_H__	include/sys/timer.h	2;"	d
+__UTIL_H__	include/sys/util.h	2;"	d
+__int16_t	include/sys/defs.h	/^typedef short           __int16_t;$/;"	t
+__int32_t	include/sys/defs.h	/^typedef int             __int32_t;$/;"	t
+__int64_t	include/sys/defs.h	/^typedef long            __int64_t;$/;"	t
+__int8_t	include/sys/defs.h	/^typedef char            __int8_t;$/;"	t
+__uint16_t	include/sys/defs.h	/^typedef unsigned short  __uint16_t;$/;"	t
+__uint32_t	include/sys/defs.h	/^typedef unsigned int    __uint32_t;$/;"	t
+__uint64_t	include/sys/defs.h	/^typedef unsigned long   __uint64_t;$/;"	t
+__uint8_t	include/sys/defs.h	/^typedef unsigned char   __uint8_t;$/;"	t
+_mmngr_base_addr	sys/phys_mm.c	/^static uint64_t _mmngr_base_addr;$/;"	v	file:
+_mmngr_max_blocks	sys/phys_mm.c	/^static uint64_t _mmngr_max_blocks;$/;"	v	file:
+_mmngr_memory_map	sys/phys_mm.c	/^static uint64_t* _mmngr_memory_map;$/;"	v	file:
+_mmngr_memory_size	sys/phys_mm.c	/^static uint64_t _mmngr_memory_size;$/;"	v	file:
+_mmngr_reference	sys/phys_mm.c	/^static uint8_t* _mmngr_reference;$/;"	v	file:
+_mmngr_used_blocks	sys/phys_mm.c	/^static uint64_t _mmngr_used_blocks;$/;"	v	file:
+_start	crt/crt1.c	/^void _start(uint64_t stacktop) {$/;"	f
+_x86_64_asm_lgdt	sys/gdt.s	/^_x86_64_asm_lgdt:$/;"	l
+a	include/sys/ahci.h	/^    BYTE    a:1;            \/\/ Auto-activate. Specifies if DMA Activate FIS is needed$/;"	m	struct:tagFIS_DMA_SETUP
+a	include/sys/ahci.h	/^    BYTE    a:1;        \/\/ ATAPI$/;"	m	struct:tagHBA_CMD_HEADER
+a1	include/syscall.h	/^SYSCALL_PROTO(2)(uint64_t n, uint64_t a1, uint64_t a2)$/;"	v
+a1	include/syscall.h	/^SYSCALL_PROTO(3)(uint64_t n, uint64_t a1, uint64_t a2, uint64_t a3)$/;"	v
+a1	include/syscall.h	/^SYSCALL_PROTO(4)(uint64_t n, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4)$/;"	v
+a2	include/syscall.h	/^SYSCALL_PROTO(3)(uint64_t n, uint64_t a1, uint64_t a2, uint64_t a3)$/;"	v
+a2	include/syscall.h	/^SYSCALL_PROTO(4)(uint64_t n, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4)$/;"	v
+a3	include/syscall.h	/^SYSCALL_PROTO(4)(uint64_t n, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4)$/;"	v
+abar	sys/fs/ahci.c	/^HBA_MEM *abar;$/;"	v
+acmd	include/sys/ahci.h	/^    BYTE    acmd[16];   \/\/ ATAPI command, 12 or 16 bytes$/;"	m	struct:tagHBA_CMD_TBL
+add_child_to_parent	sys/mm.c	/^void add_child_to_parent(task_struct *child_task)$/;"	f
+add_to_task_free_list	sys/mm.c	/^void add_to_task_free_list(task_struct* free_task)$/;"	f
+add_to_task_list	sys/proc_mngr.c	/^static void add_to_task_list(task_struct* new_task)$/;"	f	file:
+add_to_vma_free_list	sys/mm.c	/^void add_to_vma_free_list(vma_struct* free_vma)$/;"	f
+addr	sys/gdt.c	/^  uint64_t addr;$/;"	m	struct:gdtr_t	file:
+addr	sys/idt.c	/^		uint64_t addr;$/;"	m	struct:IdtPtr	file:
+ahci_alloc_pages	sys/fs/ahci.c	/^void ahci_alloc_pages(uint32_t no_of_vpages)$/;"	f
+alloc_new	libc/malloc.c	/^void *alloc_new(int aligned_size)$/;"	f
+alloc_new_block	sys/fs/extfs.c	/^int32_t alloc_new_block()$/;"	f
+alloc_new_inode	sys/fs/extfs.c	/^int32_t alloc_new_inode()$/;"	f
+alloc_new_task	sys/mm.c	/^task_struct* alloc_new_task(bool IsUserProcess)$/;"	f
+alloc_new_vma	sys/mm.c	/^vma_struct* alloc_new_vma(uint64_t start_addr, uint64_t end_addr, uint64_t flags, uint64_t type, uint64_t file_d)$/;"	f
+alloc_pde	sys/page.c	/^static uint64_t* alloc_pde(uint64_t *pdpe_table, int pdpe_off)$/;"	f	file:
+alloc_pdpe	sys/page.c	/^static uint64_t* alloc_pdpe(uint64_t *pml4_table, int pml4_off)$/;"	f	file:
+alloc_pte	sys/page.c	/^static uint64_t* alloc_pte(uint64_t *pde_table, int pde_off)$/;"	f	file:
+allocated_mem	libc/malloc.c	/^static int allocated_mem; $/;"	v	file:
+arg_end	include/sys/proc_mngr.h	/^    uint64_t arg_start, arg_end, env_start, env_end;$/;"	m	struct:mm_struct
+arg_start	include/sys/proc_mngr.h	/^    uint64_t arg_start, arg_end, env_start, env_end;$/;"	m	struct:mm_struct
+args	bin/sh/sh.c	/^char currdir[1024], args[10][100];$/;"	v
+args	sys/elf.c	/^static char args[10][100];$/;"	v	file:
+atoi	libc/string.c	/^int32_t atoi(char *p)$/;"	f
+atoi	sys/util.c	/^int32_t atoi(char * ptr)$/;"	f
+b	include/sys/ahci.h	/^    BYTE    b:1;        \/\/ BIST$/;"	m	struct:tagHBA_CMD_HEADER
+bg_flag	bin/sh/sh.c	/^static char bg_flag, prog[100];$/;"	v	file:
+block_bmap_isset	sys/fs/extfs.c	/^static bool block_bmap_isset(uint64_t *sector_t, uint64_t block_no)$/;"	f	file:
+block_bmap_set	sys/fs/extfs.c	/^static void block_bmap_set(uint64_t *sector_t, uint64_t block_no)$/;"	f	file:
+block_bmap_unset	sys/fs/extfs.c	/^static void block_bmap_unset(uint64_t *sector_t, uint64_t block_no)$/;"	f	file:
+block_first_free	sys/fs/extfs.c	/^static int block_first_free()$/;"	f	file:
+bohc	include/sys/ahci.h	/^    DWORD   bohc;       \/\/ 0x28, BIOS\/OS handoff control and status$/;"	m	struct:tagHBA_MEM
+bool	include/sys/defs.h	/^typedef __uint8_t       bool;$/;"	t
+bool	include/sys/defs_bkp.h	/^typedef uint8_t       bool;$/;"	t
+boot	sys/main.c	/^void boot(void)$/;"	f
+buf	bin/fork/fork.c	/^char buf[10] = "FORK";$/;"	v
+buf	sys/kboard.c	/^char buf[1024];$/;"	v
+c	include/sys/ahci.h	/^    BYTE    c:1;        \/\/ 1: Command, 0: Control$/;"	m	struct:tagFIS_REG_H2D
+c	include/sys/ahci.h	/^    BYTE    c:1;        \/\/ Clear busy upon R_OK$/;"	m	struct:tagHBA_CMD_HEADER
+cStrCmp	sys/util.c	/^int cStrCmp(char *str1, char* str2){$/;"	f
+cStrlen	sys/util.c	/^int cStrlen(char *str){$/;"	f
+cap	include/sys/ahci.h	/^    DWORD   cap;        \/\/ 0x00, Host capability$/;"	m	struct:tagHBA_MEM
+cap2	include/sys/ahci.h	/^    DWORD   cap2;       \/\/ 0x24, Host capabilities extended$/;"	m	struct:tagHBA_MEM
+ccc_ctl	include/sys/ahci.h	/^    DWORD   ccc_ctl;    \/\/ 0x14, Command completion coalescing control$/;"	m	struct:tagHBA_MEM
+ccc_pts	include/sys/ahci.h	/^    DWORD   ccc_pts;    \/\/ 0x18, Command completion coalescing ports$/;"	m	struct:tagHBA_MEM
+cfis	include/sys/ahci.h	/^    BYTE    cfis[64];   \/\/ Command FIS$/;"	m	struct:tagHBA_CMD_TBL
+cfl	include/sys/ahci.h	/^    BYTE    cfl:5;      \/\/ Command FIS length in DWORDS, 2 ~ 16$/;"	m	struct:tagHBA_CMD_HEADER
+check_type	sys/fs/ahci.c	/^static int check_type(HBA_PORT *port)$/;"	f	file:
+checksum	include/sys/tarfs.h	/^	char checksum[8];$/;"	m	struct:posix_header_ustar
+childhead	include/sys/proc_mngr.h	/^    task_struct* childhead;         \/\/ Keep track of its children on fork$/;"	m	struct:task_struct
+ci	include/sys/ahci.h	/^    DWORD   ci;     \/\/ 0x38, command issue$/;"	m	struct:tagHBA_PORT
+clb	include/sys/ahci.h	/^    DWORD   clb;        \/\/ 0x00, command list base address, 1K-byte aligned$/;"	m	struct:tagHBA_PORT
+clbu	include/sys/ahci.h	/^    DWORD   clbu;       \/\/ 0x04, command list base address upper 32 bits$/;"	m	struct:tagHBA_PORT
+clear_screen	sys/kprintf.c	/^void clear_screen()$/;"	f
+cli	include/sys/types.h	4;"	d
+close	libc/fs.c	/^void close(int file_d)$/;"	f
+closedir	libc/fs.c	/^int closedir(DIR* node)$/;"	f
+cls	libc/cls.c	/^int cls()$/;"	f
+cmd	include/sys/ahci.h	/^    DWORD   cmd;        \/\/ 0x18, command and status$/;"	m	struct:tagHBA_PORT
+comm	include/sys/proc_mngr.h	/^    char comm[30];                  \/\/ Name of task$/;"	m	struct:task_struct
+command	include/sys/ahci.h	/^    BYTE    command;    \/\/ Command register$/;"	m	struct:tagFIS_REG_H2D
+commonIrqHandler	sys/kprintf.c	/^void commonIrqHandler(registers_t regs)$/;"	f
+control	include/sys/ahci.h	/^    BYTE    control;    \/\/ Control register$/;"	m	struct:tagFIS_REG_H2D
+copyHelper	sys/util.c	/^void copyHelper(char* src, char*dest, int offset, int len){$/;"	f
+copy_arg_to_stack	sys/elf.c	/^static void copy_arg_to_stack(task_struct *task, int argc)$/;"	f	file:
+copy_args_to_execargs	bin/sh/sh.c	/^static void copy_args_to_execargs()$/;"	f	file:
+copy_blocks_to_vma	sys/fs/extfs.c	/^void copy_blocks_to_vma(ext_inode* inode_entry, uint64_t vma_start)$/;"	f
+copy_task_struct	sys/proc_mngr.c	/^task_struct* copy_task_struct(task_struct* parent_task)$/;"	f
+copy_vma_to_blocks	sys/fs/extfs.c	/^void copy_vma_to_blocks(ext_inode* inode_entry, int32_t inode_no, uint64_t vma_start, uint64_t new_size)$/;"	f
+counter	sys/kboard.c	/^int counter;$/;"	v
+counth	include/sys/ahci.h	/^    BYTE    counth;      \/\/ Count register, 15:8$/;"	m	struct:tagFIS_REG_D2H
+counth	include/sys/ahci.h	/^    BYTE    counth;     \/\/ Count register, 15:8$/;"	m	struct:tagFIS_PIO_SETUP
+counth	include/sys/ahci.h	/^    BYTE    counth;     \/\/ Count register, 15:8$/;"	m	struct:tagFIS_REG_H2D
+countl	include/sys/ahci.h	/^    BYTE    countl;      \/\/ Count register, 7:0$/;"	m	struct:tagFIS_REG_D2H
+countl	include/sys/ahci.h	/^    BYTE    countl;     \/\/ Count register, 7:0$/;"	m	struct:tagFIS_PIO_SETUP
+countl	include/sys/ahci.h	/^    BYTE    countl;     \/\/ Count register, 7:0$/;"	m	struct:tagFIS_REG_H2D
+createKernelProcess	sys/proc_mngr.c	/^void createKernelProcess(uint64_t funcAddr){$/;"	f
+create_block_bmap	sys/fs/extfs.c	/^static void create_block_bmap(super_block *s_star)$/;"	f	file:
+create_elf_proc	sys/elf.c	/^task_struct* create_elf_proc(char *filename, char *argv[])$/;"	f
+create_first_superblock	sys/fs/extfs.c	/^static void create_first_superblock(super_block *s_star) $/;"	f	file:
+create_idle_process	sys/proc_mngr.c	/^void create_idle_process()$/;"	f
+create_inode_structure	sys/fs/extfs.c	/^static void create_inode_structure(super_block *s_star)$/;"	f	file:
+create_new_pml4	sys/page.c	/^uint64_t create_new_pml4()$/;"	f
+cs	include/sys/idt.h	/^    uint64_t rip, cs, rflags, rsp, ss;                  \/\/ Registers pushed by the IRETQ $/;"	m	struct:registers
+cs	include/sys/irq_common.h	/^    uint64_t rip, cs, rflags, rsp, ss;                  \/\/ Registers pushed by the IRETQ $/;"	m	struct:registers
+ctba	include/sys/ahci.h	/^    DWORD   ctba;       \/\/ Command table descriptor base address$/;"	m	struct:tagHBA_CMD_HEADER
+ctbau	include/sys/ahci.h	/^    DWORD   ctbau;      \/\/ Command table descriptor base address upper 32 bits$/;"	m	struct:tagHBA_CMD_HEADER
+ctrlcount	sys/kboard.c	/^int ctrlcount = 0;$/;"	v
+curr	include/dirent.h	/^    uint64_t curr;$/;"	m	struct:file_descp
+curr	include/dirent.h	/^    uint64_t curr;$/;"	m	struct:file_dir
+curr	include/dirent.h	/^    uint64_t start, end, curr;$/;"	m	struct:file
+curr_child	include/dirent.h	/^    uint64_t curr_child;$/;"	m	struct:file
+curr_dir_ptr	bin/sh/sh.c	/^DIR *curr_dir_ptr;$/;"	v
+curr_dirent	include/dirent.h	/^    dirent curr_dirent;$/;"	m	struct:file_dir
+currdir	bin/sh/sh.c	/^char currdir[1024], args[10][100];$/;"	v
+currptr	sys/kmalloc.c	/^static uint64_t currptr;$/;"	v	file:
+d	include/sys/ahci.h	/^    BYTE    d:1;        \/\/ Data transfer direction, 1 - device to host$/;"	m	struct:tagFIS_DMA_SETUP
+d	include/sys/ahci.h	/^    BYTE    d:1;        \/\/ Data transfer direction, 1 - device to host$/;"	m	struct:tagFIS_PIO_SETUP
+data	include/sys/ahci.h	/^    DWORD   data[1];    \/\/ Payload$/;"	m	struct:tagFIS_DATA
+dba	include/sys/ahci.h	/^    DWORD   dba;        \/\/ Data base address$/;"	m	struct:tagHBA_PRDT_ENTRY
+dbau	include/sys/ahci.h	/^    DWORD   dbau;       \/\/ Data base address upper 32 bits$/;"	m	struct:tagHBA_PRDT_ENTRY
+dbc	include/sys/ahci.h	/^    DWORD   dbc:22;     \/\/ Byte count, 4M max$/;"	m	struct:tagHBA_PRDT_ENTRY
+device	include/sys/ahci.h	/^    BYTE    device;      \/\/ Device register$/;"	m	struct:tagFIS_REG_D2H
+device	include/sys/ahci.h	/^    BYTE    device;     \/\/ Device register$/;"	m	struct:tagFIS_PIO_SETUP
+device	include/sys/ahci.h	/^    BYTE    device;     \/\/ Device register$/;"	m	struct:tagFIS_REG_H2D
+devmajor	include/sys/tarfs.h	/^	char devmajor[8];$/;"	m	struct:posix_header_ustar
+devminor	include/sys/tarfs.h	/^	char devminor[8];$/;"	m	struct:posix_header_ustar
+dirent	include/dirent.h	/^struct dirent {$/;"	s
+dirent	include/dirent.h	/^typedef struct dirent dirent;$/;"	t	typeref:struct:dirent
+displayTime	sys/timer.c	/^void displayTime(){$/;"	f
+divide_by_zero_handler	sys/isr_handler.c	/^static void divide_by_zero_handler(registers_t regs)$/;"	f	file:
+dpl	sys/idt.c	/^		unsigned dpl : 2;$/;"	m	struct:IdtTable	file:
+e_ehsize	include/sys/elf.h	/^    Elf64_Half e_ehsize; \/* ELF header size *\/$/;"	m	struct:elf64_ehdr
+e_entry	include/sys/elf.h	/^    Elf64_Addr e_entry; \/* Entry point address *\/$/;"	m	struct:elf64_ehdr
+e_flags	include/sys/elf.h	/^    Elf64_Word e_flags; \/* Processor-specific flags *\/$/;"	m	struct:elf64_ehdr
+e_ident	include/sys/elf.h	/^    unsigned char e_ident[16]; \/* ELF identification *\/$/;"	m	struct:elf64_ehdr
+e_machine	include/sys/elf.h	/^    Elf64_Half e_machine; \/* Machine type *\/$/;"	m	struct:elf64_ehdr
+e_phentsize	include/sys/elf.h	/^    Elf64_Half e_phentsize; \/* Size of program header entry *\/$/;"	m	struct:elf64_ehdr
+e_phnum	include/sys/elf.h	/^    Elf64_Half e_phnum; \/* Number of program header entries *\/$/;"	m	struct:elf64_ehdr
+e_phoff	include/sys/elf.h	/^    Elf64_Off e_phoff; \/* Program header offset *\/$/;"	m	struct:elf64_ehdr
+e_shentsize	include/sys/elf.h	/^    Elf64_Half e_shentsize; \/* Size of section header entry *\/$/;"	m	struct:elf64_ehdr
+e_shnum	include/sys/elf.h	/^    Elf64_Half e_shnum; \/* Number of section header entries *\/$/;"	m	struct:elf64_ehdr
+e_shoff	include/sys/elf.h	/^    Elf64_Off e_shoff; \/* Section header offset *\/$/;"	m	struct:elf64_ehdr
+e_shstrndx	include/sys/elf.h	/^    Elf64_Half e_shstrndx; \/* Section name string table index *\/$/;"	m	struct:elf64_ehdr
+e_status	include/sys/ahci.h	/^    BYTE    e_status;   \/\/ New value of status register$/;"	m	struct:tagFIS_PIO_SETUP
+e_type	include/sys/elf.h	/^    Elf64_Half e_type; \/* Object file type *\/$/;"	m	struct:elf64_ehdr
+e_version	include/sys/elf.h	/^    Elf64_Word e_version; \/* Object file version *\/$/;"	m	struct:elf64_ehdr
+elf64_ehdr	include/sys/elf.h	/^typedef struct elf64_ehdr$/;"	s
+elf64_phdr	include/sys/elf.h	/^typedef struct elf64_phdr$/;"	s
+elf64_shdr	include/sys/elf.h	/^typedef struct elf64_shdr$/;"	s
+em_ctl	include/sys/ahci.h	/^    DWORD   em_ctl;     \/\/ 0x20, Enclosure management control$/;"	m	struct:tagHBA_MEM
+em_loc	include/sys/ahci.h	/^    DWORD   em_loc;     \/\/ 0x1C, Enclosure management location$/;"	m	struct:tagHBA_MEM
+empty_page_tables	sys/page.c	/^void empty_page_tables(uint64_t pml4_t)$/;"	f
+empty_task_struct	sys/mm.c	/^void empty_task_struct(task_struct *cur_task)$/;"	f
+empty_vma_list	sys/mm.c	/^void empty_vma_list(vma_struct *vma_list)$/;"	f
+end	include/dirent.h	/^    uint64_t start, end, curr;$/;"	m	struct:file
+end_brk	include/sys/proc_mngr.h	/^    uint64_t start_brk, end_brk, start_stack;$/;"	m	struct:mm_struct
+env_end	include/sys/proc_mngr.h	/^    uint64_t arg_start, arg_end, env_start, env_end;$/;"	m	struct:mm_struct
+env_start	include/sys/proc_mngr.h	/^    uint64_t arg_start, arg_end, env_start, env_end;$/;"	m	struct:mm_struct
+err_no	include/sys/idt.h	/^    uint64_t int_no, err_no;                            \/\/ Interrupt number and error code$/;"	m	struct:registers
+err_no	include/sys/irq_common.h	/^    uint64_t int_no, err_no;                            \/\/ Interrupt number and error code$/;"	m	struct:registers
+error	include/sys/ahci.h	/^    BYTE    error;       \/\/ Error register$/;"	m	struct:tagFIS_REG_D2H
+error	include/sys/ahci.h	/^    BYTE    error;      \/\/ Error register$/;"	m	struct:tagFIS_PIO_SETUP
+execargs	bin/sh/sh.c	/^char *execargs[10], path[100] = "\/rootfs\/bin\/";$/;"	v
+execvpe	libc/common.c	/^int execvpe(const char *file, char *const argv[], char *const envp[])$/;"	f
+exit	libc/exit.c	/^void exit(int status)$/;"	f
+export_to_path	bin/sh/sh.c	/^static void export_to_path()$/;"	f	file:
+ext_inode	include/sys/fs.h	/^typedef struct ext_inode {$/;"	s
+ext_inode	include/sys/fs.h	/^} ext_inode;$/;"	t	typeref:struct:ext_inode
+ext_super_block	include/sys/fs.h	/^typedef struct ext_super_block {$/;"	s
+f_child	include/dirent.h	/^    fnode_t* f_child[MAXCHILD];$/;"	m	struct:file
+f_inode_no	include/dirent.h	/^    uint64_t f_inode_no;$/;"	m	struct:file
+f_name	include/dirent.h	/^    char f_name[MAXLEN];$/;"	m	struct:file
+f_perm	include/dirent.h	/^    uint64_t f_perm;$/;"	m	struct:file_descp
+f_type	include/dirent.h	/^    bool f_type;$/;"	m	struct:file
+fb	include/sys/ahci.h	/^    DWORD   fb;     \/\/ 0x08, FIS base address, 256-byte aligned$/;"	m	struct:tagHBA_PORT
+fbs	include/sys/ahci.h	/^    DWORD   fbs;        \/\/ 0x40, FIS-based switch control$/;"	m	struct:tagHBA_PORT
+fbu	include/sys/ahci.h	/^    DWORD   fbu;        \/\/ 0x0C, FIS base address upper 32 bits$/;"	m	struct:tagHBA_PORT
+featureh	include/sys/ahci.h	/^    BYTE    featureh;   \/\/ Feature register, 15:8$/;"	m	struct:tagFIS_REG_H2D
+featurel	include/sys/ahci.h	/^    BYTE    featurel;   \/\/ Feature register, 7:0$/;"	m	struct:tagFIS_REG_H2D
+file	include/dirent.h	/^struct file {$/;"	s
+file_descp	include/dirent.h	/^struct file_descp {$/;"	s
+file_descp	include/sys/proc_mngr.h	/^    uint64_t* file_descp[MAXFD];    \/\/ array of file descriptor pointers$/;"	m	struct:task_struct
+file_dir	include/dirent.h	/^struct file_dir {$/;"	s
+file_lookup	sys/dirent.c	/^void* file_lookup(char *dir_path)$/;"	f
+filenode	include/dirent.h	/^    fnode_t* filenode;$/;"	m	struct:file_descp
+filenode	include/dirent.h	/^    fnode_t* filenode;$/;"	m	struct:file_dir
+fileread	sys/fs/ahci.c	/^int fileread(HBA_PORT *port, DWORD startl, DWORD starth, DWORD count, QWORD buf)  $/;"	f
+find_cmdslot	sys/fs/ahci.c	/^int find_cmdslot(HBA_PORT *port)$/;"	f
+fis_type	include/sys/ahci.h	/^    BYTE    fis_type;    \/\/ FIS_TYPE_REG_D2H$/;"	m	struct:tagFIS_REG_D2H
+fis_type	include/sys/ahci.h	/^    BYTE    fis_type;   \/\/ FIS_TYPE_DATA$/;"	m	struct:tagFIS_DATA
+fis_type	include/sys/ahci.h	/^    BYTE    fis_type;   \/\/ FIS_TYPE_DMA_SETUP$/;"	m	struct:tagFIS_DMA_SETUP
+fis_type	include/sys/ahci.h	/^    BYTE    fis_type;   \/\/ FIS_TYPE_PIO_SETUP$/;"	m	struct:tagFIS_PIO_SETUP
+fis_type	include/sys/ahci.h	/^    BYTE    fis_type;   \/\/ FIS_TYPE_REG_H2D$/;"	m	struct:tagFIS_REG_H2D
+fnode_t	include/dirent.h	/^typedef struct file fnode_t;$/;"	t	typeref:struct:file
+fork	libc/common.c	/^pid_t fork()$/;"	f
+fork_and_execvpe	bin/sh/sh.c	/^static void fork_and_execvpe()$/;"	f	file:
+free	libc/malloc.c	/^void free(void *p)$/;"	f
+free_block	sys/fs/extfs.c	/^void free_block(int32_t block_no)$/;"	f
+free_inode	sys/fs/extfs.c	/^void free_inode(int32_t inode_no)$/;"	f
+free_mem_avail	sys/kmalloc.c	/^static uint32_t free_mem_avail;$/;"	v	file:
+free_temp_vaddr	sys/virt_mm.c	/^void free_temp_vaddr(uint64_t vaddr)$/;"	f
+free_virt_page	sys/virt_mm.c	/^void free_virt_page(void *vaddr)$/;"	f
+ftype	include/dirent.h	/^enum ftype {DIRECTORY, FILE};$/;"	g
+fun1	sys/main.c	/^void fun1(void){$/;"	f
+fun2	sys/main.c	/^void fun2(void){$/;"	f
+gdt	sys/gdt.c	/^static uint64_t gdt[MAX_GDT] = {$/;"	v	file:
+gdtr	sys/gdt.c	/^static struct gdtr_t gdtr = { sizeof(gdt), (uint64_t)gdt };$/;"	v	typeref:struct:gdtr_t	file:
+gdtr_t	sys/gdt.c	/^struct gdtr_t {$/;"	s	file:
+getLine	bin/sh/sh.c	/^static char *getLine(char *ptr, char *str, int limit)$/;"	f	file:
+get_free_task_struct	sys/mm.c	/^static task_struct* get_free_task_struct()$/;"	f	file:
+get_free_vma_struct	sys/mm.c	/^static vma_struct* get_free_vma_struct()$/;"	f	file:
+get_ker_pml4_t	sys/page.c	/^uint64_t* get_ker_pml4_t()$/;"	f
+get_next_ready_task	sys/proc_mngr.c	/^static task_struct* get_next_ready_task()$/;"	f	file:
+get_pde_entry	sys/page.c	/^static uint64_t* get_pde_entry(uint64_t vaddr)$/;"	f	file:
+get_pdpe_entry	sys/page.c	/^static uint64_t* get_pdpe_entry(uint64_t vaddr)$/;"	f	file:
+get_pml4_entry	sys/page.c	/^static uint64_t* get_pml4_entry(uint64_t vaddr)$/;"	f	file:
+get_pte_entry	sys/page.c	/^uint64_t* get_pte_entry(uint64_t vaddr)$/;"	f
+get_root_node	sys/dirent.c	/^fnode_t* get_root_node()$/;"	f
+get_temp_vaddr	sys/virt_mm.c	/^uint64_t get_temp_vaddr(uint64_t paddr)$/;"	f
+get_top_virtaddr	sys/virt_mm.c	/^uint64_t get_top_virtaddr()$/;"	f
+getpid	libc/common.c	/^pid_t getpid()$/;"	f
+getppid	libc/common.c	/^pid_t getppid()$/;"	f
+gets	sys/kboard.c	/^int gets(uint64_t var)$/;"	f
+gets_triggered	sys/kboard.c	/^volatile int gets_triggered;$/;"	v
+ghc	include/sys/ahci.h	/^    DWORD   ghc;        \/\/ 0x04, Global host control$/;"	m	struct:tagHBA_MEM
+gid	include/sys/tarfs.h	/^	char gid[8];$/;"	m	struct:posix_header_ustar
+gname	include/sys/tarfs.h	/^	char gname[32];$/;"	m	struct:posix_header_ustar
+gpf_handler	sys/isr_handler.c	/^static void gpf_handler(registers_t regs)$/;"	f	file:
+heap_end	libc/malloc.c	/^static char *heap_end;$/;"	v	file:
+hiwater_vm	include/sys/proc_mngr.h	/^    uint64_t hiwater_vm;            \/\/ High-water virtual memory usage$/;"	m	struct:mm_struct
+i	include/sys/ahci.h	/^    BYTE    i:1;         \/\/ Interrupt bit$/;"	m	struct:tagFIS_REG_D2H
+i	include/sys/ahci.h	/^    BYTE    i:1;        \/\/ Interrupt bit$/;"	m	struct:tagFIS_DMA_SETUP
+i	include/sys/ahci.h	/^    BYTE    i:1;        \/\/ Interrupt bit$/;"	m	struct:tagFIS_PIO_SETUP
+i	include/sys/ahci.h	/^    DWORD   i:1;        \/\/ Interrupt on completion$/;"	m	struct:tagHBA_PRDT_ENTRY
+i_block	include/sys/fs.h	/^    uint64_t i_block[NUM_DIRECT_BLOCKS];\/\/ Pointers to Direct Block$/;"	m	struct:ext_inode
+i_block_count	include/sys/fs.h	/^    uint64_t i_block_count;             \/\/ Number of blocks used$/;"	m	struct:ext_inode
+i_name	include/sys/fs.h	/^    char     i_name[128];               \/\/ Name of file$/;"	m	struct:ext_inode
+i_size	include/sys/fs.h	/^    uint64_t i_size;                    \/\/ Size of file$/;"	m	struct:ext_inode
+icc	include/sys/ahci.h	/^    BYTE    icc;        \/\/ Isochronous command completion$/;"	m	struct:tagFIS_REG_H2D
+idle_process	sys/proc_mngr.c	/^static void idle_process(void)$/;"	f	file:
+idle_task	sys/proc_mngr.c	/^static task_struct* idle_task = NULL;$/;"	v	file:
+idtPtr	sys/idt.c	/^static struct IdtPtr idtPtr; $/;"	v	typeref:struct:IdtPtr	file:
+ie	include/sys/ahci.h	/^    DWORD   ie;     \/\/ 0x14, interrupt enable$/;"	m	struct:tagHBA_PORT
+inb	sys/util.c	/^unsigned char inb (unsigned short port){$/;"	f
+increment_brk	sys/mm.c	/^void increment_brk(task_struct *proc, uint64_t bytes)$/;"	f
+initPic	sys/idt.c	/^void initPic(){$/;"	f
+initSchedule	sys/proc_mngr.c	/^void initSchedule(){$/;"	f
+initTimer	sys/timer.c	/^void initTimer(){$/;"	f
+init_disk	sys/fs/ahci.c	/^void init_disk(bool forceCreate)$/;"	f
+init_gdt	sys/gdt.c	/^void init_gdt() {$/;"	f
+init_kmalloc	sys/kmalloc.c	/^void init_kmalloc()$/;"	f
+init_map_virt_phys_addr	sys/page.c	/^static void init_map_virt_phys_addr(uint64_t vaddr, uint64_t paddr, uint64_t no_of_pages)$/;"	f	file:
+init_paging	sys/page.c	/^void init_paging(uint64_t kernmem, uint64_t physbase, uint64_t no_of_pages)$/;"	f
+init_tarfs	sys/dirent.c	/^void* init_tarfs()$/;"	f
+initial_stack	sys/main.c	/^uint8_t initial_stack[INITIAL_STACK_SIZE];$/;"	v
+ino	include/dirent.h	/^    uint64_t ino;$/;"	m	struct:dirent
+inode_bmap_isset	sys/fs/extfs.c	/^static bool inode_bmap_isset(uint64_t inode_no)$/;"	f	file:
+inode_bmap_set	sys/fs/extfs.c	/^static void inode_bmap_set(uint64_t inode_no)$/;"	f	file:
+inode_bmap_unset	sys/fs/extfs.c	/^static void inode_bmap_unset(uint64_t inode_no)$/;"	f	file:
+inode_e	sys/fs/extfs.c	/^static ext_inode* inode_e  = NULL;$/;"	v	file:
+inode_first_free	sys/fs/extfs.c	/^static int inode_first_free()$/;"	f	file:
+inode_struct	include/dirent.h	/^    uint64_t inode_struct;$/;"	m	struct:file_descp
+installIdt	sys/idt.c	/^void installIdt(){$/;"	f
+int16_t	include/sys/defs.h	/^typedef __int16_t       int16_t;$/;"	t
+int16_t	include/sys/defs_bkp.h	/^typedef          short  int16_t;$/;"	t
+int32_t	include/sys/defs.h	/^typedef __int32_t       int32_t;$/;"	t
+int32_t	include/sys/defs_bkp.h	/^typedef          int    int32_t;$/;"	t
+int64_t	include/sys/defs.h	/^typedef __int64_t       int64_t;$/;"	t
+int64_t	include/sys/defs_bkp.h	/^typedef          long   int64_t;$/;"	t
+int8_t	include/sys/defs.h	/^typedef __int8_t        int8_t;$/;"	t
+int8_t	include/sys/defs_bkp.h	/^typedef          char    int8_t;$/;"	t
+int_no	include/sys/idt.h	/^    uint64_t int_no, err_no;                            \/\/ Interrupt number and error code$/;"	m	struct:registers
+int_no	include/sys/irq_common.h	/^    uint64_t int_no, err_no;                            \/\/ Interrupt number and error code$/;"	m	struct:registers
+interruptArray	sys/idt.c	/^static struct IdtTable interruptArray[256];$/;"	v	typeref:struct:IdtTable	file:
+iomap_base	include/sys/gdt.h	/^  uint16_t iomap_base;$/;"	m	struct:tss_t
+irq0	sys/irq_common.s	/^irq0:$/;"	l
+irq1	sys/irq_common.s	/^irq1:$/;"	l
+irq_common	sys/irq_common.s	/^irq_common:$/;"	l
+irq_handler	sys/irq_handler.c	/^void irq_handler(registers_t regs)$/;"	f
+is	include/sys/ahci.h	/^    DWORD   is;     \/\/ 0x08, Interrupt status$/;"	m	struct:tagHBA_MEM
+is	include/sys/ahci.h	/^    DWORD   is;     \/\/ 0x10, interrupt status$/;"	m	struct:tagHBA_PORT
+is_available	libc/malloc.c	/^    int is_available;$/;"	m	struct:MCB_header_t	file:
+is_file_elf_exec	sys/elf.c	/^static bool is_file_elf_exec(Elf64_Ehdr* header)$/;"	f	file:
+isr0	sys/isr_common.s	/^isr0:$/;"	l
+isr10	sys/isr_common.s	/^isr10:$/;"	l
+isr13	sys/isr_common.s	/^isr13:$/;"	l
+isr14	sys/isr_common.s	/^isr14:$/;"	l
+isr_common	sys/isr_common.s	/^isr_common:$/;"	l
+isr_handler	sys/isr_handler.c	/^void isr_handler(registers_t regs)$/;"	f
+ist	sys/idt.c	/^		unsigned ist : 3 ;$/;"	m	struct:IdtTable	file:
+ist1	include/sys/gdt.h	/^  void *ist1;$/;"	m	struct:tss_t
+ist2	include/sys/gdt.h	/^  void *ist2;$/;"	m	struct:tss_t
+ist3	include/sys/gdt.h	/^  void *ist3;$/;"	m	struct:tss_t
+ist4	include/sys/gdt.h	/^  void *ist4;$/;"	m	struct:tss_t
+ist5	include/sys/gdt.h	/^  void *ist5;$/;"	m	struct:tss_t
+ist6	include/sys/gdt.h	/^  void *ist6;$/;"	m	struct:tss_t
+ist7	include/sys/gdt.h	/^  void *ist7;$/;"	m	struct:tss_t
+itoa	libc/string.c	/^char *itoa(uint64_t val, char *str, int32_t base)$/;"	f
+kbHandler	sys/kboard.c	/^void kbHandler()$/;"	f
+ker_cr3	sys/page.c	/^static uint64_t ker_cr3;$/;"	v	file:
+ker_pml4_t	sys/page.c	/^static uint64_t *ker_pml4_t;$/;"	v	file:
+kernel_stack	include/sys/proc_mngr.h	/^    uint64_t kernel_stack[KERNEL_STACK_SIZE];$/;"	m	struct:task_struct
+kmalloc	sys/kmalloc.c	/^void* kmalloc(uint32_t size)$/;"	f
+kmmap	sys/mm.c	/^void* kmmap(uint64_t start_addr, int bytes, uint64_t flags)$/;"	f
+kprintf	sys/kprintf.c	/^void kprintf(const char *fmt, ...){$/;"	f
+kstrcat	sys/kstring.c	/^char* kstrcat(char *str1, const char *str2)$/;"	f
+kstrcmp	sys/kstring.c	/^int kstrcmp(const char *s1, const char *s2)$/;"	f
+kstrcpy	sys/kstring.c	/^char * kstrcpy(char *dest, const char *src)$/;"	f
+kstrcpyn	sys/kstring.c	/^char * kstrcpyn(char *destination, const char *source, uint64_t n)$/;"	f
+kstrlen	sys/kstring.c	/^int kstrlen(const char *str)$/;"	f
+kstrtok	sys/kstring.c	/^char * kstrtok(char *s, const char *delim)$/;"	f
+last	include/sys/proc_mngr.h	/^    task_struct* last;              \/\/ The process that ran last$/;"	m	struct:task_struct
+lba0	include/sys/ahci.h	/^    BYTE    lba0;        \/\/ LBA low register, 7:0$/;"	m	struct:tagFIS_REG_D2H
+lba0	include/sys/ahci.h	/^    BYTE    lba0;       \/\/ LBA low register, 7:0$/;"	m	struct:tagFIS_PIO_SETUP
+lba0	include/sys/ahci.h	/^    BYTE    lba0;       \/\/ LBA low register, 7:0$/;"	m	struct:tagFIS_REG_H2D
+lba1	include/sys/ahci.h	/^    BYTE    lba1;        \/\/ LBA mid register, 15:8$/;"	m	struct:tagFIS_REG_D2H
+lba1	include/sys/ahci.h	/^    BYTE    lba1;       \/\/ LBA mid register, 15:8$/;"	m	struct:tagFIS_PIO_SETUP
+lba1	include/sys/ahci.h	/^    BYTE    lba1;       \/\/ LBA mid register, 15:8$/;"	m	struct:tagFIS_REG_H2D
+lba2	include/sys/ahci.h	/^    BYTE    lba2;        \/\/ LBA high register, 23:16$/;"	m	struct:tagFIS_REG_D2H
+lba2	include/sys/ahci.h	/^    BYTE    lba2;       \/\/ LBA high register, 23:16$/;"	m	struct:tagFIS_PIO_SETUP
+lba2	include/sys/ahci.h	/^    BYTE    lba2;       \/\/ LBA high register, 23:16$/;"	m	struct:tagFIS_REG_H2D
+lba3	include/sys/ahci.h	/^    BYTE    lba3;        \/\/ LBA register, 31:24$/;"	m	struct:tagFIS_REG_D2H
+lba3	include/sys/ahci.h	/^    BYTE    lba3;       \/\/ LBA register, 31:24$/;"	m	struct:tagFIS_PIO_SETUP
+lba3	include/sys/ahci.h	/^    BYTE    lba3;       \/\/ LBA register, 31:24$/;"	m	struct:tagFIS_REG_H2D
+lba4	include/sys/ahci.h	/^    BYTE    lba4;        \/\/ LBA register, 39:32$/;"	m	struct:tagFIS_REG_D2H
+lba4	include/sys/ahci.h	/^    BYTE    lba4;       \/\/ LBA register, 39:32$/;"	m	struct:tagFIS_PIO_SETUP
+lba4	include/sys/ahci.h	/^    BYTE    lba4;       \/\/ LBA register, 39:32$/;"	m	struct:tagFIS_REG_H2D
+lba5	include/sys/ahci.h	/^    BYTE    lba5;        \/\/ LBA register, 47:40$/;"	m	struct:tagFIS_REG_D2H
+lba5	include/sys/ahci.h	/^    BYTE    lba5;       \/\/ LBA register, 47:40$/;"	m	struct:tagFIS_PIO_SETUP
+lba5	include/sys/ahci.h	/^    BYTE    lba5;       \/\/ LBA register, 47:40$/;"	m	struct:tagFIS_REG_H2D
+lidt	sys/idt.s	/^  lidt:$/;"	l
+linePos	sys/kprintf.c	/^int linePos;$/;"	v
+linkname	include/sys/tarfs.h	/^	char linkname[100];$/;"	m	struct:posix_header_ustar
+listprocess	libc/common.c	/^void listprocess()$/;"	f
+load_elf	sys/elf.c	/^static task_struct* load_elf(Elf64_Ehdr* header, task_struct *proc, char *filename, char *argv[])$/;"	f	file:
+load_tss	sys/gdt.s	/^load_tss:$/;"	l
+loader_stack	sys/main.c	/^uint32_t* loader_stack;$/;"	v
+lookup	sys/tarfs.c	/^void* lookup(char *file_name) {$/;"	f
+magic	include/sys/tarfs.h	/^	char magic[6];$/;"	m	struct:posix_header_ustar
+main	bin/fork/fork.c	/^int main(int argc, char* argv[])$/;"	f
+main	bin/hello/hello.c	/^int main(int argc, char* argv[])$/;"	f
+main	bin/init/init.c	/^int main(int argc, char **argv)$/;"	f
+main	bin/ls/ls.c	/^int main(int argc, char* argv[])$/;"	f
+main	bin/ps/listprocess.c	/^int main(int argc, char* argv[])$/;"	f
+main	bin/sh/sh.c	/^int main(int argc, char **argv)$/;"	f
+main	bin/sleep/sleep.c	/^int main(int argc, char* argv[])$/;"	f
+make_head	libc/malloc.c	/^void make_head(char *addr, int size) $/;"	f
+make_node	sys/dirent.c	/^void make_node(struct file *node, struct file *parent, char *name, uint64_t start, uint64_t end, int type, uint64_t inode_no)$/;"	f
+malloc	libc/malloc.c	/^void* malloc(int elem_size)$/;"	f
+map_virt_phys_addr	sys/page.c	/^void map_virt_phys_addr(uint64_t vaddr, uint64_t paddr, uint64_t flags)$/;"	f
+max_mem	libc/malloc.c	/^static int max_mem;$/;"	v	file:
+mcb_count	libc/malloc.c	/^static int mcb_count;$/;"	v	file:
+mem_start_p	libc/malloc.c	/^static char *mem_start_p;$/;"	v	file:
+memcpy	libc/string.c	/^void *memcpy(void *destination, void *source, uint64_t num) $/;"	f
+memcpy	sys/util.c	/^ void *memcpy(void *destination, void *source, uint64_t num) $/;"	f
+memset	libc/string.c	/^void *memset(void *ptr, uint8_t value, uint64_t num)$/;"	f
+memset	sys/phys_mm.c	/^static void memset(void * ptr, int val, int sz)$/;"	f	file:
+memset	sys/util.c	/^void memset(char *str, char val, int size)$/;"	f
+memset	sys/virt_mm.c	/^static void memset(void * ptr, int val, int sz)$/;"	f	file:
+mkdir	libc/fs.c	/^int mkdir(char *path)$/;"	f
+mm	include/sys/proc_mngr.h	/^    mm_struct* mm; $/;"	m	struct:task_struct
+mm_struct	include/sys/proc_mngr.h	/^struct mm_struct {$/;"	s
+mm_struct	include/sys/proc_mngr.h	/^typedef struct mm_struct mm_struct;$/;"	t	typeref:struct:mm_struct
+mmap	libc/mmap.c	/^void* mmap(void* addr, uint64_t nbytes, uint64_t flags)$/;"	f
+mmap_first_free	sys/phys_mm.c	/^static int mmap_first_free() $/;"	f	file:
+mmap_set	sys/phys_mm.c	/^void mmap_set(int bit)$/;"	f
+mmap_unset	sys/phys_mm.c	/^static void mmap_unset(int bit)$/;"	f	file:
+mode	include/sys/tarfs.h	/^	char mode[8];$/;"	m	struct:posix_header_ustar
+modify_string	bin/sh/sh.c	/^static void modify_string(char *currdir)$/;"	f	file:
+mtime	include/sys/tarfs.h	/^	char mtime[12];$/;"	m	struct:posix_header_ustar
+munmap	libc/munmap.c	/^int munmap(uint64_t* addr, uint64_t size)$/;"	f
+n	include/syscall.h	/^SYSCALL_PROTO(1)(uint64_t n, uint64_t a1)$/;"	v
+n	include/syscall.h	/^SYSCALL_PROTO(2)(uint64_t n, uint64_t a1, uint64_t a2)$/;"	v
+n	include/syscall.h	/^SYSCALL_PROTO(3)(uint64_t n, uint64_t a1, uint64_t a2, uint64_t a3)$/;"	v
+n	include/syscall.h	/^SYSCALL_PROTO(4)(uint64_t n, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4)$/;"	v
+name	include/dirent.h	/^    char name[MAXLEN];$/;"	m	struct:dirent
+name	include/sys/tarfs.h	/^	char name[100];$/;"	m	struct:posix_header_ustar
+nanosleep	libc/sleep.c	/^int nanosleep(int sec)$/;"	f
+next	include/sys/proc_mngr.h	/^    task_struct* next;              \/\/ The next process in the process list$/;"	m	struct:task_struct
+next	sys/proc_mngr.c	/^static task_struct* next = NULL;$/;"	v	file:
+next_pid	sys/mm.c	/^static uint64_t next_pid = 0;$/;"	v	file:
+next_task_list	sys/proc_mngr.c	/^static task_struct* next_task_list = NULL;$/;"	v	file:
+noOfSecs	sys/timer.c	/^int noOfSecs = 0;$/;"	v
+no_children	include/sys/proc_mngr.h	/^    uint32_t no_children;           \/\/ Number of children$/;"	m	struct:task_struct
+oct_to_dec	libc/string.c	/^int32_t oct_to_dec(int n) {$/;"	f
+oct_to_dec	sys/util.c	/^int32_t oct_to_dec(int n) {$/;"	f
+off_t	include/sys/defs_bkp.h	/^typedef uint64_t off_t;$/;"	t
+offset_high	sys/idt.c	/^		uint32_t offset_high;$/;"	m	struct:IdtTable	file:
+offset_low	sys/idt.c	/^		uint16_t offset_low;$/;"	m	struct:IdtTable	file:
+offset_middle	sys/idt.c	/^		uint16_t offset_middle;$/;"	m	struct:IdtTable	file:
+open	libc/fs.c	/^int open(char *path, int flags)$/;"	f
+open	sys/util.c	/^int open(const char *pathname, int flags){$/;"	f
+opendir	libc/fs.c	/^DIR* opendir(char *dir_path)$/;"	f
+order	sys/kboard.c	/^int order = 0;$/;"	v
+outb	sys/util.c	/^void outb (unsigned short port, unsigned char data){$/;"	f
+p	include/sys/ahci.h	/^    BYTE    p:1;        \/\/ Prefetchable$/;"	m	struct:tagHBA_CMD_HEADER
+p	sys/idt.c	/^		unsigned p : 1;$/;"	m	struct:IdtTable	file:
+p_align	include/sys/elf.h	/^    Elf64_Xword p_align; \/* Alignment of segment *\/$/;"	m	struct:elf64_phdr
+p_filesz	include/sys/elf.h	/^    Elf64_Xword p_filesz; \/* Size of segment in file *\/$/;"	m	struct:elf64_phdr
+p_flags	include/sys/elf.h	/^    Elf64_Word p_flags; \/* Segment attributes *\/$/;"	m	struct:elf64_phdr
+p_memsz	include/sys/elf.h	/^    Elf64_Xword p_memsz; \/* Size of segment in memory *\/$/;"	m	struct:elf64_phdr
+p_offset	include/sys/elf.h	/^    Elf64_Off p_offset; \/* Offset in file *\/$/;"	m	struct:elf64_phdr
+p_paddr	include/sys/elf.h	/^    Elf64_Addr p_paddr; \/* Reserved *\/$/;"	m	struct:elf64_phdr
+p_type	include/sys/elf.h	/^    Elf64_Word p_type; \/* Type of segment *\/$/;"	m	struct:elf64_phdr
+p_vaddr	include/sys/elf.h	/^    Elf64_Addr p_vaddr; \/* Virtual address in memory *\/$/;"	m	struct:elf64_phdr
+pad	include/sys/tarfs.h	/^	char pad[12];$/;"	m	struct:posix_header_ustar
+page_fault_handler	sys/isr_handler.c	/^static void page_fault_handler(registers_t regs)$/;"	f	file:
+parent	include/sys/proc_mngr.h	/^    task_struct* parent;            \/\/ Keep track of parent process on fork$/;"	m	struct:task_struct
+parse	sys/dirent.c	/^void parse(char *dir_path, int type, uint64_t start, uint64_t end)$/;"	f
+parsePrint	sys/kprintf.c	/^void parsePrint(const char *fmt, va_list args){$/;"	f
+path	bin/sh/sh.c	/^char *execargs[10], path[100] = "\/rootfs\/bin\/";$/;"	v
+perm	include/dirent.h	/^enum perm {O_RDONLY, O_WRONLY, O_RDWR, O_APPEND, O_CREAT, O_TRUNC};$/;"	g
+phys_alloc_block	sys/phys_mm.c	/^uint64_t phys_alloc_block() {$/;"	f
+phys_dec_block_ref	sys/phys_mm.c	/^void phys_dec_block_ref(uint64_t paddr)$/;"	f
+phys_free_block	sys/phys_mm.c	/^void phys_free_block(uint64_t paddr, bool forceZero) $/;"	f
+phys_get_block_count	sys/phys_mm.c	/^static uint64_t phys_get_block_count() $/;"	f	file:
+phys_get_block_ref	sys/phys_mm.c	/^int phys_get_block_ref(uint64_t paddr)$/;"	f
+phys_get_free_block_count	sys/phys_mm.c	/^uint64_t phys_get_free_block_count()$/;"	f
+phys_inc_block_ref	sys/phys_mm.c	/^void phys_inc_block_ref(uint64_t paddr)$/;"	f
+phys_init	sys/phys_mm.c	/^void phys_init(uint64_t physBase, uint64_t physfree, uint64_t physSize) {$/;"	f
+physfree_global	sys/main.c	/^void *physfree_global;$/;"	v
+pi	include/sys/ahci.h	/^    DWORD   pi;     \/\/ 0x0C, Port implemented$/;"	m	struct:tagHBA_MEM
+pid	include/sys/proc_mngr.h	/^    pid_t pid;$/;"	m	struct:task_struct
+pid_t	include/sys/defs.h	/^typedef __int8_t        pid_t;$/;"	t
+pid_t	include/sys/defs_bkp.h	/^typedef uint32_t pid_t;$/;"	t
+pml4_t	include/sys/proc_mngr.h	/^    uint64_t pml4_t;                \/\/ Actual physical base addr for PML4 table$/;"	m	struct:mm_struct
+pmp	include/sys/ahci.h	/^    BYTE    pmp:4;      \/\/ Port multiplier port$/;"	m	struct:tagHBA_CMD_HEADER
+pmport	include/sys/ahci.h	/^    BYTE    pmport:4;    \/\/ Port multiplier$/;"	m	struct:tagFIS_REG_D2H
+pmport	include/sys/ahci.h	/^    BYTE    pmport:4;   \/\/ Port multiplier$/;"	m	struct:tagFIS_DATA
+pmport	include/sys/ahci.h	/^    BYTE    pmport:4;   \/\/ Port multiplier$/;"	m	struct:tagFIS_DMA_SETUP
+pmport	include/sys/ahci.h	/^    BYTE    pmport:4;   \/\/ Port multiplier$/;"	m	struct:tagFIS_PIO_SETUP
+pmport	include/sys/ahci.h	/^    BYTE    pmport:4;   \/\/ Port multiplier$/;"	m	struct:tagFIS_REG_H2D
+populate_struct	sys/fs/ahci.c	/^void populate_struct(super_block *s_star)$/;"	f
+port_rebase	sys/fs/ahci.c	/^void port_rebase(HBA_PORT *port, int portno){$/;"	f
+ports	include/sys/ahci.h	/^    HBA_PORT    ports[1];   \/\/ 1 ~ 32$/;"	m	struct:tagHBA_MEM
+posix_header_ustar	include/sys/tarfs.h	/^struct posix_header_ustar {$/;"	s
+pow	libc/string.c	/^int32_t pow(int base, int power)$/;"	f
+ppid	include/sys/proc_mngr.h	/^    pid_t ppid;$/;"	m	struct:task_struct
+prdbc	include/sys/ahci.h	/^        DWORD   prdbc;      \/\/ Physical region descriptor byte count transferred$/;"	m	struct:tagHBA_CMD_HEADER
+prdt_entry	include/sys/ahci.h	/^    HBA_PRDT_ENTRY  prdt_entry[1];  \/\/ Physical region descriptor table entries, 0 ~ 65535$/;"	m	struct:tagHBA_CMD_TBL
+prdtl	include/sys/ahci.h	/^    WORD    prdtl;      \/\/ Physical region descriptor table length in entries$/;"	m	struct:tagHBA_CMD_HEADER
+prefix	include/sys/tarfs.h	/^	char prefix[155];$/;"	m	struct:posix_header_ustar
+prev	sys/proc_mngr.c	/^static task_struct* prev = NULL;$/;"	v	file:
+printChar	sys/kprintf.c	/^void printChar(char c){$/;"	f
+printHex	sys/kprintf.c	/^void printHex(int n){$/;"	f
+printInt	sys/kprintf.c	/^void printInt(int n){$/;"	f
+printInteger	sys/timer.c	/^void printInteger(int n){$/;"	f
+printPtr	sys/kprintf.c	/^void printPtr(uint64_t n){$/;"	f
+printStr	sys/timer.c	/^void printStr(char *s){$/;"	f
+printString	sys/kprintf.c	/^void printString(char *s){$/;"	f
+print_inodes	sys/fs/extfs.c	/^void print_inodes()$/;"	f
+printf	libc/printf.c	/^int32_t printf(const char *str, ...)$/;"	f
+printnode	sys/dirent.c	/^void printnode(fnode_t *node)$/;"	f
+probe_port	sys/fs/ahci.c	/^void probe_port(HBA_MEM *abar_temp)$/;"	f
+prog	bin/sh/sh.c	/^static char bg_flag, prog[100];$/;"	v	file:
+putchar	libc/putchar.c	/^int putchar(int c)$/;"	f
+puts	libc/puts.c	/^int puts(const char *s)$/;"	f
+puts	sys/kprintf.c	/^int32_t puts(const char* str)$/;"	f
+r	include/sys/ahci.h	/^    BYTE    r:1;        \/\/ Reset$/;"	m	struct:tagHBA_CMD_HEADER
+r10	include/sys/idt.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+r10	include/sys/irq_common.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+r11	include/sys/idt.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+r11	include/sys/irq_common.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+r12	include/sys/idt.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+r12	include/sys/irq_common.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+r13	include/sys/idt.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+r13	include/sys/irq_common.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+r14	include/sys/idt.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+r14	include/sys/irq_common.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+r15	include/sys/idt.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+r15	include/sys/irq_common.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+r8	include/sys/idt.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+r8	include/sys/irq_common.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+r9	include/sys/idt.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+r9	include/sys/irq_common.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+rax	include/sys/idt.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+rax	include/sys/irq_common.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+rbp	include/sys/idt.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+rbp	include/sys/irq_common.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+rbx	include/sys/idt.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+rbx	include/sys/irq_common.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+rcx	include/sys/idt.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+rcx	include/sys/irq_common.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+rdi	include/sys/idt.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+rdi	include/sys/irq_common.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+rdx	include/sys/idt.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+rdx	include/sys/irq_common.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+read	libc/fs.c	/^uint64_t read(uint64_t fd, void *buf, uint64_t nbytes)$/;"	f
+read	sys/util.c	/^int read(int fd, void *buf, int count){$/;"	f
+read_block	sys/fs/extfs.c	/^bool read_block(void* block_entry, uint64_t block_no, uint64_t block_off, uint64_t size)$/;"	f
+read_buf	libc/scanf.c	/^static char read_buf[1024];$/;"	v	file:
+read_first_superblock	sys/fs/extfs.c	/^super_block *read_first_superblock(bool forceCreate) $/;"	f
+read_inode	sys/fs/extfs.c	/^bool read_inode(ext_inode* inode_entry, uint64_t inode_no)$/;"	f
+read_ip	sys/proc_mngr.c	/^void read_ip()$/;"	f
+read_sector	sys/fs/ahci.c	/^void read_sector(void* read_addr, uint64_t sector_no, uint64_t sec_off, uint64_t size)$/;"	f
+readdir	libc/fs.c	/^struct dirent* readdir(DIR* node)$/;"	f
+readelf	sys/elf.c	/^void readelf(char* filename)$/;"	f
+registers	include/sys/idt.h	/^struct registers$/;"	s
+registers	include/sys/irq_common.h	/^struct registers$/;"	s
+registers_t	include/sys/idt.h	/^typedef struct registers registers_t;$/;"	t	typeref:struct:registers
+registers_t	include/sys/irq_common.h	/^typedef struct registers registers_t;$/;"	t	typeref:struct:registers
+remove_child_from_parent	sys/mm.c	/^void remove_child_from_parent(task_struct *child_task)$/;"	f
+remove_parent_from_child	sys/mm.c	/^void remove_parent_from_child(task_struct *parent_task)$/;"	f
+replace_child_task	sys/mm.c	/^void replace_child_task(task_struct *old_task, task_struct *new_task)$/;"	f
+reserved0	sys/idt.c	/^		unsigned reserved0 : 5;$/;"	m	struct:IdtTable	file:
+reserved1	sys/idt.c	/^		uint32_t reserved1;$/;"	m	struct:IdtTable	file:
+reserved_0	include/sys/gdt.h	/^  uint32_t reserved_0;$/;"	m	struct:tss_t
+reserved_1	include/sys/gdt.h	/^  uint64_t reserved_1;$/;"	m	struct:tss_t
+reserved_2	include/sys/gdt.h	/^  uint64_t reserved_2;$/;"	m	struct:tss_t
+reserved_3	include/sys/gdt.h	/^  uint16_t reserved_3;$/;"	m	struct:tss_t
+resvd	include/sys/ahci.h	/^    DWORD   resvd;          \/\/Reserved$/;"	m	struct:tagFIS_DMA_SETUP
+rflags	include/sys/idt.h	/^    uint64_t rip, cs, rflags, rsp, ss;                  \/\/ Registers pushed by the IRETQ $/;"	m	struct:registers
+rflags	include/sys/irq_common.h	/^    uint64_t rip, cs, rflags, rsp, ss;                  \/\/ Registers pushed by the IRETQ $/;"	m	struct:registers
+rip	include/sys/idt.h	/^    uint64_t rip, cs, rflags, rsp, ss;                  \/\/ Registers pushed by the IRETQ $/;"	m	struct:registers
+rip	include/sys/irq_common.h	/^    uint64_t rip, cs, rflags, rsp, ss;                  \/\/ Registers pushed by the IRETQ $/;"	m	struct:registers
+rip_register	include/sys/proc_mngr.h	/^    uint64_t rip_register;$/;"	m	struct:task_struct
+root_node	include/dirent.h	/^fnode_t* root_node;$/;"	v
+rsi	include/sys/idt.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+rsi	include/sys/irq_common.h	/^    uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rbp, rdx, rcx, rbx, rax, rdi; \/\/ Registers pushed by PUSHA$/;"	m	struct:registers
+rsp	include/sys/idt.h	/^    uint64_t rip, cs, rflags, rsp, ss;                  \/\/ Registers pushed by the IRETQ $/;"	m	struct:registers
+rsp	include/sys/irq_common.h	/^    uint64_t rip, cs, rflags, rsp, ss;                  \/\/ Registers pushed by the IRETQ $/;"	m	struct:registers
+rsp0	include/sys/gdt.h	/^  void *rsp0;$/;"	m	struct:tss_t
+rsp1	include/sys/gdt.h	/^  void *rsp1;$/;"	m	struct:tss_t
+rsp2	include/sys/gdt.h	/^  void *rsp2;$/;"	m	struct:tss_t
+rsp_register	include/sys/proc_mngr.h	/^    uint64_t rsp_register;$/;"	m	struct:task_struct
+rsv	include/sys/ahci.h	/^    BYTE    rsv[0xA0-0x2C];$/;"	m	struct:tagHBA_MEM
+rsv	include/sys/ahci.h	/^    BYTE    rsv[48];    \/\/ Reserved$/;"	m	struct:tagHBA_CMD_TBL
+rsv0	include/sys/ahci.h	/^    BYTE    rsv0:1;     \/\/ Reserved$/;"	m	struct:tagFIS_DMA_SETUP
+rsv0	include/sys/ahci.h	/^    BYTE    rsv0:1;     \/\/ Reserved$/;"	m	struct:tagFIS_PIO_SETUP
+rsv0	include/sys/ahci.h	/^    BYTE    rsv0:1;     \/\/ Reserved$/;"	m	struct:tagHBA_CMD_HEADER
+rsv0	include/sys/ahci.h	/^    BYTE    rsv0:2;      \/\/ Reserved$/;"	m	struct:tagFIS_REG_D2H
+rsv0	include/sys/ahci.h	/^    BYTE    rsv0:3;     \/\/ Reserved$/;"	m	struct:tagFIS_REG_H2D
+rsv0	include/sys/ahci.h	/^    BYTE    rsv0:4;     \/\/ Reserved$/;"	m	struct:tagFIS_DATA
+rsv0	include/sys/ahci.h	/^    DWORD   rsv0;       \/\/ 0x1C, Reserved$/;"	m	struct:tagHBA_PORT
+rsv0	include/sys/ahci.h	/^    DWORD   rsv0;       \/\/ Reserved$/;"	m	struct:tagHBA_PRDT_ENTRY
+rsv1	include/sys/ahci.h	/^    BYTE    rsv1:1;      \/\/ Reserved$/;"	m	struct:tagFIS_REG_D2H
+rsv1	include/sys/ahci.h	/^    BYTE    rsv1:1;$/;"	m	struct:tagFIS_PIO_SETUP
+rsv1	include/sys/ahci.h	/^    BYTE    rsv1[2];    \/\/ Reserved$/;"	m	struct:tagFIS_DATA
+rsv1	include/sys/ahci.h	/^    BYTE    rsv1[4];    \/\/ Reserved$/;"	m	struct:tagFIS_REG_H2D
+rsv1	include/sys/ahci.h	/^    DWORD   rsv1:9;     \/\/ Reserved$/;"	m	struct:tagHBA_PRDT_ENTRY
+rsv1	include/sys/ahci.h	/^    DWORD   rsv1[11];   \/\/ 0x44 ~ 0x6F, Reserved$/;"	m	struct:tagHBA_PORT
+rsv1	include/sys/ahci.h	/^    DWORD   rsv1[4];    \/\/ Reserved$/;"	m	struct:tagHBA_CMD_HEADER
+rsv2	include/sys/ahci.h	/^    BYTE    rsv2;        \/\/ Reserved$/;"	m	struct:tagFIS_REG_D2H
+rsv2	include/sys/ahci.h	/^    BYTE    rsv2;       \/\/ Reserved$/;"	m	struct:tagFIS_PIO_SETUP
+rsv3	include/sys/ahci.h	/^    BYTE    rsv3;       \/\/ Reserved$/;"	m	struct:tagFIS_PIO_SETUP
+rsv3	include/sys/ahci.h	/^    BYTE    rsv3[2];     \/\/ Reserved$/;"	m	struct:tagFIS_REG_D2H
+rsv4	include/sys/ahci.h	/^    BYTE    rsv4[2];    \/\/ Reserved$/;"	m	struct:tagFIS_PIO_SETUP
+rsv4	include/sys/ahci.h	/^    BYTE    rsv4[4];     \/\/ Reserved$/;"	m	struct:tagFIS_REG_D2H
+rsvd	include/sys/ahci.h	/^    DWORD   rsvd;           \/\/More reserved$/;"	m	struct:tagFIS_DMA_SETUP
+rsved	include/sys/ahci.h	/^    BYTE    rsved[2];       \/\/ Reserved$/;"	m	struct:tagFIS_DMA_SETUP
+s_blockbmapstart	include/sys/fs.h	/^    uint64_t s_blockbmapstart;          \/\/ Starting Sector No. of block bitmap$/;"	m	struct:ext_super_block
+s_blockdatastart	include/sys/fs.h	/^    uint64_t s_blockdatastart;          \/\/ Starting Sector No. of block data$/;"	m	struct:ext_super_block
+s_freeblockscount	include/sys/fs.h	/^    uint64_t s_freeblockscount;         \/\/ No. of free blocks$/;"	m	struct:ext_super_block
+s_freeinodescount	include/sys/fs.h	/^    uint64_t s_freeinodescount;         \/\/ No. of free inodes$/;"	m	struct:ext_super_block
+s_inode_bmap	include/sys/fs.h	/^    uint64_t s_inode_bmap[2];           \/\/ Inode bitmap$/;"	m	struct:ext_super_block
+s_inodestart	include/sys/fs.h	/^    uint64_t s_inodestart;              \/\/ Starting Sector No. at inode start$/;"	m	struct:ext_super_block
+s_magic	include/sys/fs.h	/^    uint64_t s_magic;                   \/\/ Magic Bits$/;"	m	struct:ext_super_block
+s_max_fsize	include/sys/fs.h	/^    uint64_t s_max_fsize;               \/\/ Max File Size$/;"	m	struct:ext_super_block
+s_nblocks	include/sys/fs.h	/^    uint64_t s_nblocks;                 \/\/ Max number of blocks$/;"	m	struct:ext_super_block
+s_ninodes	include/sys/fs.h	/^    uint64_t s_ninodes;                 \/\/ MAX number of inodes$/;"	m	struct:ext_super_block
+s_star	sys/fs/extfs.c	/^static super_block* s_star = NULL;$/;"	v	file:
+sact	include/sys/ahci.h	/^    DWORD   sact;       \/\/ 0x34, SATA active (SCR3:SActive)$/;"	m	struct:tagHBA_PORT
+sc	sys/kboard.c	/^}sc;$/;"	v	typeref:struct:scan_lookup
+scan_code	sys/kboard.c	/^		uint32_t scan_code;$/;"	m	struct:scan_lookup	file:
+scan_lookup	sys/kboard.c	/^struct scan_lookup $/;"	s	file:
+scan_lookup_array	sys/kboard.c	/^struct scan_lookup scan_lookup_array[] =$/;"	v	typeref:struct:scan_lookup
+scanf	libc/scanf.c	/^void scanf(const char *str, ...)$/;"	f
+schedule	sys/proc_mngr.c	/^void schedule()$/;"	f
+schedule_process	sys/proc_mngr.c	/^void schedule_process(task_struct* new_task, uint64_t entry_point, uint64_t stack_top)$/;"	f
+sctl	include/sys/ahci.h	/^    DWORD   sctl;       \/\/ 0x2C, SATA control (SCR2:SControl)$/;"	m	struct:tagHBA_PORT
+sd_dpl	sys/gdt.c	/^  uint64_t sd_dpl :2; \/* segment descriptor priority level *\/$/;"	m	struct:sys_segment_descriptor	file:
+sd_gran	sys/gdt.c	/^  uint64_t sd_gran :1; \/* limit granularity (byte\/page) *\/$/;"	m	struct:sys_segment_descriptor	file:
+sd_hibase	sys/gdt.c	/^  uint64_t sd_hibase :40; \/* segment base address (msb) *\/$/;"	m	struct:sys_segment_descriptor	file:
+sd_hilimit	sys/gdt.c	/^  uint64_t sd_hilimit :4; \/* segment extent (msb) *\/$/;"	m	struct:sys_segment_descriptor	file:
+sd_lobase	sys/gdt.c	/^  uint64_t sd_lobase :24; \/* segment base address (lsb) *\/$/;"	m	struct:sys_segment_descriptor	file:
+sd_lolimit	sys/gdt.c	/^  uint64_t sd_lolimit :16;\/* segment extent (lsb) *\/$/;"	m	struct:sys_segment_descriptor	file:
+sd_p	sys/gdt.c	/^  uint64_t sd_p :1; \/* segment descriptor present *\/$/;"	m	struct:sys_segment_descriptor	file:
+sd_type	sys/gdt.c	/^  uint64_t sd_type :5; \/* segment type *\/$/;"	m	struct:sys_segment_descriptor	file:
+sd_xx1	sys/gdt.c	/^  uint64_t sd_xx1 :3; \/* avl, long and def32 (not used) *\/$/;"	m	struct:sys_segment_descriptor	file:
+sd_xx2	sys/gdt.c	/^  uint64_t sd_xx2 :8; \/* reserved *\/$/;"	m	struct:sys_segment_descriptor	file:
+sd_xx3	sys/gdt.c	/^  uint64_t sd_xx3 :19; \/* reserved *\/$/;"	m	struct:sys_segment_descriptor	file:
+sd_zero	sys/gdt.c	/^  uint64_t sd_zero :5; \/* must be zero *\/$/;"	m	struct:sys_segment_descriptor	file:
+sector_e	sys/fs/extfs.c	/^static uint64_t *sector_e  = NULL;$/;"	v	file:
+seek	libc/fs.c	/^int seek(uint64_t file_d, int offset, int whence)$/;"	f
+seekop	include/dirent.h	/^enum seekop {SEEK_SET, SEEK_CUR, SEEK_END};$/;"	g
+selector	sys/idt.c	/^		uint16_t selector;$/;"	m	struct:IdtTable	file:
+serr	include/sys/ahci.h	/^    DWORD   serr;       \/\/ 0x30, SATA error (SCR1:SError)$/;"	m	struct:tagHBA_PORT
+setInteruptHandler	sys/idt.c	/^void setInteruptHandler(int interruptNo, uint64_t handler){$/;"	f
+set_cow_bit	include/sys/paging.h	50;"	d
+set_next_pid	sys/mm.c	/^void set_next_pid(pid_t fnext_pid)$/;"	f
+set_present_bit	include/sys/paging.h	46;"	d
+set_top_virtaddr	sys/virt_mm.c	/^void set_top_virtaddr(uint64_t vaddr)$/;"	f
+set_tss_rsp	sys/gdt.c	/^void set_tss_rsp(void *rsp) {$/;"	f
+set_writable_bit	include/sys/paging.h	48;"	d
+sh_addr	include/sys/elf.h	/^    Elf64_Addr sh_addr; \/* Virtual address in memory *\/$/;"	m	struct:elf64_shdr
+sh_addralign	include/sys/elf.h	/^    Elf64_Xword sh_addralign; \/* Address alignment boundary *\/$/;"	m	struct:elf64_shdr
+sh_entsize	include/sys/elf.h	/^    Elf64_Xword sh_entsize; \/* Size of entries, if section has table *\/$/;"	m	struct:elf64_shdr
+sh_flags	include/sys/elf.h	/^    Elf64_Xword sh_flags; \/* Section attributes *\/$/;"	m	struct:elf64_shdr
+sh_info	include/sys/elf.h	/^    Elf64_Word sh_info; \/* Miscellaneous information *\/$/;"	m	struct:elf64_shdr
+sh_link	include/sys/elf.h	/^    Elf64_Word sh_link; \/* Link to other section *\/$/;"	m	struct:elf64_shdr
+sh_name	include/sys/elf.h	/^    Elf64_Word sh_name; \/* Section name *\/$/;"	m	struct:elf64_shdr
+sh_offset	include/sys/elf.h	/^    Elf64_Off sh_offset; \/* Offset in file *\/$/;"	m	struct:elf64_shdr
+sh_size	include/sys/elf.h	/^    Elf64_Xword sh_size; \/* Size of section *\/$/;"	m	struct:elf64_shdr
+sh_type	include/sys/elf.h	/^    Elf64_Word sh_type; \/* Section type *\/$/;"	m	struct:elf64_shdr
+shiftValue	sys/kboard.c	/^		char shiftValue;$/;"	m	struct:scan_lookup	file:
+shiftcount	sys/kboard.c	/^int shiftcount = 0;$/;"	v
+shutdown	libc/common.c	/^void shutdown()$/;"	f
+siblings	include/sys/proc_mngr.h	/^    task_struct* siblings;          \/\/ Keep track of its siblings (children of same parent)$/;"	m	struct:task_struct
+sig	include/sys/ahci.h	/^    DWORD   sig;        \/\/ 0x24, signature$/;"	m	struct:tagHBA_PORT
+sighandler_t	include/signal.h	/^typedef void (*sighandler_t)(int);$/;"	t
+size	include/sys/tarfs.h	/^	char size[12];$/;"	m	struct:posix_header_ustar
+size	libc/malloc.c	/^    int size;$/;"	m	struct:MCB_header_t	file:
+size	sys/gdt.c	/^  uint16_t size;$/;"	m	struct:gdtr_t	file:
+size	sys/idt.c	/^		uint16_t size;$/;"	m	struct:IdtPtr	file:
+size_t	include/sys/defs.h	/^typedef int size_t;$/;"	t
+size_t	include/sys/defs_bkp.h	/^typedef uint64_t size_t;$/;"	t
+sleep	libc/sleep.c	/^int sleep(int seconds)$/;"	f
+sleep_time	include/sys/proc_mngr.h	/^    uint32_t sleep_time;            \/\/ Number of centiseconds to sleep$/;"	m	struct:task_struct
+sntf	include/sys/ahci.h	/^    DWORD   sntf;       \/\/ 0x3C, SATA notification (SCR4:SNotification)$/;"	m	struct:tagHBA_PORT
+ss	include/sys/idt.h	/^    uint64_t rip, cs, rflags, rsp, ss;                  \/\/ Registers pushed by the IRETQ $/;"	m	struct:registers
+ss	include/sys/irq_common.h	/^    uint64_t rip, cs, rflags, rsp, ss;                  \/\/ Registers pushed by the IRETQ $/;"	m	struct:registers
+ssize_t	include/sys/defs_bkp.h	/^typedef int64_t ssize_t;$/;"	t
+ssts	include/sys/ahci.h	/^    DWORD   ssts;       \/\/ 0x28, SATA status (SCR0:SStatus)$/;"	m	struct:tagHBA_PORT
+stack_vm	include/sys/proc_mngr.h	/^    uint64_t stack_vm;$/;"	m	struct:mm_struct
+start	include/dirent.h	/^    uint64_t start, end, curr;$/;"	m	struct:file
+start	sys/main.c	/^void start(uint32_t *modulep, void *physbase, void *physfree)$/;"	f
+start_brk	include/sys/proc_mngr.h	/^    uint64_t start_brk, end_brk, start_stack;$/;"	m	struct:mm_struct
+start_cmd	sys/fs/ahci.c	/^void start_cmd(HBA_PORT *port)$/;"	f
+start_stack	include/sys/proc_mngr.h	/^    uint64_t start_brk, end_brk, start_stack;$/;"	m	struct:mm_struct
+status	include/sys/ahci.h	/^    BYTE    status;      \/\/ Status register$/;"	m	struct:tagFIS_REG_D2H
+status	include/sys/ahci.h	/^    BYTE    status;     \/\/ Status register$/;"	m	struct:tagFIS_PIO_SETUP
+stderr	include/sys/defs.h	10;"	d
+stdin	include/sys/defs.h	8;"	d
+stdout	include/sys/defs.h	9;"	d
+sti	include/sys/types.h	5;"	d
+stop_cmd	sys/fs/ahci.c	/^void stop_cmd(HBA_PORT *port)$/;"	f
+strcat	libc/string.c	/^char* strcat(char *str1, const char *str2)$/;"	f
+strchr	sys/util.c	/^char *strchr(const char *s, int c){$/;"	f
+strcmp	libc/string.c	/^int strcmp(const char *s1, const char *s2)$/;"	f
+strcpy	libc/string.c	/^char *strcpy(char *dest, const char *src)$/;"	f
+strfind	sys/util.c	/^int strfind(const char* s1, const char* s2){$/;"	f
+strlen	libc/string.c	/^int strlen(const char *str)$/;"	f
+strtok	libc/string.c	/^char * strtok(char *s, const char *delim)$/;"	f
+strtok	sys/util.c	/^char * strtok(char *s, const char* delim){$/;"	f
+strtok_r	libc/string.c	/^static char * strtok_r(char *s, const char *delim, char **last)$/;"	f	file:
+strtok_r	sys/kstring.c	/^static char * strtok_r(char *s, const char *delim, char **last)$/;"	f	file:
+super_block	include/sys/fs.h	/^} super_block;$/;"	t	typeref:struct:ext_super_block
+switch_to	sys/proc_mngr.c	17;"	d	file:
+switch_to_ring3	sys/proc_mngr.c	284;"	d	file:
+sys_brk	sys/syscall.c	/^uint64_t sys_brk(uint64_t no_of_pages)$/;"	f
+sys_clear	sys/syscall.c	/^int sys_clear()$/;"	f
+sys_close	sys/syscall.c	/^void sys_close(int fd)$/;"	f
+sys_closedir	sys/syscall.c	/^int sys_closedir(uint64_t* entry)$/;"	f
+sys_execvpe	sys/syscall.c	/^uint64_t sys_execvpe(char *file, char *argv[], char *envp[])$/;"	f
+sys_exit	sys/syscall.c	/^void sys_exit()$/;"	f
+sys_fork	sys/syscall.c	/^pid_t sys_fork()$/;"	f
+sys_getpid	sys/syscall.c	/^pid_t sys_getpid()$/;"	f
+sys_getppid	sys/syscall.c	/^pid_t sys_getppid()$/;"	f
+sys_listprocess	sys/syscall.c	/^void sys_listprocess()$/;"	f
+sys_lseek	sys/syscall.c	/^int sys_lseek(uint64_t fd_type, int offset, int whence) $/;"	f
+sys_mkdir	sys/syscall.c	/^int sys_mkdir( uint64_t dir)$/;"	f
+sys_mmap	sys/syscall.c	/^uint64_t sys_mmap(uint64_t addr, uint64_t nbytes, uint64_t flags)$/;"	f
+sys_munmap	sys/syscall.c	/^int sys_munmap(uint64_t* addr, uint64_t length)$/;"	f
+sys_open	sys/syscall.c	/^int sys_open(char* dir_path, uint64_t flags)$/;"	f
+sys_opendir	sys/syscall.c	/^DIR* sys_opendir(uint64_t* entry, uint64_t* directory)$/;"	f
+sys_read	sys/syscall.c	/^int sys_read(uint64_t fd_type, uint64_t addr, uint64_t length)$/;"	f
+sys_readdir	sys/syscall.c	/^struct dirent* sys_readdir(uint64_t* entry)$/;"	f
+sys_segment_descriptor	sys/gdt.c	/^struct sys_segment_descriptor {$/;"	s	file:
+sys_shutdown	sys/syscall.c	/^void sys_shutdown()$/;"	f
+sys_sleep	sys/syscall.c	/^int sys_sleep(int msec)$/;"	f
+sys_wait	sys/syscall.c	/^uint64_t sys_wait(uint64_t status)$/;"	f
+sys_waitpid	sys/syscall.c	/^uint64_t sys_waitpid(uint64_t fpid, uint64_t fstatus, uint64_t foptions)$/;"	f
+sys_write	sys/syscall.c	/^int sys_write(uint64_t fd_type, uint64_t addr, int length)$/;"	f
+sys_yield	sys/syscall.c	/^void sys_yield()$/;"	f
+syscall_handler	sys/syscall.c	/^void syscall_handler(void)$/;"	f
+syscall_num	include/syscall.h	/^enum syscall_num {$/;"	g
+syscall_tbl	sys/syscall.c	/^void* syscall_tbl[NUM_SYSCALLS] = $/;"	v
+t_state	sys/syscall.c	/^const char *t_state[NUM_TASK_STATES] = { "RUNNING" , "READY  " , "SLEEP  " , "WAIT   " , "IDLE   " , "EXIT   ", "ZOMBIE "};$/;"	v
+tagFIS_DATA	include/sys/ahci.h	/^typedef struct tagFIS_DATA$/;"	s
+tagFIS_DMA_SETUP	include/sys/ahci.h	/^typedef struct tagFIS_DMA_SETUP$/;"	s
+tagFIS_PIO_SETUP	include/sys/ahci.h	/^typedef struct tagFIS_PIO_SETUP$/;"	s
+tagFIS_REG_D2H	include/sys/ahci.h	/^typedef struct tagFIS_REG_D2H$/;"	s
+tagFIS_REG_H2D	include/sys/ahci.h	/^typedef struct tagFIS_REG_H2D$/;"	s
+tagHBA_CMD_HEADER	include/sys/ahci.h	/^typedef struct tagHBA_CMD_HEADER$/;"	s
+tagHBA_CMD_TBL	include/sys/ahci.h	/^typedef struct tagHBA_CMD_TBL$/;"	s
+tagHBA_MEM	include/sys/ahci.h	/^typedef volatile struct tagHBA_MEM$/;"	s
+tagHBA_PORT	include/sys/ahci.h	/^typedef volatile struct tagHBA_PORT$/;"	s
+tagHBA_PRDT_ENTRY	include/sys/ahci.h	/^typedef struct tagHBA_PRDT_ENTRY$/;"	s
+task_free_list	sys/mm.c	/^static task_struct *task_free_list = NULL;$/;"	v	file:
+task_state	include/sys/proc_mngr.h	/^    uint64_t task_state;            \/\/ Saves the current state of task$/;"	m	struct:task_struct
+task_states	include/sys/proc_mngr.h	/^enum task_states {$/;"	g
+task_struct	include/sys/proc_mngr.h	/^struct task_struct {$/;"	s
+task_struct	include/sys/proc_mngr.h	/^typedef struct task_struct task_struct;$/;"	t	typeref:struct:task_struct
+tc	include/sys/ahci.h	/^    WORD    tc;     \/\/ Transfer count$/;"	m	struct:tagFIS_PIO_SETUP
+temp	bin/sh/sh.c	/^char temp[512];$/;"	v
+temp	sys/kprintf.c	/^char *temp=(char*)0xffffffff800b8000;$/;"	v
+test_read	sys/fs/file_ops.c	/^void test_read()$/;"	f
+tfd	include/sys/ahci.h	/^    DWORD   tfd;        \/\/ 0x20, task file data$/;"	m	struct:tagHBA_PORT
+tick	sys/proc_mngr.c	/^int tick=0;$/;"	v
+timerHandler	sys/proc_mngr.c	/^void timerHandler(){$/;"	f
+timerLocation	sys/timer.c	/^static char *timerLocation=(char*)0xffffffff800b8000 + (160*25-14*2);$/;"	v	file:
+topVirtAddr	sys/virt_mm.c	/^uint64_t topVirtAddr;$/;"	v
+total_vm	include/sys/proc_mngr.h	/^    uint64_t total_vm;$/;"	m	struct:mm_struct
+truncate_inode	sys/fs/extfs.c	/^void truncate_inode(ext_inode* inode_entry, uint64_t inode_no)$/;"	f
+tss	sys/gdt.c	/^static struct tss_t tss;$/;"	v	typeref:struct:tss_t	file:
+tss_fault_handler	sys/isr_handler.c	/^static void tss_fault_handler(registers_t regs)$/;"	f	file:
+tss_t	include/sys/gdt.h	/^struct tss_t {$/;"	s
+type	sys/idt.c	/^		unsigned type : 4;$/;"	m	struct:IdtTable	file:
+typeflag	include/sys/tarfs.h	/^	char typeflag[1];$/;"	m	struct:posix_header_ustar
+uid	include/sys/tarfs.h	/^	char uid[8];$/;"	m	struct:posix_header_ustar
+uint16_t	include/sys/defs.h	/^typedef __uint16_t      uint16_t;$/;"	t
+uint16_t	include/sys/defs_bkp.h	/^typedef unsigned short uint16_t;$/;"	t
+uint32_t	include/sys/defs.h	/^typedef __uint32_t      uint32_t;$/;"	t
+uint32_t	include/sys/defs_bkp.h	/^typedef unsigned int   uint32_t;$/;"	t
+uint64_t	include/sys/defs.h	/^typedef __uint64_t      uint64_t;$/;"	t
+uint64_t	include/sys/defs_bkp.h	/^typedef unsigned long  uint64_t;$/;"	t
+uint8_t	include/sys/defs.h	/^typedef __uint8_t       uint8_t;$/;"	t
+uint8_t	include/sys/defs_bkp.h	/^typedef unsigned char   uint8_t;$/;"	t
+uintptr_t	include/sys/defs.h	/^typedef uint64_t uintptr_t;$/;"	t
+uname	include/sys/tarfs.h	/^	char uname[32];$/;"	m	struct:posix_header_ustar
+unset_cow_bit	include/sys/paging.h	51;"	d
+unset_present_bit	include/sys/paging.h	47;"	d
+unset_writable_bit	include/sys/paging.h	49;"	d
+va_arg	include/stdarg.h	5;"	d
+va_copy	include/stdarg.h	7;"	d
+va_end	include/stdarg.h	6;"	d
+va_list	include/stdarg.h	/^typedef __builtin_va_list va_list;$/;"	t
+va_start	include/stdarg.h	4;"	d
+value	sys/kboard.c	/^		char value;$/;"	m	struct:scan_lookup	file:
+vendor	include/sys/ahci.h	/^    BYTE    vendor[0x100-0xA0];$/;"	m	struct:tagHBA_MEM
+vendor	include/sys/ahci.h	/^    DWORD   vendor[4];  \/\/ 0x70 ~ 0x7F, vendor specific$/;"	m	struct:tagHBA_PORT
+verify_addr	sys/mm.c	/^bool verify_addr(task_struct *proc, uint64_t addr, uint64_t size)$/;"	f
+version	include/sys/tarfs.h	/^	char version[2];$/;"	m	struct:posix_header_ustar
+virt_alloc_pages	sys/virt_mm.c	/^void* virt_alloc_pages(uint32_t no_of_vpages, uint64_t flags)$/;"	f
+vm_area_struct	include/sys/proc_mngr.h	/^struct vm_area_struct {$/;"	s
+vm_end	include/sys/proc_mngr.h	/^    uint64_t vm_end;                \/\/ The first byte after our end address within vm_mm$/;"	m	struct:vm_area_struct
+vm_file_descp	include/sys/proc_mngr.h	/^    uint64_t vm_file_descp;         \/\/ reference to file descriptors for file opened for writing$/;"	m	struct:vm_area_struct
+vm_flags	include/sys/proc_mngr.h	/^    uint64_t vm_flags;              \/\/ Flags read, write, execute permissions$/;"	m	struct:vm_area_struct
+vm_mm	include/sys/proc_mngr.h	/^    mm_struct *vm_mm;               \/\/ The address space we belong to.$/;"	m	struct:vm_area_struct
+vm_next	include/sys/proc_mngr.h	/^    vma_struct *vm_next;            \/\/ linked list of VM areas per task, sorted by address$/;"	m	struct:vm_area_struct
+vm_start	include/sys/proc_mngr.h	/^    uint64_t vm_start;              \/\/ Our start address within vm_mm$/;"	m	struct:vm_area_struct
+vm_type	include/sys/proc_mngr.h	/^    uint64_t vm_type;               \/\/ type of segment its reffering to $/;"	m	struct:vm_area_struct
+vma_count	include/sys/proc_mngr.h	/^    uint32_t vma_count;             \/\/ number of VMAs$/;"	m	struct:mm_struct
+vma_free_list	sys/mm.c	/^static vma_struct *vma_free_list = NULL;$/;"	v	file:
+vma_list	include/sys/proc_mngr.h	/^    vma_struct *vma_list;           \/\/ list of VMAs$/;"	m	struct:mm_struct
+vma_struct	include/sys/proc_mngr.h	/^typedef struct vm_area_struct vma_struct;$/;"	t	typeref:struct:vm_area_struct
+vmaflag	include/sys/proc_mngr.h	/^enum vmaflag {$/;"	g
+vmalogic	sys/mm.c	/^vma_struct* vmalogic(uint64_t addr, uint64_t nbytes, uint64_t flags, uint64_t type, uint64_t file_d)$/;"	f
+vmatype	include/sys/proc_mngr.h	/^enum vmatype {$/;"	g
+vs	include/sys/ahci.h	/^    DWORD   vs;     \/\/ 0x10, Version$/;"	m	struct:tagHBA_MEM
+w	include/sys/ahci.h	/^    BYTE    w:1;        \/\/ Write, 1: H2D, 0: D2H$/;"	m	struct:tagHBA_CMD_HEADER
+wait	libc/common.c	/^pid_t wait(uint64_t *status)$/;"	f
+wait_on_child_pid	include/sys/proc_mngr.h	/^    pid_t wait_on_child_pid;        \/\/ pid of child last exited$/;"	m	struct:task_struct
+waitpid	libc/common.c	/^pid_t waitpid(pid_t pid, uint64_t *status, int options)$/;"	f
+write	libc/fs.c	/^int write(int n, char *str, int len)$/;"	f
+write	sys/fs/ahci.c	/^int write(HBA_PORT *port, DWORD startl, DWORD starth, DWORD count, QWORD buf)  $/;"	f
+write_block	sys/fs/extfs.c	/^bool write_block(void* block_entry, uint64_t block_no, uint64_t block_off, uint64_t size)$/;"	f
+write_buf	libc/printf.c	/^static char write_buf[1024];$/;"	v	file:
+write_inode	sys/fs/extfs.c	/^bool write_inode(ext_inode* inode_entry, uint64_t inode_no)$/;"	f
+write_sector	sys/fs/ahci.c	/^void write_sector(void* write_addr, uint64_t sector_no, uint64_t sec_off, uint64_t size)$/;"	f
+yield	libc/common.c	/^void yield()$/;"	f
+zero	sys/idt.c	/^		unsigned zero : 1;$/;"	m	struct:IdtTable	file:
+zero_out_phys_block	sys/virt_mm.c	/^void zero_out_phys_block(uint64_t paddr)$/;"	f
