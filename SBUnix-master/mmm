@@ -1,0 +1,143 @@
+#include <master.h>
+
+#define VADDR(PADDR) ((KERNEL_START_VADDR) + 4096*(PADDR/4096))
+
+uint64_t nextAddr, base, *mmap, kernelPml;
+
+void initFrame(uint64_t physBase, uint64_t physfree) {
+    base = physBase;
+    mmap = (uint64_t *) physfree;
+}
+
+uint64_t getFrame(){
+    for (int i = 0; i < 270; i++) {
+        if (mmap[i] != 0xFFFFFFFFFFFFFFFFUL){
+            for (int j = 0; j < 64; j++){
+                uint64_t bit = 1UL << j;
+                if(!(mmap[i] & bit)){
+                    bit = i*64 + j;
+                    mmap[bit/64] |= (1UL << (bit % 64));
+                    return base + (bit*PAGESIZE);
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+// void freeFrame(uint64_t paddr){
+//     int bit = (paddr - base) / PAGESIZE;
+//     mmap[bit / 64] &= ~ (1UL << (bit % 64));
+// }
+
+uint64_t* createTable(uint64_t *parentTable, int offset){
+    uint64_t table = getFrame();
+    parentTable[offset] = table | PAGE_P;   
+    return (uint64_t*)VADDR(table);
+} 
+
+uint64_t* getEntry(uint64_t vaddr, int type){
+    switch(type){
+        case 1:
+            vaddr &= 0x0000FF8000000000UL;
+            vaddr >>= 36;//9
+            vaddr |= 0xFFFFFF7FBFDFE000UL;
+            break;
+        case 2:
+            vaddr &= 0x0000FFFFC0000000UL;
+            vaddr >>= 27;//18
+            vaddr |= 0xFFFFFF7FBFC00000UL;
+            break;
+        case 3:
+            vaddr &= 0x0000FFFFFFE00000UL;
+            vaddr >>= 18;//27
+            vaddr |= 0xFFFFFF7F80000000UL;
+            break;
+        default:
+            vaddr &= 0x0000FFFFFFFFF000UL;
+            vaddr >>= 9;//36
+            vaddr |= 0xFFFFFF0000000000UL;
+            break;
+    }
+    if(!(*(uint64_t*)vaddr&PAGE_P)&&type!=4)
+        *(uint64_t*)vaddr = getFrame() | PAGE_URW;
+    return (uint64_t*)vaddr;
+} 
+
+void unmapPteEntry(uint64_t vaddr){
+    uint64_t* t = getEntry(vaddr, PTE);
+    *t = 0UL;
+}
+
+void initializeKernelPages(uint64_t paddr, uint64_t pages){
+    uint64_t *pdpe = createTable(((uint64_t*) VADDR(kernelPml)), 511);
+    uint64_t *pde = createTable(pdpe, 510);
+    for(int j=0, t=pages;j<=pages/512;j++){
+        uint64_t *pte = createTable(pde, j+1);
+        for (int i=0;i<512&&t;i++,t--){
+            pte[i] = paddr | PAGE_P;
+            paddr += PAGESIZE;
+        }
+    }
+}
+
+void mapVideoMemory(){
+    uint64_t *table = createTable((uint64_t*)0xffffffff80402000UL, 0);   
+    table[184] = 0xB8000 | PAGE_P; 
+}
+
+void setupPageTable(uint64_t kernmem, uint64_t physbase, uint64_t pages){
+    kernelPml = getFrame();
+    ((uint64_t*) VADDR(kernelPml))[KERNEL_STACK_SIZE-2] = kernelPml | PAGE_P;   
+    initializeKernelPages(physbase, pages);
+    mapVideoMemory();
+    __asm__ __volatile__ (
+        "movq %0, %%cr3;" 
+        :
+        : "r"(kernelPml)
+    );
+    nextAddr  = kernmem + (pages * PAGESIZE);
+}
+
+void virtToPhyMapper(uint64_t vaddr, uint64_t paddr, uint64_t flags){
+    getEntry(vaddr, PML4);
+    getEntry(vaddr, PDPE);
+    getEntry(vaddr, PDE);
+    uint64_t *entry = getEntry(vaddr, PTE);
+    if (!(*entry & PAGE_P)) *entry = paddr | flags;
+}
+
+void allocatePages(uint64_t* vaddr, uint64_t flags, int size){
+    while(size--){
+        uint64_t paddr = getFrame();
+        virtToPhyMapper(*vaddr, paddr, flags);
+        *vaddr+=PAGESIZE;
+    }
+}
+
+uint64_t newPml(){
+    uint64_t frame = getFrame();
+    virtToPhyMapper(nextAddr, frame, PAGE_URW); 
+    ((uint64_t *) nextAddr)[KERNEL_STACK_SIZE-1] = ((uint64_t*) VADDR(kernelPml))[KERNEL_STACK_SIZE-1];
+    ((uint64_t *) nextAddr)[KERNEL_STACK_SIZE-2] = frame | PAGE_URW;
+    nextAddr += PAGESIZE;
+    return frame;
+}
+
+void handlePageFault(){
+    uint64_t addr;
+     __asm__ __volatile__ (
+        "movq %%cr2, %0;" 
+        : 
+        "=r"(addr)
+    );    
+    for(vma*p=currentTask->mm->vmaList;p!= NULL;p=p->next){
+        if(addr>=p->start&&addr<p->end){
+            uint64_t t = p->start;
+            allocatePages(&t, PAGE_URW, getNoPages(p->start,p->end-p->start));
+            return;
+        }
+    }
+    kprintf("Segmentation Fault, process exited");
+    sys_exit();
+}
