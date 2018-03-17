@@ -6,99 +6,132 @@
 
 static char write_buf[1024];
 
-void handleInteger(va_list *ap, int32_t *curr_pos, char istr[100])
-{
-                    int32_t isNegative = 0;
-                    int32_t ival = va_arg(*ap, int32_t);
-                    char *dstr;
+char *bufPtr;
 
-                    if (ival < 0) {
-                        isNegative = 1;
-                        ival = -ival;
-                    }
-                    dstr = itoa(ival, istr+99, 10);
-
-                    if (isNegative) {
-                        *--dstr = '-';
-                    }
-                    memcpy((void *)(write_buf + (*curr_pos)), (void *)dstr, strlen(dstr));
-                    *curr_pos += strlen(dstr);
+void printChar(char c){
+								*bufPtr = c;
+								bufPtr += 1;
 }
 
-void handlePointer(va_list *ap,char istr[100],int32_t* len)
-{
-                    char *pstr = itoa(va_arg(*ap, uint64_t), istr+99, 16);
-                    *--pstr = 'x';
-                    *--pstr = '0';
-                    memcpy((void *)(write_buf + (*len)), (void *)pstr, strlen(pstr));
-                    *len += strlen(pstr);
-
+void printString(const char *s){
+								while(*s){
+																*bufPtr = *s;
+																bufPtr += 1;
+																s++;
+								}
 }
 
-int32_t printf(const char *str, ...)
-{
-    va_list ap;
-    const char *ptr = NULL;
-    char istr[100];
-    int32_t len = 0;
-
-    va_start(ap, str); 
-    for (ptr = str; *ptr; ptr++) {
-        if (*ptr == '%') {
-            switch (*++ptr) {
-                case 'd':
-                {
-																		handleInteger(&ap,&len,istr);
-                    // Consider negative signed integers
-                    break;
-                }
-                case 'p':
-                {
-                    // Prepend "0x"
-																		handlePointer(&ap,istr,&len);
-                    break;
-                }
-                case 'x':
-                {
-                    char *xtr;
-                    xtr = itoa(va_arg(ap, uint64_t), istr+99, 16);
-                    memcpy((void *)(write_buf + len), (void *)xtr , strlen(xtr));
-                    len += strlen(xtr);
-                    break;
-                }
-                case 'c':
-                {
-                    write_buf[len] = va_arg(ap, uint32_t);
-                    len += 1;
-                    break;
-                }
-                case 's':
-                {
-                    char *str;
-                    str = va_arg(ap, char *);
-                    memcpy((void *)(write_buf + len), (void *)str , strlen(str));
-                    len += strlen(str);
-                    break;
-                }
-                case '\0':
-                    ptr--;
-                    break;
-                default:
-                {
-                    memcpy((void *)(write_buf + len), (void *) ptr ,1 );
-                    len += 1;
-                    break;
-                }
-            }
-         } else {
-            memcpy((void *)(write_buf + len), (void *) ptr ,1 );
-            len += 1;
-       }
-    }
-    va_end(ap); 
-    write_buf[len] = '\0';
-    //uputs(write_buf);
-    write(STDOUT, write_buf, strlen(write_buf));
-    return len;
+void printInt(int n){
+								int a[10];
+								int j=0;
+								while(n){
+																a[j++] = n%10;
+																n = n/10;
+								}
+								j--;
+								while(j>=0){
+																char c = a[j] + 48;
+																j--;
+																*bufPtr = c;
+																bufPtr += 1;
+								}
 }
 
+void printHex(int n){
+								int a[10];
+								int j=0;
+								while(n){
+																a[j++] = n%16;
+																n = n/16;
+								}
+								j--;
+								while(j>=0){
+																char c;
+																if(a[j] < 10){
+																								c = a[j] + 48;
+																}else{
+																								c = a[j] + 87;
+																}
+																j--;
+																*bufPtr = c;
+																bufPtr += 1;
+								}
+}
+
+void printPtr(uint64_t n){
+								uint64_t a[16];
+								int j=0;
+								char *str = "0x";
+								printString(str);
+								while(n){
+																a[j++] = n%16;
+																n = n/16;
+								}
+								j--;
+								while(j>=0){
+																char c;
+																if(a[j] < 10){
+																								c = a[j] + 48;
+																}else{
+																								c = a[j] + 87;
+																}
+																j--;
+																*bufPtr = c;
+																bufPtr += 1;
+								}
+}
+
+void parsePrint(const char *fmt, va_list args){
+								const char *t = fmt;
+								for(;*t;t++){
+																if(*t == '%'){
+																								t++;
+																								switch(*t){
+																																case 'c':
+																																								printChar(va_arg(args, int));
+																																								break;
+																																case 's':
+																																								printString(va_arg(args, char*));
+																																								break;  
+																																case 'd':
+																																								printInt(va_arg(args, int));
+																																								break;
+																																case 'x':
+																																								printHex(va_arg(args, int));
+																																								break;
+																																case 'p':
+																																								printPtr(va_arg(args, uint64_t));
+																																								break;
+																																default:
+																																								break;
+																								}
+																}else{
+																								*bufPtr = *t;
+																								bufPtr += 1;
+																}
+								}
+}
+
+int printf(const char *str, ...)
+{
+        memset(write_buf, 0, sizeof(write_buf));
+        bufPtr = write_buf;
+        va_list args;
+        va_start(args, str);
+        parsePrint(str, args);
+        va_end(args);
+								write(1, write_buf, strlen(write_buf));
+								return strlen(write_buf);
+}
+
+int puts(const char *s)
+{
+  printString(s);
+  return 0;
+}
+
+int putchar(int c)
+{
+  printChar(c);
+  return c;
+}

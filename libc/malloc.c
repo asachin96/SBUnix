@@ -1,136 +1,56 @@
 #include <syscall.h>
 #include <sys/defs.h>
 #include <stdlib.h>
+#include <unistd.h>
 
-#define PAGESIZE 4096
+#define listSize 1024
 
-static char *mem_start_p;
-static char *heap_end;
-static int max_mem;
-static int allocated_mem; 
-static int mcb_count;
-
-typedef struct MCB_header_t {
-    int is_available;
+struct mallocManager{
     int size;
-} MCB_t, *MCB_P;
+    void *ptr;
+    int isFree;
+};
 
-enum {NEW_MCB, NO_MCB, REUSE_MCB};
-enum {FREE, IN_USE};
-
-void make_head(char *addr, int size) 
+static struct mallocManager tracker[listSize];
+static int init = 1;
+void* malloc(int size)
 {
-    MCB_P head         = (MCB_P)addr;
-    head->is_available = FREE;
-    head->size         = size;
-}
-
-void handleHeapEndCase(char *add,uint64_t no_of_pages)
-{
-    if (heap_end == 0) {
-        mem_start_p   = add;
-        mcb_count     = 0;
-        allocated_mem = 0;
-        heap_end = add; 
-    }
-    
-    heap_end = (char*)((uint64_t)add + (uint64_t)(PAGESIZE * no_of_pages));
-}
-
-void *alloc_new(int aligned_size)
-{
-    char *add;
-    uint64_t no_of_pages = 0, sz;    
-    MCB_P p_mcb;
-    
-    sz          = sizeof(MCB_t);
-    no_of_pages = (aligned_size + sz) /(PAGESIZE + 1) + 1;
-    add = (char*) __syscall1(BRK, (uint64_t)no_of_pages);    
-				
-				handleHeapEndCase(add,no_of_pages);
-
-    max_mem += PAGESIZE * no_of_pages; 
-    
-    p_mcb               = (MCB_P)add; 
-    p_mcb->is_available = IN_USE;
-    p_mcb->size         = aligned_size + sz; 
-    mcb_count++;    
-
-    if (PAGESIZE * no_of_pages > aligned_size + sz) {
-        make_head(((char *)p_mcb + aligned_size + sz), (PAGESIZE * no_of_pages - aligned_size - sz));
-    }
-
-    allocated_mem += aligned_size; 
-    
-    return ((void *) p_mcb + sz);
-}
-
-void * checkNoMCBCase(int *flag,MCB_P p_mcb,int* aligned_size, int*sz,int*temp)
-{
-        if (*flag != NO_MCB) {
-            p_mcb->is_available = IN_USE;
-
-            if (*flag == REUSE_MCB) {
-                if (p_mcb->size > *aligned_size + *sz) {
-                    *temp        = p_mcb->size; 
-                    p_mcb->size = *aligned_size + *sz;
-
-                    make_head(((char *)p_mcb + *aligned_size + *sz),(*temp - *aligned_size - *sz));
-                }        
-                mcb_count++;
-            }
-            allocated_mem += *aligned_size;
-            return ((char *) p_mcb + *sz);
+    int i=0;
+    if(init){
+        for(;i<listSize;i++){
+           tracker[i].size=0;
+           tracker[i].ptr=NULL;
+           tracker[i].isFree=1;
         }
-return NULL;
-}
-
-void* malloc(int elem_size)
-{
-    MCB_P p_mcb;
-    int flag, sz, temp = 0, aligned_size;
-
-    // Align elem_size to header size
-    aligned_size = ((((elem_size - 1) >> 3) + 1) << 3);
-
-    if (heap_end == 0) {
-        /*no heap has been assigned yet*/
-        return alloc_new(aligned_size);
-    } else {
-
-        flag  = NO_MCB;
-        p_mcb = (MCB_P)mem_start_p;
-        sz    = sizeof(MCB_t);
-
-        //printf("\nheap_end : %p\treqd size: %p",heap_end, ((char *)p_mcb + aligned_size + sz));
-        while (heap_end >= ((char *)p_mcb + aligned_size + sz)) {
-            if (p_mcb->is_available == FREE) {
-                if (p_mcb->size >= (aligned_size + sz)) {
-                    flag = REUSE_MCB;
-                    break;
-                }
-            }
-            p_mcb = (MCB_P) ((char *)p_mcb + p_mcb->size);
+        init =0;
+    } 
+    for(i=0;i<listSize;i++){
+        if(tracker[i].isFree == 1&&tracker[i].size>=size){
+            tracker[i].isFree = 0;
+            return tracker[i].ptr;
         }
-						char* ret = checkNoMCBCase(&flag,p_mcb,&aligned_size, &sz,&temp);
-						if(!ret)
-						return ret;
-
-						
-        /*when no hole is found to match the request*/
-        return alloc_new(aligned_size); 
     }
-
+    
+    char* retVal = brk(size);
+    for(i=0;i<listSize;i++){
+       if(tracker[i].isFree==1){
+           tracker[i].isFree = 0;
+           tracker[i].ptr = retVal;
+           break;
+       }
+    }
+    return retVal;
 }
 
 void free(void *p)
 {
-    MCB_P ptr = (MCB_P)p;
-    ptr--;
-
-    mcb_count--;
-    ptr->is_available = FREE;
-    allocated_mem    -= (ptr->size - sizeof(MCB_t));
-
+    int i=0; 
+    for(i=0;i<listSize;i++){
+        if(tracker[i].ptr == p){
+            tracker[i].isFree = 1;
+            break;
+        }
+    }
+    return;
 }
 

@@ -1,11 +1,8 @@
 #include <stdlib.h>
+#include <sys/defs.h>
+#include <stdio.h>
 
-int main(int argc, char* argv[])
+int main(int argc,char* argv[])
 {
-    int sec;
-    if (argc == 2 && (sec = atoi(argv[1]) > 0)) {
-        sleep(atoi(argv[1]) * 1000);
-    }
-    return 0;
+  if(argc==2) sleep(atoi(argv[1]));
 }
-

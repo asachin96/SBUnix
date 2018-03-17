@@ -5,10 +5,11 @@
 
 int open(char *pathname, int flags);
 void close(int fd);
-uint64_t read(uint64_t fd, void *buf, uint64_t count);
+int read(int fd, void *buf, int count);
 int write(int fd, char *buf, int count);
 int unlink(const char *pathname);
 
+char *brk(int size);
 int chdir(const char *path);
 char *getcwd(char *buf, size_t size);
 

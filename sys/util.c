@@ -1,150 +1,162 @@
 #include <sys/util.h>
 #include<sys/defs.h>
 #include<sys/kprintf.h>
-
-void outw (uint16_t port, uint16_t data)
-{
-								__asm__ volatile ("outw %w0, %w1" : : "a" (data), "Nd" (port));
+#include<sys/memoryMgr.h>
+extern uint64_t nextAddr;
+void outw (uint16_t port, uint16_t data){
+	__asm__ volatile ("outw %w0, %w1" : : "a" (data), "Nd" (port));
 }
 
-
 void outb (unsigned short port, unsigned char data){
-								__asm__ __volatile__ ("outb %1, %0" : : "dN" (port), "a" (data));
+	__asm__ __volatile__ ("outb %1, %0" : : "dN" (port), "a" (data));
 }
 
 unsigned char inb (unsigned short port){
-								unsigned char ret;
-								__asm__ __volatile__ ("inb %1, %0" :"=a"(ret) :"Nd" (port));
-								return ret;
-}
-#define __NR_read 0
-#define __NR_open 2
-
-
-void copyHelper(char* src, char*dest, int offset, int len){
-								if(src == NULL || dest == NULL) return;
-								int i=offset;
-								int j=0;
-								for(; i< len; i++){
-																dest[j++] = src[i];
-								}
-								dest[j] = '\0';
-}
-int cStrlen(char *str){
-								int i=0;
-								for(; str[i]!='\0';i++);
-								return i;
-}
-int open(const char *pathname, int flags){
-								int  n;
-								__asm__ __volatile__
-																(
-																	"syscall"
-																	: "=a" (n)
-																	: "0"(__NR_open), "D"(pathname), "S"(flags)
-																	: "cc", "rcx", "r11", "memory"
-																);
-								return n;
+	unsigned char ret;
+	__asm__ __volatile__ ("inb %1, %0" :"=a"(ret) :"Nd" (port));
+	return ret;
 }
 
-int read(int fd, void *buf, int count){
-								int n;
-								__asm__ __volatile__
-																(
-																	"syscall"
-																	: "=a" (n)
-																	: "0"(__NR_read), "D"(fd), "S"(buf), "d"(count)
-																	: "cc", "rcx", "r11", "memory"
-																);
-								return n;
+int atoi(char *str){
+	if(!str) return 0;
+	int res = 0;  
+	int sign = 1; 
+	int i = 0;  
+
+	if (str[0] == '-'){
+		sign = -1;  
+		i++; 
+	}
+
+	for (; str[i] != '\0'; ++i){
+		int t = str[i] - '0';
+		if(t>9 && t<0) return 1;
+		res = res*10 + t;
+	}
+
+	return sign*res;
 }
 
-int32_t atoi(char *str){
-								int res = 0;  
-								int sign = 1; 
-								int i = 0;  
-
-								if (str[0] == '-'){
-																sign = -1;  
-																i++; 
-								}
-
-								for (; str[i] != '\0'; ++i)
-																res = res*10 + str[i] - '0';
-
-								return sign*res;
+int getNoPages(uint64_t start, int size){
+	return ((start+size-1)/4096-start/4096+1);
 }
 
-
-
-int32_t oct_to_dec(int n) {
-								int dec = 0, i = 0, rem; 
-								int k =1; 
-								while (n != 0) { 
-																rem = n % 10; 
-																n /= 10;
-																if(i>=1)
-																								k*=8; 
-																dec += rem * k;
-																++i;
-								}
-								return dec;
+int toDecimal(int n){
+	int dec = 0, i = 0, rem; 
+	int k =1; 
+	while (n != 0) { 
+		rem = n % 10; 
+		n /= 10;
+		if(i>=1)
+			k*=8; 
+		dec += rem * k;
+		++i;
+	}
+	return dec;
 }
 
-int strfind(const char* s1, const char* s2){
-								const char *p = s1, *s;
-								char c, sc;
-								while(1) {
-																c = *p++;
-																s = s2;
-																do {
-																								if ((sc = *s++) == c)
-																																return (p - 1 - s1);
-																} while (sc != 0);
-								}
+void memset(char *str, char val, int size){
+	int i =0;
+	for(i=0;i<size;i++){
+		str[i] = val;
+	}
 }
 
-char *strchr(const char *s, int c){
-								const char ch = c;
-								for ( ; *s != ch; s++)
-																if (*s == '\0')
-																								return 0;
-								return (char *)s;
+void *memcpy(void *destination, void *source, int num){
+	unsigned char *p = (unsigned char *)destination;
+	unsigned char *q = (unsigned char *)source;
+	for(int i=0;i<num;i++,p++,q++) {
+		*p = *q; 
+	}
+	return destination;
 }
 
-char * strtok(char *s, const char* delim){
-								static char *l;
-								int ch;
+static int free;
+static uint64_t currptr;
 
-								if (s == 0)
-																s = l;
-								do {
-																if ((ch = *s++) == '\0')
-																								return 0;
-								} while (strchr(delim, ch));
-								--s;
-								l = s + strfind(s, delim);
-								if (*l != 0)
-																*l++ = 0;
-								return s;
+void* kmalloc(int size){
+	if(size>free){
+		int pages = size/4096;     
+		uint64_t temp = nextAddr;
+		allocatePages(&nextAddr, PAGE_P, pages+1); 
+		free = ((pages+1) * 4096) - size;
+		currptr = temp + size;
+		return (void*)temp;
+	}
+	void* ret = (void*)currptr;
+	currptr += size;
+	free += -size;
+	return ret;
 }
 
-
-void memset(char *str, char val, int size)
-{
-								int i =0;
-								for(i=0;i<size;i++){
-																str[i] = val;
-								}
+int kstrcmp(const char *str1, const char *str2){
+	int i = 0;
+	for(;str1[i]!='\0'&&str2[i]!='\0';i++){
+		if(str1[i]!=str2[i])
+			return 1;
+	}
+	if(str1[i]==str2[i]) return 0;
+	return 1;
 }
-void *memcpy(void *destination, void *source, uint64_t num) 
-{
-								uint8_t *dest = (uint8_t *)destination;
-								uint8_t *src = (uint8_t *)source;
 
-								while(num--) {
-																*dest++ = *src++; 
-								}
-
-								return destination;
+int kstrfind(const char* s1, const char* s2){
+	const char *p = s1, *s;
+	char c, sc;
+	while(1) {
+		c = *p++;
+		s = s2;
+		do {
+			if ((sc = *s++) == c)
+				return (p - 1 - s1);
+		} while (sc != 0);
+	}
 }
+
+char *kstrchr(const char *s, int c){
+	const char ch = c;
+	for ( ; *s != ch; s++)
+		if (*s == '\0')
+			return 0;
+		return (char *)s;
+}
+
+int kstrlen(const char *str){
+	int len=0;
+	while (*str++ != '\0')
+		len += 1;
+	return len;
+}
+
+char* kstrcat(char *str1, const char *str2){
+	int len = kstrlen(str1);
+	char *t = str1;
+	while(*str2){
+		*(str1+len) = *str2;
+		str1++;
+		str2++;
+	}
+	return t;
+}
+
+char* kstrcpy(char *dest, const char *src){
+	dest[0] = '\0';
+	kstrcat(dest, src);
+	return dest;
+}
+
+char* kstrtok(char *s, const char *delim){
+	static char *l;
+	int ch;
+	if (s == 0)
+		s = l;
+	do {
+		if ((ch = *s++) == '\0')
+			return 0;
+	} while (kstrchr(delim, ch));
+	--s;
+	l = s + kstrfind(s, delim);
+	if (*l != 0)
+		*l++ = 0;
+	return s;
+}
+

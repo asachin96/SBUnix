@@ -2,59 +2,46 @@
 #define _DIRENT_H
 #include <sys/defs.h>
 
-#define NAME_MAX 255
-#define MAXLEN 30
-#define MAXCHILD 10
+#define SEEK_SET 0
+#define SEEK_CUR 1
+#define SEEK_END 2
+#define DIRECTORY 1
+#define FILE 2
 
+#define PIPE_SIZE 100
+#define PIPE_READ 3
+#define PIPE_WRITE 4
 
+typedef struct file {
+    uint64_t first;
+    uint64_t last;
+    uint64_t current;
+    char name[20];
+    struct file* child[20];
+    int type;
+}file;
 
-
-
-
-enum ftype {DIRECTORY, FILE};
-enum perm {O_RDONLY, O_WRONLY, O_RDWR, O_APPEND, O_CREAT, O_TRUNC};
-enum seekop {SEEK_SET, SEEK_CUR, SEEK_END};
-
-typedef struct file fnode_t;
-typedef struct file_dir DIR;
-typedef struct dirent dirent;
-typedef struct file_descp FD;
-
-struct file {
-    char f_name[MAXLEN];
-    uint64_t start, end, curr;
-    fnode_t* f_child[MAXCHILD];
-    uint64_t curr_child;
-    bool f_type;
-    uint64_t f_inode_no;
-};
-
-struct dirent {
+typedef struct dirent {
     uint64_t ino;
-    char name[MAXLEN];
-};
+    char name[20];
+}dirent;
 
-struct file_dir {
-    fnode_t* filenode;
+typedef struct dir {
+    file* filenode;
     uint64_t curr;
     dirent curr_dirent;
-};
+}DIR;
 
-struct file_descp {
-    fnode_t* filenode;
-    uint64_t curr;
-    uint64_t f_perm;
-    uint64_t inode_struct;
-};
+typedef struct FD {
+    uint64_t current, permission;
+    file* node;
+}FD;
 
-fnode_t* root_node;
+file* root;
 
-void printnode(fnode_t *node);
-DIR* opendir(char *dir_path);
-struct dirent* readdir(DIR* node);
-int closedir(DIR* node);
-void* file_lookup(char *dir_path);
-void make_node(struct file *node, struct file *parent, char *name, uint64_t start, uint64_t end, int type, uint64_t f_inode_no);
-fnode_t* get_root_node();
+DIR* opendir(char*);
+struct dirent* readdir(DIR*);
+int closedir(DIR*);
+void* fileLookup(char*);
 
 #endif

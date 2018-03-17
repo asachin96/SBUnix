@@ -2,17 +2,23 @@
 #define __UTIL_H__
 #define  NULL 0
 #include<sys/defs.h>
-void outb (unsigned short port, unsigned char data);
-void outw (uint16_t port, uint16_t data);
-unsigned char inb (unsigned short port);
-void copyHelper(char* src, char*dest, int offset, int len);
-int cStrlen(char *str);
-int open (const char* pathname,  int flags);
-int read(int fd, void *buf, int count);
-int strfind(const char* s1, const char* s2);
-char *strchr(const char *s, int c);
-char * strtok(char *s, const char* delim);
-void memset(char *str, char val, int size);
- void *memcpy(void *destination, void *source, uint64_t num) ;
-
+#include <sys/procMgr.h>
+void outb (unsigned short, unsigned char);
+void outw (uint16_t, uint16_t);
+unsigned char inb (unsigned short);
+int open (const char*,  int);
+int read(int, void *, int);
+void memset(char*, char, int);
+void *memcpy(void*, void*, int) ;
+int getNoPages(uint64_t, int);
+int atoi(char*);
+uint64_t getFlags(uint64_t);
+void* kmalloc(int);
+int toDecimal(int);
+int kstrlen(const char *);
+int kstrcmp(const char *, const char *);
+char* kstrcat(char *, const char *);
+char* kstrcpy(char *, const char *);
+char* kstrtok(char *, const char *);
+char* kstrcpyn(char *, const char *, int);
 #endif

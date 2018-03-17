@@ -49,6 +49,11 @@ update_cursor();
 }
 
 void printInt(int n){
+    if(n == 0){
+       *temp = '0';
+        temp +=2;
+        linePos +=2;
+    }
     int a[10];
     int j=0;
     while(n){
@@ -173,10 +178,10 @@ void kprintf(const char *fmt, ...){
 
 #pragma GCC push_options
 #pragma GCC optimize ("O0")
-int32_t puts(const char* str)
+int puts(const char* str)
 {
 
-int32_t volatile i = 0;
+int volatile i = 0;
 while(str[i]!='\0')
 {
 if(str[i]=='\n'){
@@ -205,10 +210,6 @@ void clear_screen()
 				}
 				linePos = 0; 
 				update_cursor();
-}
-void commonIrqHandler(registers_t regs)
-{
-	outb(0x20, 0x20);
 }
 
 void enable_cursor(uint8_t cursor_start, uint8_t cursor_end)

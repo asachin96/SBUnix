@@ -3,28 +3,34 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <signal.h>
+
+void handler(int signo)
+{
+  //if (signo == 1)
+    printf("received SIGINT\n");
+}
 
 int main(int argc, char* argv[])
 {
-    /*int c;
-    char d, a[10];
+    char *buf = (char*)malloc(120);
+    /*
     printf("\n Address : %p ", malloc(100));
     char* b = malloc(200);
     printf("\n Address : %p ", b);
     printf("\n Address : %p ", malloc(500));
     free(b);
     printf("\n Address : %p ", malloc(200));
-    
-    scanf("%s %d %c",a,&c,&d);
-    printf("a = %s, c = %d, d  = %c", a,c,d);*/
-    /*int fd = open("/rootfs/etc/help", 0);
-    if(fd!=-1){
-        printf("file opened!!");
-        char buf[120];
-        memset(buf, 0,120);
-        read(fd, buf, 120);
-        printf("%s", buf);
-    }*/
+    */
+     int fd = open("/rootfs/etc/help", 0);
+     if(fd!=-1){
+         printf("file opened!!");
+         memset(buf, 0,120);
+         read(fd, buf, 120);
+         printf("reading %s", buf);
+     }
+     free(buf);
+     close(fd);
    /*char buf[300];
    printf("%s",getcwd(buf, 300));
    chdir("/rootfs");
@@ -39,7 +45,6 @@ int main(int argc, char* argv[])
 
 //   for(;i<4;i++){
      //listprocess();
-     exit(0);
   // }
    // while(1);
     return 0;

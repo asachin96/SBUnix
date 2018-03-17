@@ -2,430 +2,241 @@
 #include <unistd.h>
 #include <sys/defs.h>
 #include <dirent.h>
-
-char currdir[1024], args[10][100];
-char temp[512];
-DIR *curr_dir_ptr;
-static char bg_flag, prog[100];
-char *execargs[10], path[100] = "/rootfs/bin/";
-
-static char *getLine(char *ptr, char *str, int limit)
-{
-			int i =   limit;
-			for(;i>0&&*ptr!='\n';i--){
-        *str++ = *ptr++;
-    }
-    *str = '\0';
-
-    return ++ptr;
-}
-
-static bool Is_file_exist()
-{
-    int fd  = open(prog, 0);
-    if (fd == -1)
-        return FALSE;
-    close(fd);
-    return TRUE;
-}
-
-static void copy_args_to_execargs()
-{
-    int i = 0;
-    for (i = 0; args[i+1][0] != '\0'; i++)
-        execargs[i] = (char*)args[i+1];
-    execargs[i] = NULL;
-}
-
-static void export_to_path()
-{
-    char *path_str;
-
-    if (args[1][0] == 'P' && args[1][1] == 'A' && args[1][2] == 'T' && args[1][3] == 'H') {
-
-        if (args[1][strlen(args[1])-1] != '/') {
-            args[1][strlen(args[1])] = '/';
-            args[1][strlen(args[1])+1] = '\0';
-
-        }
-        path_str = args[1];
-        path_str += 5;
-        memset(path, 0, sizeof(path));
-        strcpy(path, path_str);
-    }
-}
-
-static void clean_string(char *currdir)
-{
-    int i = 0, j = 0, count = -1, currlen = strlen(currdir);
-    int indx[50];
-
-							while(i<currlen)	{
-        if(currdir[i] == '/')
-            indx[++count] = j;
-
-        if(i+1 < currlen && currdir[i] == '.' && currdir[i+1] != '.') {     
-            // if path ends with dot dot
-            i = i + 2;
-        } else if(i+1 >= currlen && currdir[i+1] == '.') {                  
-            // if path ends with single dot
-            break; 
-        } else if(currdir[i] == '.' && currdir[i+1] == '.') {               
-            // path has two consecutive dots in middle 
-            j           = indx[count - 1] + 1;
-            i           = i + 3;
-            indx[count] = 0;
-            count       = count - 1;
-            continue;
-        }
-
-        temp[j++] = currdir[i++];             
-    }
-
-    //if second last character is '/'
-    if(temp[j-1] == '/')
-        temp[j-1] = '\0';
-    else 
-        temp[j] = '\0';
-
-    strcpy(currdir, temp);
-}
-
-static void fork_and_execvpe()
-{
-    int pid = fork();
-
-    if (pid != 0) {
-        if (bg_flag != '&') {
-            waitpid(pid, NULL, 0);
-												printf("\n");
-        } else {
-            printf("Added [%d] to BG\n", pid);
-        }
-
-    } else {
-        execvpe(prog, execargs, NULL);
-        exit(1);
-    }
-}
-
-void collect_args(char*ptr,int* ptr_length, int *j)
-{
-								int i=0,k=0;
-								while( i < *ptr_length) {
-																if(ptr[i] == ' ') {
-																								args[*j][k]= '\0';
-																								(*j)++;
-																								k=0;
-																} else {
-																								args[*j][k++] = ptr[i];
-																}
-																i++;
-								}
-								args[*j][k]='\0';
-
-}
+#include <signal.h>
 
 int main(int argc, char **argv)
 {
-    char str[1024], *newstr, ptr[1024], path_cmd[1024];
-    int i, j=0, k=0, file_descp, ptr_length, lendir = 0, str_length;
-    char* exec_path;
+	char buff[250], curdir[250], path[250]; 
+	char* arg1 = NULL;
+	char* arg2 = NULL;
+	int isBg = 0;
+	memset(path, 0, 250);
+	strcpy(path, "/rootfs/bin/");
+	memset(curdir, 0, 250);
+	strcpy(curdir, "/");
+	malloc(1);
+	while(1){
+		printf("[SBUnix %s]", curdir);
+		memset(buff, 0, 250);
+		isBg = 0;
+		/*
+					char c;
+					do{
+					scanf("%c", &c);
+					printf("%d", c);
+					}while(c!='\n');
+			*/
+		scanf("%s", buff);
+		if(strlen(buff)==0||buff[0]=='\n') continue;
+		if(buff[strlen(buff)-1] == '&'){
+			isBg = 1;
+			buff[strlen(buff)-1] = '\0';
+		}
 
-    //By default current directory stream will be pointing to DIR stream of '/'
-    curr_dir_ptr = opendir("/");
-    while(1) {
-        j = 0, k = 0;
+		char *cmd = strtok(buff, " ");
+		if(strcmp(cmd, "ls") == 0) {
+			DIR *dirp = NULL;
+			arg1 = strtok(NULL, " ");
 
-        printf("[user@SBUnix ~%s]$", currdir);
+			if(arg1){
+				dirp = opendir(arg1);
+			}else{
+				dirp = opendir(curdir);
+			}
+			if(dirp != NULL && dirp->filenode){
+				struct dirent *dp;
+				while((dp=readdir(dirp))!=NULL){
+					printf("%s\t", dp->name);
+				}
+				printf("\n");
+			}else{
+				printf("No such file or directory\n");
+			}
+		}
+		else if(strcmp(cmd, "ps") == 0) {
+			listprocess();
+			printf("\n");
+		}
+		else if(strcmp(cmd, "echo") == 0) {
+			arg1 = strtok(NULL, " ");
+			if(strcmp(arg1, "$PATH") == 0) printf("%s", path);
+			while((arg1=strtok(NULL, " "))!= NULL){
+				printf("%s", arg1);
+			}
+			printf("\n");
+		}
+		else if(strcmp(cmd, "clear") == 0){
+			clear(); 
+		}
+		else if(strcmp(cmd, "pwd") == 0){
+			printf("%s\n", curdir);
+		}
+		else if(strcmp(cmd, "cd") == 0){
+			arg1 = strtok(NULL, " ");    
+			if(!arg1){// move to /
+				strcpy(curdir, "/");
+			}else if(strcmp(arg1, ".") == 0){
 
-        scanf("%s", ptr);
-        ptr_length = strlen(ptr);
+			}else if(strcmp(arg1, "..") == 0 && strlen(curdir)> 2){
+				int i=  strlen(curdir);
+				while(curdir[--i]!='/');
+				curdir[i] = '\0';
+			}else{
+				DIR *dirp;
+				char temp[250];
+				if(arg1[0]=='/'){
+					dirp = opendir(arg1);
+				}
+				else{ 	
+					strcpy(temp, curdir);
+					strcat(temp, "/");
+					strcat(temp, arg1);
+					dirp = opendir(temp);
+				}
+				if(dirp == NULL){
+					printf("No such file or directory\n");
+					continue;
+				}
+				if(dirp->filenode && arg1[0]=='/'){
+					strcpy(curdir, arg1);
+					chdir(curdir);
+				}
+				else if(dirp->filenode){
+					strcpy(curdir, temp);
+					chdir(curdir);
+				}
+				else printf("No directory found\n");
+			}
+		}
+		else if(strcmp(cmd, "export") == 0){
+			arg1 = strtok(NULL, "="); 
+			if(strcmp(arg1, "PATH") == 0){
+				arg2 = strtok(NULL, "="); 
+				strcpy(path, arg2);
+			}else{
+				printf("only path export is supported\n");
+			}
+		}
+		else if(strcmp(cmd, "cat") == 0){
+			arg1 = strtok(NULL, " ");
+			int fd;
+			char temp[250]; 
+			if(arg1[0]=='/')
+				fd = open(arg1, 0);
+			else{ 
+				strcpy(temp, curdir);
+				strcat(temp, "/");
+				strcat(temp, arg1);
+				fd = open(temp, 0);
+			}
 
-        memset(args, 0, sizeof(args));
-        execargs[0] = NULL;
+			if(fd == -1){
+				printf("No such file or directory\n");
+			}else{
+				char readbuff[100];
+				while(read(fd, readbuff, sizeof(readbuff))> 0){
+					printf("%s", readbuff);
+				}
+				close(fd);
+			}   
+		}
+		else if(strcmp(cmd, "kill") == 0){
+			arg1 = strtok(NULL, " ");
+			if(arg1[1] == '9'){
+				arg2 = strtok(NULL, " "); 
+				kill(atoi(arg2), 0);
+			}else{
+				printf("only kill -9 commnad is supported\n");
+			}
+		}
+		else if(strcmp(cmd, "help") == 0){
+			int fd = open("/rootfs/etc/help", 0);
+			char readbuff[100];
+			while(read(fd, readbuff, sizeof(readbuff))>0) printf("%s", readbuff);
+			close(fd); 
+		}
+		else if(strcmp(cmd, "sh") == 0){
+			arg1 = strtok(NULL, " ");
+			int fd;
+			char temp[250]; 
+			if(arg1[0]=='/')
+				fd = open(arg1, 0);
+			else{ 
+				strcpy(temp, curdir);
+				strcat(temp, "/");
+				strcat(temp, arg1);
+				fd = open(temp, 0);
+			}
 
-        if (ptr_length == 0) {
-            continue;
-        } else if (strcmp(ptr, "echo $PATH")==0) {
-            printf("PATH: %s\n", path);
-            continue;
-        }
-        /*****1) To check if process is to be run in background ****/
-        bg_flag = ptr[ptr_length - 1];
-        if (bg_flag == '&') {
-            ptr[ptr_length - 1] = '\0';
-            ptr_length -= 1;
-            if (ptr_length == 0)
-                continue;
-        }
-        //collect the arguments entered by user in 2D array args
-							collect_args(ptr,&ptr_length,&j);
-        char help_str[2048], help_ptr[2048];
-        memset(help_ptr, 0, 2048);
-        memset(help_str, 0, 2048);
+			if(fd == -1) 
+				printf("No such file or directory\n");
+			else{
+				char readbuff[250];
+				readline(fd, readbuff);
+				if(readbuff[0]!='#'&&readbuff[1]!='!')
+					printf("Not a  valid shell file\n");
+				else{
+					while(readline(fd, readbuff)>0){
+						char temp1[250]; 
+						char isBg = 0;
+						if(readbuff[strlen(readbuff)-1] == '&'){
+							isBg = 1;
+							readbuff[strlen(readbuff)-1] = '\0';
+						}
 
-        if (strcmp(args[0], "echo") == 0) {
-            int l = 1;
-            for(;l<=j;l++){
-                printf("%s ", args[l]);
-            }
-											printf("\n");
-        }
-        else if (strcmp(args[0], "kill") == 0) {
-            int l = 1;
-           // for(;l<=j;l++){
-             //   printf("%s ", args[l]);
-           // }
-											if(j>=2 && strcmp(args[1],"-9")==0)
-													{
-													for(l=2;l<=j;l++)
-													{
-													pid_t pid = atoi(args[l]);
-													kill(pid);
-													}
-													}
-        }
-								else if (strcmp(args[0], "ulimit") == 0) {
+						char* t =  strtok(readbuff, " ");
+						if(readbuff[0]=='/')
+							strcpy(temp1, t);
+						else{ 
+							strcpy(temp1, path);
+							strcat(temp1, t);
+						}
+						char* argv[100];
+						int i=0;
+						while((arg2=strtok(NULL, " ")) != NULL){
+							argv[i++] = arg2;
+						} 
+						argv[i] = NULL;
 
-            char *new_pointer; 
-            file_descp  = open("/rootfs/etc/ulimit", 0);
-            if (file_descp != -1) {
-                read(file_descp, help_ptr, 2048); 
-                close(file_descp);
-                new_pointer = help_ptr;
-                cls();
-                while (*new_pointer != '\0') {
+						int pid = fork();
+						if(pid != 0){
+							if(isBg != 1)
+								waitpid(pid, NULL, 0);
+						}else{
+							execvpe(temp1, argv, NULL);
+						}
+					}
+				}
+			}
+		}else{
+			char temp[250]; 
+			if(cmd[0]=='/')
+				strcpy(temp, cmd);
+			else{ 
+				strcpy(temp, path);
+				strcat(temp, cmd);
+			}
+			int fd = open(temp, 0);
+			if(fd==-1){
+				printf("No such file or directory\n");
+				continue;
+			}
+			close(fd);
 
-                    new_pointer = getLine(new_pointer, help_str, 1023);
-                    printf("\n%s", help_str);
-                }
-
-                printf("\n");
-            }
-
-        } else if (strcmp(args[0], "help") == 0) {
-
-            char *new_pointer; 
-            file_descp  = open("/rootfs/etc/help", 0);
-            if (file_descp != -1) {
-                read(file_descp, help_ptr, 2048); 
-                close(file_descp);
-                new_pointer = help_ptr;
-                cls();
-                while (*new_pointer != '\0') {
-
-                    new_pointer = getLine(new_pointer, help_str, 2047);
-                    printf("\n%s", help_str);
-                }
-
-                printf("\n");
-            }
-        } else if (strcmp(args[0], "cat") == 0) {
-
-            char *new_pointer; 
-            char temp[256];
-            strcpy(temp, currdir);
-            strcat(temp,"/");
-            strcat(temp,args[1]);
-            file_descp  = open(temp, 0);
-            //file_descp  = open(args[1], 0);
-            if (file_descp != -1) {
-                read(file_descp, help_ptr, 2048); 
-                close(file_descp);
-                new_pointer = help_ptr;
-                while (*new_pointer != '\0') {
-
-                    new_pointer = getLine(new_pointer, help_str, 2047);
-                    printf("%s\n", help_str);
-                }
-
-              //  printf("\n");
-            } else { 
-                printf("Invalid Path : Please enter absolute path of the file.\nRefer to help.\n");
-            }
-
-        } else if (strcmp(args[0], "shutdown") == 0) {
-            shutdown();
-        } else if (strcmp(args[0], "cls") == 0||strcmp(args[0], "clear") == 0) {
-            cls();
-        } else if(strcmp(args[0], "export") == 0) {
-            /****1) export path****/   
-            export_to_path();
-
-        } else if (strcmp(args[0], "pwd") == 0) {
-            /****3) To handle PWD command ****/
-            if (strlen(currdir) == 0)
-                printf("/\n");
-            else
-                printf("%s\n", currdir);
-        } else if (strcmp(args[0], "cd") == 0) {
-            /****4) To handle CD command ****/
-            lendir  = strlen(currdir);
-
-            //check if args[1] is a absolute path 
-            if (args[1][0] == '/') {
-
-                curr_dir_ptr = opendir(args[1]);
-
-                if (curr_dir_ptr == NULL) {
-
-                    printf("%s: No such directory.\nRefer to help.\n", args[1]); 
-                    currdir[lendir] = '\0';
-                    curr_dir_ptr    = opendir(currdir); 
-
-                } else {
-
-                    //If it is absoulte correct path, modify it to remove dots
-                    strcpy(currdir, args[1]); 
-                    clean_string(currdir);
-                }
-
-            } else {
-                //If it is a relative path
-                //concatenate to existing dir
-
-                strcat(currdir, "/");
-                strcat(currdir, args[1]);
-
-                curr_dir_ptr = opendir(currdir); 
-
-                if (curr_dir_ptr == NULL) {
-
-                    printf("%s: No such directory.\nRefer to help.\n", currdir); 
-                    currdir[lendir] = '\0';
-                    curr_dir_ptr    = opendir(currdir); 
-
-                } else {
-
-                    //If it is relative correct path, modify it to remove dots
-                    clean_string(currdir);
-                }
-            } 
-            chdir(currdir);
-
-        } else if (strcmp(args[0], "/rootfs/bin/ls") == 0 || strcmp(args[0], "ls") == 0) {
-            /****5) To handle LS command ****/
-
-            // To list contents of directory specified by user
-            if (args[1][0] != '\0') {
-
-                //if argument to ls is relative path, append it to currdir
-                if (args[1][0] != '/') {
-
-                    int lendir  = strlen(currdir);
-
-                    strcat(currdir, "/");
-                    strcat(currdir, args[1]);
-                    strcpy(args[1], currdir);
-                    //restore orignal currdir 
-                    currdir[lendir] = '\0';
-
-                }                
-                execargs[0] = (char *)args[1]; 
-            } else {            
-                //No argument by user
-                //List contents of current directory
-                execargs[0] = (char *)currdir; 
-            }
-
-            execargs[1] = NULL;
-            strcpy(prog, path);
-            strcat(prog, "ls");
-
-            if (Is_file_exist()) {
-                fork_and_execvpe();
-            } else {
-                printf("CMD does not exist.\nRefer to help.\n");
-            }
-
-        } else if (ptr[0] == 's' && ptr[1] == 'h' && ptr[2] == ' ' && ptr_length > 3)  {              /****6) To check for executable ****/
-
-            // Extracting the scan from shell into a 2d array: row 0 = command, other rows = arguments to the cmd
-            exec_path = ptr;
-
-            //ignore the 'sh' part. 
-            exec_path +=3;
-            strcpy(path_cmd, exec_path);
-            //strcat(path_cmd, "\0");
-            file_descp  = open(path_cmd, 0);
-            if (file_descp != -1) {
-                //check if path is valid path
-
-                read(file_descp, ptr, 1024); 
-                close(file_descp);
-                if (ptr[0] == '#' && ptr[1] == '!') {
-                    newstr = ptr;
-                    newstr = getLine(newstr, str, 1023);
-                    // For parsing a script file and extracting the commands from the file
-                    newstr = getLine(newstr, str, 1023);
-                    while (*newstr != '\0') {
-                        str_length = strlen(str); 
-                        bg_flag = str[str_length - 1];
-
-                        if (bg_flag == '&')
-                            str[str_length - 1] = '\0';
-
-                        j = 0, k = 0;
-
-                        memset(args, 0, sizeof(args));
-                        execargs[0] = NULL;
-
-                        for (i = 0; i < str_length ; i++) {
-                            if (str[i] == ' ') {
-                                args[j][k]= '\0';
-                                j++;
-                                k=0;
-                            } else 
-                                args[j][k++] = str[i];
-                        }
-                        *str = NULL;
-                        args[j][k]='\0';
-                        strcpy(prog, path);
-                        strcat(prog, args[0]);
-
-                        if (Is_file_exist()) {
-                            copy_args_to_execargs();
-                            fork_and_execvpe();
-                            //yield();
-                        } else { 
-                            printf("CMD does not exist.\nRefer to help.\n");
-                        }
-                        newstr = getLine(newstr, str, 1023);
-                    }
-
-                } else {
-                    printf("File not an executable.\nRefer to help.\n");
-                }
-
-            } else {
-                printf("File does not exist.\nRefer to help.\n");
-            }
-
-        } else {
-            /****7) Run a binary ****/
-            char *cmd = NULL;
-            cmd = args[0];
-
-            if (args[0][0] == '.' && args[0][1] == '/')
-                cmd += 2;
-
-            if (args[0][0] == '/' && strlen(args[0]) > 1) {
-                strcpy(prog, args[0]);
-            } else { 
-                strcpy(prog, path);
-                strcat(prog, cmd);
-            }
-            if (Is_file_exist() || strcmp(prog, "ls") == 0) {
-                copy_args_to_execargs();
-                fork_and_execvpe();
-            } else { 
-                printf("CMD does not exist.\nRefer to help.\n");
-            }
-        }
-        *ptr = NULL;
-    } 
-
-    return 0;
+			char* argv[100];
+			int i=0;
+			while((arg2=strtok(NULL, " ")) != NULL){
+				argv[i++] = arg2;
+			} 
+			argv[i] = NULL;
+			int pid = fork();
+			if(pid != 0){
+				if(isBg != 1) waitpid(pid, NULL, 0);
+			}else{
+				execvpe(temp, argv, NULL);
+			}
+		}
+	}
+	return 0;
 }
 
